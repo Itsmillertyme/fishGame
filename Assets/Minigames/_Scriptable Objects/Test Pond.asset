@@ -16,5 +16,5 @@ MonoBehaviour:
   - normalConfig: {fileID: 11400000, guid: 90d1d30edbb339343a9a13666c817019, type: 2}
     trophyConfig: {fileID: 11400000, guid: 2dd1801379ebd364f8b07e61ab355bee, type: 2}
     weight: 100
-    trophyChance: 0.03
+    trophyChance: 0
     sizeSkewPower: 3
