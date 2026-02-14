@@ -10,18 +10,38 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7d7168176dc1e64da4db5f16839a4bd, type: 3}
-  m_Name: Bluegill_Trophy
+  m_Name: Bluegill
   m_EditorClassIdentifier: Assembly-CSharp::FishSpeciesConfig
   displayName: Bluegill
   icon: {fileID: 0}
+  description: 
+  environments: 
+  isTrophy: 0
+  strength: 1
+  aggression: 1
+  curiosity: 1
   spinning:
     timeMultiplier: 1
-    arcMultiplier: 1
-    relocationBonus: 0
+    arcMultiplier: 0.95
+    relocationBonus: 1
     landGainMultiplier: 1
-    slackFillMultiplier: 0.8
+    slackFillMultiplier: 0.9
     slackDecayMultiplier: 1.25
     steeringMultiplier: 0.95
+  casting:
+    timeMultiplier: 1
+    heatStartMultiplier: 0.5
+    backlashThresholdMultiplier: 0.5
+    heatRiseMultiplier: 0.5
+    heatFallHoldMultiplier: 0.5
+    heatFallHoldSurgeMultiplier: 0.5
+    landGainNoHoldCalmMultiplier: 0.5
+    landGainNoHoldSurgeMultiplier: 0.5
+    landLossHoldSurgeMultiplier: 0.5
+    pulseBonus: 0
+    surgeDurationMultiplier: 0.5
+    pulseJitterMultiplier: 0.5
+    pulseStartEndMarginMultiplier: 0.5
   sizeScaling:
     timeBySize:
       serializedVersion: 2
@@ -157,7 +177,25 @@ MonoBehaviour:
       m_RotationOrder: 4
     heatBySize:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
