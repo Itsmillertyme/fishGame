@@ -17,7 +17,7 @@ public class MinigameInputRouter : MonoBehaviour {
     [Range(0.1f, 0.9f)]
     [SerializeField] float leftRegionMaxX01 = 0.5f;
 
-    bool enabled;
+    bool isEnabled;
     MinigameInput frameInput;
     #endregion
 
@@ -33,8 +33,8 @@ public class MinigameInputRouter : MonoBehaviour {
 
     #region Utility Methods
     public void EnableMinigameInput(bool shouldEnable) {
-        if (enabled == shouldEnable) return;
-        enabled = shouldEnable;
+        if (isEnabled == shouldEnable) return;
+        isEnabled = shouldEnable;
 
         if (shouldEnable) {
             if (point != null) point.action.Enable();
@@ -53,7 +53,7 @@ public class MinigameInputRouter : MonoBehaviour {
     public MinigameInput ConsumeFrameInput() {
         frameInput = new MinigameInput();
 
-        if (!enabled) return frameInput;
+        if (!isEnabled) return frameInput;
 
         if (point != null) frameInput.pointerScreenPos = point.action.ReadValue<Vector2>();
         if (dragDelta != null) frameInput.dragDelta = dragDelta.action.ReadValue<Vector2>();

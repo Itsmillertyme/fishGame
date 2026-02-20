@@ -9,6 +9,8 @@ public class FishSpeciesConfig : ScriptableObject {
     public string displayName;
     [Tooltip("Icon used for this species in the UI.")]
     public Sprite icon;
+    [Tooltip("Screenshots taken of catches")]
+    public List<Sprite> caughtPictures;
     [Tooltip("Short flavor text / description for the species.")]
     public string description;
     [Tooltip("The environments in which this species of fish can be found")]
@@ -17,8 +19,6 @@ public class FishSpeciesConfig : ScriptableObject {
     [Space(10)]
     [Tooltip("True if this is a Trophy variant of the fish.")]
     public bool isTrophy;
-
-
 
     [Header("Anglerpedia Stats")]
     [Tooltip("How hard the fish pulls overall (1 = easy, 5 = very strong).")]
@@ -30,6 +30,9 @@ public class FishSpeciesConfig : ScriptableObject {
     [Tooltip("How likely the fish is to inspect/commit to the lure (1 = shy, 5 = curious).")]
     [Range(1, 5)]
     public int curiosity;
+    [Space(5)]
+    [Tooltip("Has this species been discovered")]
+    public bool isDiscovered;
 
     [Header("Modifiers")]
     [Tooltip("Per-species modifiers applied to the Spinning Rod minigame.")]
