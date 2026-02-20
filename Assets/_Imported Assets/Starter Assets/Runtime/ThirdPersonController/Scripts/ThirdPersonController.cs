@@ -73,6 +73,9 @@ namespace StarterAssets {
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
+        [SerializeField] GameObject rodObject;
+        [SerializeField] GameObject reelObject;
+
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
@@ -97,8 +100,8 @@ namespace StarterAssets {
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
-        private bool _isFishing;
-        private bool _castPressedLastFrame;
+        private bool isFishing;
+        private bool castPressedLastFrame;
 
 
 #if ENABLE_INPUT_SYSTEM
@@ -106,7 +109,7 @@ namespace StarterAssets {
 #endif
         private Animator _animator;
         private CharacterController _controller;
-        private StarterAssetsInputs _input;
+        private StarterAssetsInputs input;
         private GameObject _mainCamera;
 
         private const float _threshold = 0.01f;
@@ -129,6 +132,9 @@ namespace StarterAssets {
             if (_mainCamera == null) {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+
+            rodObject.SetActive(false);
+            reelObject.SetActive(false);
         }
 
         private void Start() {
@@ -136,7 +142,7 @@ namespace StarterAssets {
 
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
+            input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -174,20 +180,29 @@ namespace StarterAssets {
         }
 
         private void HandleFishing() {
-            if (_input == null) return;
+            if (input == null) return;
 
-            //bool pressedThisFrame = _input.cast && !_castPressedLastFrame;
-            //_castPressedLastFrame = _input.cast;
+            bool pressedThisFrame = input.cast && !castPressedLastFrame;
+            castPressedLastFrame = input.cast;
 
-            //if (pressedThisFrame) {
-            //    _isFishing = !_isFishing;
-            //}
+            if (pressedThisFrame) {
+                isFishing = !isFishing;
+
+            }
+            if (isFishing) {
+                rodObject.SetActive(true);
+                reelObject.SetActive(true);
+            }
+            else {
+                rodObject.SetActive(false);
+                reelObject.SetActive(false);
+            }
 
             //if (_hasAnimator) {
             //    _animator.SetBool(_animIDIsFishing, _isFishing);
             //}
             if (_hasAnimator) {
-                _animator.SetBool(_animIDIsFishing, _input.cast);
+                _animator.SetBool(_animIDIsFishing, input.cast);
             }
 
         }
@@ -208,12 +223,12 @@ namespace StarterAssets {
 
         private void CameraRotation() {
             // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition) {
+            if (input.look.sqrMagnitude >= _threshold && !LockCameraPosition) {
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+                _cinemachineTargetYaw += input.look.x * deltaTimeMultiplier;
+                _cinemachineTargetPitch += input.look.y * deltaTimeMultiplier;
             }
 
             // clamp our rotations so our values are limited 360 degrees
@@ -227,19 +242,19 @@ namespace StarterAssets {
 
         private void Move() {
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            float targetSpeed = input.sprint ? SprintSpeed : MoveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
-            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+            if (input.move == Vector2.zero) targetSpeed = 0.0f;
 
             // a reference to the players current horizontal velocity
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
             float speedOffset = 0.1f;
-            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+            float inputMagnitude = input.analogMovement ? input.move.magnitude : 1f;
 
             // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -260,13 +275,13 @@ namespace StarterAssets {
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // normalise input direction
-            Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+            Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
-            if (_input.move != Vector2.zero) {
+            if (input.move != Vector2.zero) {
                 //END CAST ANIMATION
-                _input.cast = false;
+                input.cast = false;
 
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                   _mainCamera.transform.eulerAngles.y;
@@ -309,13 +324,13 @@ namespace StarterAssets {
                 }
 
                 // Jump
-                if (_input.jump && _jumpTimeoutDelta <= 0.0f) {
+                if (input.jump && _jumpTimeoutDelta <= 0.0f) {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
                     // update animator if using character
                     if (_hasAnimator) {
-                        _input.cast = false;
+                        input.cast = false;
                         _animator.SetBool(_animIDJump, true);
 
                     }
@@ -342,7 +357,7 @@ namespace StarterAssets {
                 }
 
                 // if we are not grounded, do not jump
-                _input.jump = false;
+                input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
