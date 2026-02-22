@@ -12,28 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc7dcfc3246210b4ca56731c1b4df86f, type: 3}
   m_Name: Sim Test 1
   m_EditorClassIdentifier: Assembly-CSharp::SimulationFishSpeciesPreset
-  cruiseSpeed: 2
-  schoolSpeed: 2.5
-  maxSpeed: 4
-  acceleration: 6
-  turnRateDeg: 180
-  bankAmountDeg: 20
-  neighborRadius: 6
-  separationDistance: 1.5
-  enterSchoolNeighborCount: 4
-  exitSchoolNeighborCount: 2
-  wanderStrength: 1
-  wanderJitterRate: 1.5
-  avoidDistance: 2.5
-  avoidStrength: 2
-  avoidProbeRadius: 0.25
-  boundaryMargin: 2
-  boundaryStrength: 2
+  cruiseSpeed: 1.8
+  schoolSpeed: 2.2
+  maxSpeed: 4.5
+  acceleration: 7.8
+  turnRateDeg: 150
+  bankAmountDeg: 18
+  neighborRadius: 5.5
+  separationDistance: 1.8
+  enterSchoolNeighborCount: 3
+  exitSchoolNeighborCount: 1
+  wanderStrength: 0.9
+  wanderJitterRate: 0.9
+  avoidDistance: 3
+  avoidStrength: 2.8
+  avoidProbeRadius: 0.3
+  boundaryMargin: 2.5
+  boundaryStrength: 3
   cruiseWanderWeight: 1
-  cruiseCohesionWeight: 0.6
-  cruiseAlignmentWeight: 0.4
-  cruiseSeparationWeight: 1
-  schoolWanderWeight: 0.3
-  schoolCohesionWeight: 1
-  schoolAlignmentWeight: 1.2
-  schoolSeparationWeight: 1
+  cruiseCohesionWeight: 0.35
+  cruiseAlignmentWeight: 0.25
+  cruiseSeparationWeight: 1.25
+  schoolWanderWeight: 0.55
+  schoolCohesionWeight: 0.55
+  schoolAlignmentWeight: 0.45
+  schoolSeparationWeight: 1.15
