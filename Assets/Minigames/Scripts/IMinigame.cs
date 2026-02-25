@@ -37,6 +37,9 @@ public struct MinigameResult {
     public MinigameEndReason reason;
     public float land01;
     public float slack01;
+
+    public bool success => reason == MinigameEndReason.Success;
+    public CatchInfo? catchInfo;
 }
 
 public struct MinigameContext {
@@ -44,8 +47,20 @@ public struct MinigameContext {
     public MinigameDifficulty difficulty;
     public bool extendedFight;
 
+    public FishSpeciesConfig species;
+    public float fishSize01;
+
     public SpinningRodSettings spinning;
     public CastingRodSettings casting;
+}
+
+public struct CatchInfo {
+    public FishSpeciesConfig species;
+    public float fishSize01;
+    public bool isTrophy;
+
+    public float length;
+    public float weight;
 }
 #endregion
 

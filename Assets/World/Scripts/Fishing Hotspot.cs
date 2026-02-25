@@ -4,8 +4,14 @@ using UnityEngine;
 public class FishingHotspot : MonoBehaviour {
 
     #region Variables
+    [Header("References")]
+    [Tooltip("Spawn table for the body of water this hotspot belongs to")]
+    [SerializeField] FishSpawnTable spawnTable;
+
     [Header("Optional")]
     [SerializeField] string hotspotName = "Hotspot";
+
+    public FishSpawnTable SpawnTable => spawnTable;
     public string HotspotName => hotspotName;
     #endregion
 

@@ -50,8 +50,6 @@ public class CharacterControllerInputs : MonoBehaviour {
             interactor.OnCastPressed();
             return;
         }
-
-
         Debug.Log("Error with FishingInteractor.cs");
     }
 

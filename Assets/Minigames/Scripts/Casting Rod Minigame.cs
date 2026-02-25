@@ -77,8 +77,7 @@ public class CastingRodMinigame : IMinigame {
             isSurging = surgeRemaining > 0f;
         }
 
-        // HOLD INPUT (thumb on spool)
-        // Rename `holdHeld` to match your MinigameInput field.
+        // HOLD INPUT (thumb on spool)        
         bool holding = input.primaryHeld && input.isRightSide;
 
         // LAND + HEAT rules
@@ -126,7 +125,7 @@ public class CastingRodMinigame : IMinigame {
         }
 
         if (heat >= backlashThreshold) {
-            End(MinigameEndReason.SlackMaxed); // reuse reason OR add Backlash if you created one
+            End(MinigameEndReason.Backlash);
             return;
         }
     }
@@ -136,12 +135,26 @@ public class CastingRodMinigame : IMinigame {
 
         complete = true;
 
+        CatchInfo? catchInfo = null;
+        if (reason == MinigameEndReason.Success) {
+            float length = 0f;
+            float weight = 0f;
+            if (ctx.species != null)
+                ctx.species.TryResolveLengthWeight(ctx.fishSize01, out length, out weight);
+            catchInfo = new CatchInfo {
+                species = ctx.species,
+                fishSize01 = ctx.fishSize01,
+                isTrophy = ctx.species.isTrophy,
+                length = length,
+                weight = weight
+            };
+        }
+
         result = new MinigameResult {
             reason = reason,
             land01 = land,
-            // We reuse slack01 as "heat01" for casting in your existing MinigameResult.
-            // This keeps the framework consistent without introducing a new result type.
-            slack01 = GetHeat01()
+            slack01 = GetHeat01(),
+            catchInfo = catchInfo
         };
     }
     #endregion

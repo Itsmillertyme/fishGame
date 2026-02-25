@@ -49,8 +49,8 @@ public class FishSpawnTable : ScriptableObject {
 
     static float RollSize01(float skewPower) {
         // skewPower > 1 biases smaller fish, skewPower < 1 biases larger fish
-        float p = Mathf.Max(0.01f, skewPower);
-        return Mathf.Clamp01(Mathf.Pow(UnityEngine.Random.value, p));
+        float pow = Mathf.Max(0.01f, skewPower);
+        return Mathf.Clamp01(Mathf.Pow(UnityEngine.Random.value, pow));
     }
     #endregion
 }

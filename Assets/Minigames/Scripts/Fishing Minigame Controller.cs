@@ -11,13 +11,9 @@ public class FishingMinigameController : MonoBehaviour {
     [Header("Settings")]
     [SerializeField] FishingMinigameSettings settings;
 
-
     bool hasZoneState;
     bool lastInZone;
     MinigameInput lastInput;
-
-    AudioClip currentMinigameClip;
-
 
     IMinigame activeMinigame;
     MinigameContext context;
@@ -54,22 +50,32 @@ public class FishingMinigameController : MonoBehaviour {
 
     #region Utility Methods
     public void StartSpinningRodMinigame(FishSpeciesConfig species, float fishSize01, MinigameDifficulty difficulty, bool extendedFight) {
-        StartMinigame(MinigameType.SpinningRod, species, fishSize01, difficulty, extendedFight);
+        StartMinigame(MinigameType.SpinningRod, species, fishSize01, difficulty, extendedFight, TackleModifiers.Default());
     }
 
     public void StartCastingRodMinigame(FishSpeciesConfig species, float fishSize01, MinigameDifficulty difficulty, bool extendedFight) {
-        StartMinigame(MinigameType.CastingRod, species, fishSize01, difficulty, extendedFight);
-    }
-    //DEPRECATED
-    public void StartSpinningRodMinigame(MinigameDifficulty difficulty, bool extendedFight) {
-        StartMinigame(MinigameType.SpinningRod, null, 0.5f, difficulty, extendedFight);
-    }
-    //DEPRECATED
-    public void StartCastingRodMinigame(MinigameDifficulty difficulty, bool extendedFight) {
-        StartMinigame(MinigameType.CastingRod, null, 0.5f, difficulty, extendedFight);
+        StartMinigame(MinigameType.CastingRod, species, fishSize01, difficulty, extendedFight, TackleModifiers.Default());
     }
 
-    void StartMinigame(MinigameType type, FishSpeciesConfig species, float fishSize01, MinigameDifficulty difficulty, bool extendedFight) {
+    public void StartSpinningRodMinigame(FishSpeciesConfig species, float fishSize01, MinigameDifficulty difficulty, bool extendedFight, TackleModifiers tackle) {
+        StartMinigame(MinigameType.SpinningRod, species, fishSize01, difficulty, extendedFight, tackle);
+    }
+
+    public void StartCastingRodMinigame(FishSpeciesConfig species, float fishSize01, MinigameDifficulty difficulty, bool extendedFight, TackleModifiers tackle) {
+        StartMinigame(MinigameType.CastingRod, species, fishSize01, difficulty, extendedFight, tackle);
+    }
+
+    //// DEPRECATED
+    //public void StartSpinningRodMinigame(MinigameDifficulty difficulty, bool extendedFight) {
+    //    StartMinigame(MinigameType.SpinningRod, null, 0.5f, difficulty, extendedFight, TackleModifiers.Identity());
+    //}
+
+    //// DEPRECATED
+    //public void StartCastingRodMinigame(MinigameDifficulty difficulty, bool extendedFight) {
+    //    StartMinigame(MinigameType.CastingRod, null, 0.5f, difficulty, extendedFight, TackleModifiers.Identity());
+    //}
+
+    void StartMinigame(MinigameType type, FishSpeciesConfig species, float fishSize01, MinigameDifficulty difficulty, bool extendedFight, TackleModifiers tackle) {
         if (settings == null) { Debug.LogError("FishingMinigameSettings is missing."); return; }
         if (inputRouter == null) { Debug.LogError("MinigameInputRouter is missing."); return; }
         if (uiView == null) { Debug.LogError("MinigameUIView is missing."); return; }
@@ -82,17 +88,23 @@ public class FishingMinigameController : MonoBehaviour {
         context.type = type;
         context.difficulty = difficulty;
         context.extendedFight = extendedFight;
+        context.species = species;
+        context.fishSize01 = fishSize01;
 
-        // Defaults -> baked per species
         if (type == MinigameType.SpinningRod) {
-            context.spinning = BakeSpinningSettings(settings.spinningDefaults, species, fishSize01);
+            SpinningRodSettings spinningSettings = BakeSpinningSettings(settings.spinningDefaults, species, fishSize01);
+            spinningSettings = ApplyTackleToSpinning(spinningSettings, tackle);
+            context.spinning = spinningSettings;
+
+            context.casting = settings.castingDefaults;
         }
         else {
+            CastingRodSettings castingSettings = BakeCastingSettings(settings.castingDefaults, species, fishSize01, extendedFight);
+            castingSettings = ApplyTackleToCasting(castingSettings, tackle);
+            context.casting = castingSettings;
+
             context.spinning = settings.spinningDefaults;
         }
-
-        //TODO
-        context.casting = settings.castingDefaults;
 
         if (type == MinigameType.SpinningRod) {
             activeMinigame = new SpinningRodMinigame();
@@ -138,11 +150,19 @@ public class FishingMinigameController : MonoBehaviour {
         hasZoneState = false;
         lastInZone = false;
 
-        minigameAudioSource.Stop();
+        if (minigameAudioSource != null) minigameAudioSource.Stop();
 
         OnMinigameEnded?.Invoke(result);
 
         Debug.Log($"Minigame ended. Reason: {result.reason} Land: {result.land01:0.00} Slack: {result.slack01:0.00}");
+        if (result.reason == MinigameEndReason.Success) {
+            CatchInfo catchInfo = result.catchInfo.Value;
+            float length = 0;
+            float width = 0;
+            catchInfo.species.TryResolveLengthWeight(catchInfo.fishSize01, out length, out width);
+
+            Debug.Log($"Fish caught:\n{catchInfo.species.name}\n\tLength: {length.ToString("F2")} inches\n\tWidth: {width.ToString("F2")} lbs");
+        }
     }
 
     SpinningRodSettings BakeSpinningSettings(SpinningRodSettings baseSettings, FishSpeciesConfig species, float fishSize01) {
@@ -165,7 +185,7 @@ public class FishingMinigameController : MonoBehaviour {
         slackFillMul *= species.sizeScaling.slackBySize.Evaluate(fishSize01);
         landMul *= species.sizeScaling.landBySize.Evaluate(fishSize01);
 
-        // Time (all tiers)
+        // Time
         spinSettings.easySeconds *= timeMul;
         spinSettings.mediumSeconds *= timeMul;
         spinSettings.hardSeconds *= timeMul;
@@ -208,11 +228,131 @@ public class FishingMinigameController : MonoBehaviour {
         return spinSettings;
     }
 
+    CastingRodSettings BakeCastingSettings(CastingRodSettings baseSettings, FishSpeciesConfig species, float fishSize01, bool extendedFight) {
+        CastingRodSettings castSettings = baseSettings;
+        if (species == null) {
+            // Still apply extended pulses
+            if (extendedFight) {
+                castSettings.pulseCountEasy = Mathf.Max(0, castSettings.pulseCountEasy + castSettings.pulseBonusExtended);
+                castSettings.pulseCountMedium = Mathf.Max(0, castSettings.pulseCountMedium + castSettings.pulseBonusExtended);
+                castSettings.pulseCountHard = Mathf.Max(0, castSettings.pulseCountHard + castSettings.pulseBonusExtended);
+            }
+            return castSettings;
+        }
+
+        // Species multipliers
+        float timeMul = Mathf.Max(0.1f, species.casting.timeMultiplier);
+
+        float heatStartMul = Mathf.Max(0.1f, species.casting.heatStartMultiplier);
+        float backlashMul = Mathf.Max(0.1f, species.casting.backlashThresholdMultiplier);
+
+        float heatRiseMul = Mathf.Max(0.1f, species.casting.heatRiseMultiplier);
+        float heatFallHoldMul = Mathf.Max(0.1f, species.casting.heatFallHoldMultiplier);
+        float heatFallHoldSurgeMul = Mathf.Max(0.1f, species.casting.heatFallHoldSurgeMultiplier);
+
+        float landGainCalmMul = Mathf.Max(0.1f, species.casting.landGainNoHoldCalmMultiplier);
+        float landGainSurgeMul = Mathf.Max(0.1f, species.casting.landGainNoHoldSurgeMultiplier);
+        float landLossHoldSurgeMul = Mathf.Max(0.1f, species.casting.landLossHoldSurgeMultiplier);
+
+        float surgeDurationMul = Mathf.Max(0.1f, species.casting.surgeDurationMultiplier);
+        float pulseJitterMul = Mathf.Max(0.1f, species.casting.pulseJitterMultiplier);
+        float pulseMarginMul = Mathf.Max(0.1f, species.casting.pulseStartEndMarginMultiplier);
+
+        // Size scaling
+        float heatBySize = 1f;
+        if (species.sizeScaling.heatBySize != null) {
+            heatBySize = Mathf.Max(0.1f, species.sizeScaling.heatBySize.Evaluate(fishSize01));
+        }
+
+        int pulseBySizeAdd = 0;
+        if (species.sizeScaling.pulseBySize != null) {
+            pulseBySizeAdd = Mathf.RoundToInt(species.sizeScaling.pulseBySize.Evaluate(fishSize01));
+        }
+
+        // Time
+        castSettings.easySeconds *= timeMul;
+        castSettings.mediumSeconds *= timeMul;
+        castSettings.hardSeconds *= timeMul;
+
+        castSettings.easySecondsExtended *= timeMul;
+        castSettings.mediumSecondsExtended *= timeMul;
+        castSettings.hardSecondsExtended *= timeMul;
+
+        castSettings.easySeconds = Mathf.Max(1f, castSettings.easySeconds);
+        castSettings.mediumSeconds = Mathf.Max(1f, castSettings.mediumSeconds);
+        castSettings.hardSeconds = Mathf.Max(1f, castSettings.hardSeconds);
+
+        castSettings.easySecondsExtended = Mathf.Max(1f, castSettings.easySecondsExtended);
+        castSettings.mediumSecondsExtended = Mathf.Max(1f, castSettings.mediumSecondsExtended);
+        castSettings.hardSecondsExtended = Mathf.Max(1f, castSettings.hardSecondsExtended);
+
+        // Heat start / threshold
+        castSettings.heatStart01 = Mathf.Clamp01(castSettings.heatStart01 * heatStartMul);
+        castSettings.backlashThreshold01 = Mathf.Clamp(castSettings.backlashThreshold01 * backlashMul, 0.05f, 1f);
+
+        // Heat rates 
+        castSettings.heatRiseNoHoldCalmPerSecond = Mathf.Max(0.01f, castSettings.heatRiseNoHoldCalmPerSecond * heatRiseMul * heatBySize);
+        castSettings.heatRiseNoHoldSurgePerSecond = Mathf.Max(0.01f, castSettings.heatRiseNoHoldSurgePerSecond * heatRiseMul * heatBySize);
+        castSettings.heatFallHoldPerSecond = Mathf.Max(0.01f, castSettings.heatFallHoldPerSecond * heatFallHoldMul);
+        castSettings.heatFallHoldSurgeMultiplier = Mathf.Clamp(castSettings.heatFallHoldSurgeMultiplier * heatFallHoldSurgeMul, 0.1f, 2f);
+
+        // Land rates
+        castSettings.landGainNoHoldCalmPerSecond = Mathf.Max(0.01f, castSettings.landGainNoHoldCalmPerSecond * landGainCalmMul);
+        castSettings.landGainNoHoldSurgePerSecond = Mathf.Max(0.01f, castSettings.landGainNoHoldSurgePerSecond * landGainSurgeMul);
+        castSettings.landLossHoldSurgePerSecond = Mathf.Max(0.01f, castSettings.landLossHoldSurgePerSecond * landLossHoldSurgeMul);
+
+        // Pulses
+        int pulseAdd = species.casting.pulseBonus + pulseBySizeAdd;
+        castSettings.pulseCountEasy = Mathf.Max(0, castSettings.pulseCountEasy + pulseAdd);
+        castSettings.pulseCountMedium = Mathf.Max(0, castSettings.pulseCountMedium + pulseAdd);
+        castSettings.pulseCountHard = Mathf.Max(0, castSettings.pulseCountHard + pulseAdd);
+
+        if (extendedFight) {
+            castSettings.pulseCountEasy = Mathf.Max(0, castSettings.pulseCountEasy + castSettings.pulseBonusExtended);
+            castSettings.pulseCountMedium = Mathf.Max(0, castSettings.pulseCountMedium + castSettings.pulseBonusExtended);
+            castSettings.pulseCountHard = Mathf.Max(0, castSettings.pulseCountHard + castSettings.pulseBonusExtended);
+        }
+
+        // Surge timing
+        castSettings.surgeDurationSeconds = Mathf.Max(0.05f, castSettings.surgeDurationSeconds * surgeDurationMul);
+        castSettings.pulseJitterSeconds = Mathf.Max(0f, castSettings.pulseJitterSeconds * pulseJitterMul);
+        castSettings.pulseStartEndMarginSeconds = Mathf.Max(0f, castSettings.pulseStartEndMarginSeconds * pulseMarginMul);
+
+        return castSettings;
+    }
+
+    SpinningRodSettings ApplyTackleToSpinning(SpinningRodSettings spinningSettings, TackleModifiers tackle) {
+        spinningSettings.landGainPerSecond = Mathf.Max(0.01f, spinningSettings.landGainPerSecond * Mathf.Max(0.05f, tackle.spinningLandGainMultiplier));
+
+        float slackGainMul = Mathf.Max(0.05f, tackle.spinningSlackGainMultiplier);
+        spinningSettings.slackBaseFillPerSecond = Mathf.Max(0.01f, spinningSettings.slackBaseFillPerSecond * slackGainMul);
+        spinningSettings.slackDistanceFillPerSecond = Mathf.Max(0.01f, spinningSettings.slackDistanceFillPerSecond * slackGainMul);
+
+        spinningSettings.slackDecayPerSecond = Mathf.Max(0.01f, spinningSettings.slackDecayPerSecond * Mathf.Max(0.05f, tackle.spinningSlackDecayMultiplier));
+        return spinningSettings;
+    }
+
+    CastingRodSettings ApplyTackleToCasting(CastingRodSettings castingSettings, TackleModifiers tackle) {
+        float heatGainMul = Mathf.Max(0.05f, tackle.castingHeatGainMultiplier);
+        float heatDecayMul = Mathf.Max(0.05f, tackle.castingHeatDecayMultiplier);
+
+        castingSettings.heatRiseNoHoldCalmPerSecond = Mathf.Max(0.01f, castingSettings.heatRiseNoHoldCalmPerSecond * heatGainMul);
+        castingSettings.heatRiseNoHoldSurgePerSecond = Mathf.Max(0.01f, castingSettings.heatRiseNoHoldSurgePerSecond * heatGainMul);
+
+        castingSettings.heatFallHoldPerSecond = Mathf.Max(0.01f, castingSettings.heatFallHoldPerSecond * heatDecayMul);
+
+        castingSettings.landGainNoHoldCalmPerSecond = Mathf.Max(0.01f, castingSettings.landGainNoHoldCalmPerSecond * Mathf.Max(0.05f, tackle.castingLandGainMultiplier));
+        castingSettings.landGainNoHoldSurgePerSecond = Mathf.Max(0.01f, castingSettings.landGainNoHoldSurgePerSecond * Mathf.Max(0.05f, tackle.castingLandGainMultiplier));
+        castingSettings.landLossHoldSurgePerSecond = Mathf.Max(0.01f, castingSettings.landLossHoldSurgePerSecond * Mathf.Max(0.05f, tackle.castingLandLossMultiplier));
+
+        return castingSettings;
+    }
+
     void Render() {
         if (activeMinigame == null) return;
+
         if (activeMinigame.Type == MinigameType.SpinningRod) {
             SpinningRodMinigame spinning = activeMinigame as SpinningRodMinigame;
-
             if (spinning == null) return;
 
             SpinningRodMinigame.State s = spinning.GetState();
@@ -240,7 +380,6 @@ public class FishingMinigameController : MonoBehaviour {
         }
 
         if (inZone == lastInZone) return;
-
         lastInZone = inZone;
 
         AudioClip clip = inZone ? settings.spinningDefaults.spinningRodLandSound : settings.spinningDefaults.spinningRodSlackSound;
@@ -267,11 +406,10 @@ public class FishingMinigameController : MonoBehaviour {
                 clip = settings.castingDefaults.castingLandNoSurgeSound;
             }
         }
+
         minigameAudioSource.Stop();
         minigameAudioSource.clip = clip;
         minigameAudioSource.Play();
     }
-
     #endregion
-
 }

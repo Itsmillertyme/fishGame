@@ -40,9 +40,29 @@ public class FishSpeciesConfig : ScriptableObject {
     [Tooltip("Per-species modifiers applied to the Casting Rod minigame.")]
     public CastingModifiers casting;
 
-    [Header("Size Scaling")]
+    [Header("Size")]
     [Tooltip("Curves that further scale minigame difficulty based on the specific fish's size within this species.")]
     public SizeScaling sizeScaling = SizeScaling.Default();
+    [Space(5)]
+    public FishSizeRange sizeRange = FishSizeRange.Default();
+
+    #region Utility Methods
+    public bool TryResolveLengthWeight(float fishSize01, out float lengthIn, out float weightLb) {
+        lengthIn = 0f;
+        weightLb = 0f;
+
+        if (sizeRange.distribution == null || sizeRange.distribution.length == 0)
+            sizeRange = FishSizeRange.Default();
+
+        fishSize01 = Mathf.Clamp01(fishSize01);
+
+        float t = sizeRange.distribution != null ? Mathf.Clamp01(sizeRange.distribution.Evaluate(fishSize01)) : fishSize01;
+
+        lengthIn = Mathf.Lerp(sizeRange.minLength, sizeRange.maxLength, t);
+        weightLb = Mathf.Lerp(sizeRange.minWeight, sizeRange.maxWeight, t);
+        return true;
+    }
+    #endregion
 }
 
 #region Structs
@@ -194,6 +214,55 @@ public struct SizeScaling {
         return scaling;
     }
 }
+
+[Serializable]
+public struct FishSizeRange {
+    [Header("Length (inches)")]
+    public float minLength;
+    public float maxLength;
+
+    [Header("Weight (lbs)")]
+    public float minWeight;
+    public float maxWeight;
+
+    [Header("Distribution")]
+    public AnimationCurve distribution;
+
+    public static FishSizeRange Default() {
+        FishSizeRange range = new FishSizeRange();
+
+        range.minLength = 8f;
+        range.maxLength = 24f;
+
+        range.minWeight = 0.5f;
+        range.maxWeight = 8f;
+
+        static AnimationCurve LateRarityRamp(
+            float midX = 0.65f,
+            float midValue = 0.25f) {
+            midX = Mathf.Clamp01(midX);
+
+            var curve = new AnimationCurve(
+                new Keyframe(0f, 0f),          // smallest fish
+                new Keyframe(midX, midValue),  // most catches 
+                new Keyframe(0.9f, 0.6f),      // size jump
+                new Keyframe(1f, 1f)           // trophies
+            );
+
+
+            for (int i = 0; i < curve.length; i++) {
+                curve.SmoothTangents(i, 0.6f);
+            }
+
+            return curve;
+        }
+
+        range.distribution = LateRarityRamp();
+
+        return range;
+    }
+}
+
 #endregion
 
 #region Enums
