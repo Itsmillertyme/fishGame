@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f8b0f037db8389479b79223cea7b608, type: 3}
+  m_Name: Anglerpedia
+  m_EditorClassIdentifier: Assembly-CSharp::Anglerpedia
+  allSpecies:
+  - {fileID: 11400000, guid: 0c151fc386cd64f45b239680db8bd80b, type: 2}
+  - {fileID: 11400000, guid: 90d1d30edbb339343a9a13666c817019, type: 2}
+  - {fileID: 11400000, guid: 7018d27e1193d774bbe98bc7f2dc3daa, type: 2}
+  - {fileID: 11400000, guid: eefa77580881eab4b8c1685fee0a3fa3, type: 2}

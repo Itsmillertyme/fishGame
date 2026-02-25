@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FishSpeciesConfig
   displayName: Largemouth Bass
   icon: {fileID: 0}
+  description: 
+  environments: 
+  isTrophy: 0
+  strength: 1
+  aggression: 1
+  curiosity: 1
   spinning:
     timeMultiplier: 1.05
     arcMultiplier: 0.92
@@ -22,6 +28,20 @@ MonoBehaviour:
     slackFillMultiplier: 1.1
     slackDecayMultiplier: 1
     steeringMultiplier: 1
+  casting:
+    timeMultiplier: 0
+    heatStartMultiplier: 0
+    backlashThresholdMultiplier: 0
+    heatRiseMultiplier: 0
+    heatFallHoldMultiplier: 0
+    heatFallHoldSurgeMultiplier: 0
+    landGainNoHoldCalmMultiplier: 0
+    landGainNoHoldSurgeMultiplier: 0
+    landLossHoldSurgeMultiplier: 0
+    pulseBonus: 0
+    surgeDurationMultiplier: 0
+    pulseJitterMultiplier: 0
+    pulseStartEndMarginMultiplier: 0
   sizeScaling:
     timeBySize:
       serializedVersion: 2
