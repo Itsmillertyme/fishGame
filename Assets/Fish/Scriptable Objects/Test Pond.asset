@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Test Pond
   m_EditorClassIdentifier: Assembly-CSharp::FishSpawnTable
   entries:
-  - normalConfig: {fileID: 11400000, guid: 90d1d30edbb339343a9a13666c817019, type: 2}
-    trophyConfig: {fileID: 11400000, guid: 2dd1801379ebd364f8b07e61ab355bee, type: 2}
+  - normalConfig: {fileID: 11400000, guid: 0c151fc386cd64f45b239680db8bd80b, type: 2}
+    trophyConfig: {fileID: 11400000, guid: 1e23879558bf8eb45abef56c6ef053ac, type: 2}
     weight: 100
-    trophyChance: 0
+    trophyChance: 0.15
     sizeSkewPower: 3
