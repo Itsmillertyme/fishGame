@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74d58e7dd602410438b7645648e34087, type: 3}
+  m_Name: Default Spinning Loadout
+  m_EditorClassIdentifier: Assembly-CSharp::DefaultLoadout
+  startingRod: {fileID: 11400000, guid: 4c7f168604ceb104ca9b2827793faac3, type: 2}
+  startingReel: {fileID: 11400000, guid: 73ef5ff9a6955c14082a1a59b1405bf4, type: 2}
+  startingLure: {fileID: 11400000, guid: d13e5de7fad9ece4b824c696900ccfa1, type: 2}
