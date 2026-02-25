@@ -176,10 +176,28 @@ public class SpinningRodMinigame : IMinigame {
         if (complete) return;
 
         complete = true;
+
+        CatchInfo? catchInfo = null;
+
+        if (reason == MinigameEndReason.Success) {
+            float length = 0f;
+            float weight = 0f;
+            if (ctx.species != null)
+                ctx.species.TryResolveLengthWeight(ctx.fishSize01, out length, out weight);
+            catchInfo = new CatchInfo {
+                species = ctx.species,
+                fishSize01 = ctx.fishSize01,
+                isTrophy = ctx.species.isTrophy,
+                length = length,
+                weight = weight
+            };
+        }
+
         result = new MinigameResult {
             reason = reason,
             land01 = land,
-            slack01 = slack
+            slack01 = slack,
+            catchInfo = catchInfo
         };
     }
     #endregion

@@ -4319,6 +4319,7 @@ GameObject:
   - component: {fileID: 893070943}
   - component: {fileID: 893070942}
   - component: {fileID: 893070941}
+  - component: {fileID: 893070946}
   m_Layer: 8
   m_Name: PlayerArmature
   m_TagString: Player
@@ -4629,13 +4630,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FishingInteractor
   minigameController: {fileID: 2095773072}
   playerController: {fileID: 893070942}
+  tackleBox: {fileID: 893070946}
   rodObject: {fileID: 490794436}
   reelObject: {fileID: 760368385}
-  useSpinningRod: 1
+  gameplayMapName: Player
+  minigameMapName: Minigame
   difficulty: 1
   extendedFight: 0
+  baseBiteDelaySeconds: 0.25
+  biteDelayVarianceSeconds: 0.15
   canFish: 0
   currentHotspot: {fileID: 0}
+--- !u!114 &893070946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 893070936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 230bee43bf1c3eb42a96e23aafa42594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TackleBox
+  defaultLoadout: {fileID: 11400000, guid: 7500fa4270c5f1a439bca3b3e120e1e6, type: 2}
+  equippedRod: {fileID: 0}
+  equippedReel: {fileID: 0}
+  equippedLure: {fileID: 0}
 --- !u!1 &894880580
 GameObject:
   m_ObjectHideFlags: 0
@@ -6277,6 +6298,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 690235163}
     m_Modifications:
+    - target: {fileID: 1473182147367157673, guid: f29fab0ed43412b4aba11af1d674309e, type: 3}
+      propertyPath: spawnTable
+      value: 
+      objectReference: {fileID: 11400000, guid: 93d183d818783e64cb7c1f0ff943828a, type: 2}
     - target: {fileID: 4066624941147209504, guid: f29fab0ed43412b4aba11af1d674309e, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.104
@@ -6623,6 +6648,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 690235163}
     m_Modifications:
+    - target: {fileID: 1473182147367157673, guid: f29fab0ed43412b4aba11af1d674309e, type: 3}
+      propertyPath: spawnTable
+      value: 
+      objectReference: {fileID: 11400000, guid: 93d183d818783e64cb7c1f0ff943828a, type: 2}
     - target: {fileID: 6075590626009221780, guid: f29fab0ed43412b4aba11af1d674309e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 674.43
@@ -8051,6 +8080,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 690235163}
     m_Modifications:
+    - target: {fileID: 1473182147367157673, guid: f29fab0ed43412b4aba11af1d674309e, type: 3}
+      propertyPath: spawnTable
+      value: 
+      objectReference: {fileID: 11400000, guid: 93d183d818783e64cb7c1f0ff943828a, type: 2}
     - target: {fileID: 6075590626009221780, guid: f29fab0ed43412b4aba11af1d674309e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 694.8
@@ -8410,7 +8443,6 @@ GameObject:
   - component: {fileID: 2095773073}
   - component: {fileID: 2095773072}
   - component: {fileID: 2095773071}
-  - component: {fileID: 2095773070}
   m_Layer: 0
   m_Name: Minigame Controllers
   m_TagString: Untagged
@@ -8418,21 +8450,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2095773070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2095773069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a42c54ea8581f4fbc8ba3168599400, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FishEncounterTester
-  controller: {fileID: 2095773072}
-  spawnTable: {fileID: 11400000, guid: 93d183d818783e64cb7c1f0ff943828a, type: 2}
-  rodType: 1
 --- !u!114 &2095773071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8744,6 +8761,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 690235163}
     m_Modifications:
+    - target: {fileID: 1473182147367157673, guid: f29fab0ed43412b4aba11af1d674309e, type: 3}
+      propertyPath: spawnTable
+      value: 
+      objectReference: {fileID: 11400000, guid: 93d183d818783e64cb7c1f0ff943828a, type: 2}
     - target: {fileID: 6075590626009221780, guid: f29fab0ed43412b4aba11af1d674309e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 677.49
