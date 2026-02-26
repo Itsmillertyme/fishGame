@@ -70,6 +70,7 @@ public class CharacterControllerThirdPerson : MonoBehaviour {
     private int animIdIsFishing;
     private int animIdFreeFall;
     private int animIdMotionSpeed;
+    private int animIdIsShowingFish;
 
     private PlayerInput playerInput;
     private Animator animator;
@@ -155,6 +156,7 @@ public class CharacterControllerThirdPerson : MonoBehaviour {
         animIdIsFishing = Animator.StringToHash("IsFishing");
         animIdFreeFall = Animator.StringToHash("FreeFall");
         animIdMotionSpeed = Animator.StringToHash("MotionSpeed");
+        animIdIsShowingFish = Animator.StringToHash("IsShowingFish");
     }
 
     private void HandleFishing() {
@@ -289,5 +291,6 @@ public class CharacterControllerThirdPerson : MonoBehaviour {
             verticalVelocity += gravity * Time.deltaTime;
         }
     }
+
     #endregion
 }

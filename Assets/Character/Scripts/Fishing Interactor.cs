@@ -10,10 +10,8 @@ public class FishingInteractor : MonoBehaviour {
     [SerializeField] FishingMinigameController minigameController;
     [SerializeField] CharacterControllerThirdPerson playerController;
     [SerializeField] TackleBox tackleBox;
-
-    [Header("DEBUG ONLY - Replace with tacklebox references")]
-    [SerializeField] GameObject rodObject;
-    [SerializeField] GameObject reelObject;
+    [SerializeField] CameraController cameraController;
+    [SerializeField] Transform displayHand;
 
     [Header("Input Settings")]
     [Tooltip("MUST MATCH ACTION MAP IN INPUT ACTION SETTINGS")]
@@ -21,16 +19,20 @@ public class FishingInteractor : MonoBehaviour {
     [Tooltip("MUST MATCH ACTION MAP IN INPUT ACTION SETTINGS")]
     [SerializeField] string minigameMapName = "Minigame";
 
-    [Header("Minigame Start Defaults (temporary)")]
-    [SerializeField] MinigameDifficulty difficulty = MinigameDifficulty.Medium;
-    [SerializeField] bool extendedFight = false;
-
-    [Header("Bite Delay (Base)")]
+    [Header("Bite Settings")]
     [Tooltip("Base bite delay before lure modifiers are applied.")]
     [SerializeField] float baseBiteDelaySeconds = 0.25f;
 
     [Tooltip("Random +/- variance applied after lure modifiers. Set to 0 to disable.")]
     [SerializeField] float biteDelayVarianceSeconds = 0.15f;
+
+    [Header("DEBUG ONLY - Minigame Start Defaults")]
+    [SerializeField] MinigameDifficulty difficulty = MinigameDifficulty.Medium;
+    [SerializeField] bool extendedFight = false;
+
+    [Header("DEBUG ONLY - Replace with tacklebox references")]
+    [SerializeField] GameObject rodObject;
+    [SerializeField] GameObject reelObject;
 
     [Header("State (Read Only)")]
     [SerializeField] bool canFish;
@@ -40,6 +42,7 @@ public class FishingInteractor : MonoBehaviour {
     CharacterControllerInputs inputs;
 
     Coroutine biteRoutine;
+    Coroutine showFishRoutine;
 
     bool castLeadInComplete;
     bool hasPendingCatch;
@@ -196,6 +199,70 @@ public class FishingInteractor : MonoBehaviour {
         StartMinigameNow(reelType, species, fishSize01, tackle);
     }
 
+    IEnumerator ShowCaughtFish(FishSpeciesConfig species, float fishSize01) {
+
+        //switch to cutscene cam
+        //get a point out infront of player
+        //spawn model at that point
+        //lerp model to hand of player model
+        //switch to holding animation
+        //delay X seconds/until input
+        //delete model
+        //back to idle animation
+        //switch back to main cam
+
+        rodObject.SetActive(false);
+        reelObject.SetActive(false);
+
+        cameraController.EnterCutsceneCam();
+
+        yield return new WaitForSeconds(0.5f);
+
+        //Vector3 p1 = transform.position;
+        //Vector3 p2 = transform.GetChild(0).position; //Cam root
+
+        //Vector3 spawnPosition = p1 + (p1 - p2).normalized * -10;
+
+        Vector3 spawnPosition = transform.position + transform.forward * 10f;
+
+        GameObject caughtFish = Instantiate(pendingSpecies.Prefab, spawnPosition, Quaternion.Euler(-90, 0, -90));
+        caughtFish.name = species.name + " - " + fishSize01;
+
+        Animator animator = GetComponent<Animator>();
+        animator.SetBool("IsShowingFish", true);
+        animator.CrossFade("DisplayFish", 0.25f);
+
+        float elapsed = 0f;
+        float duration = 0.5f;
+
+        while (elapsed < duration) {
+            elapsed += Time.deltaTime;
+
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            caughtFish.transform.position = Vector3.Lerp(spawnPosition, displayHand.position, t);
+
+            yield return null;
+        }
+
+        // Ensure exact final position
+        caughtFish.transform.position = displayHand.position;
+
+        yield return new WaitForSeconds(5);
+
+        cameraController.ExitCutsceneCam();
+
+        animator.SetBool("IsShowingFish", false);
+
+        yield return new WaitForSeconds(0.5f);
+
+        rodObject.SetActive(true);
+        reelObject.SetActive(true);
+
+        Destroy(caughtFish);
+
+    }
+
     void StartMinigameNow(ReelType reelType, FishSpeciesConfig species, float fishSize01, TackleModifiers tackle) {
         if (minigameController == null) return;
 
@@ -249,9 +316,14 @@ public class FishingInteractor : MonoBehaviour {
             biteRoutine = null;
         }
 
-        if (playerController != null) playerController.MovementLocked = false;
+        if (result.reason == MinigameEndReason.Success) {
+            showFishRoutine = StartCoroutine(ShowCaughtFish(pendingSpecies, pendingSize01));
+        }
+        else {
+            if (playerController != null) playerController.MovementLocked = false;
 
-        SwitchToGameplayMap();
+            SwitchToGameplayMap();
+        }
     }
 
     public void OnCastAnimationComplete() {
@@ -297,172 +369,3 @@ public class FishingInteractor : MonoBehaviour {
     }
     #endregion
 }
-
-//using UnityEngine;
-//using UnityEngine.InputSystem;
-
-//[RequireComponent(typeof(CharacterControllerInputs))]
-//public class FishingInteractor : MonoBehaviour {
-
-//    #region Variables
-//    [Header("References")]
-//    [SerializeField] FishingMinigameController minigameController;
-//    [SerializeField] CharacterControllerThirdPerson playerController;
-
-//    [Header("DEBUG ONLY - Replace with tacklebox references")]
-//    [SerializeField] GameObject rodObject;
-//    [SerializeField] GameObject reelObject;
-
-//    [Header("Input Settings")]
-//    [Tooltip("MUST MATCH ACTION MAP IN INPUT ACTION SETTINGS")]
-//    [SerializeField] string gameplayMapName = "Player";
-//    [Tooltip("MUST MATCH ACTION MAP IN INPUT ACTION SETTINGS")]
-//    [SerializeField] string minigameMapName = "Minigame";
-
-//    [Header("Minigame Start Defaults (temporary)")]
-//    [SerializeField] bool useSpinningRod = true;
-//    [SerializeField] MinigameDifficulty difficulty = MinigameDifficulty.Medium;
-//    [SerializeField] bool extendedFight = false;
-
-//    [Header("State (Read Only)")]
-//    [SerializeField] bool canFish;
-//    [SerializeField] FishingHotspot currentHotspot;
-
-//    PlayerInput playerInput;
-//    CharacterControllerInputs inputs;
-//    public bool CanFish => currentHotspot != null;
-//    public bool IsFishing => inputs != null && inputs.cast;
-//    public FishingHotspot CurrentHotspot => currentHotspot;
-//    #endregion
-
-//    #region Unity Methods
-//    void Awake() {
-//        inputs = GetComponent<CharacterControllerInputs>();
-//        playerInput = GetComponent<PlayerInput>();
-//        if (playerController == null) playerController = GetComponent<CharacterControllerThirdPerson>();
-
-//        if (rodObject != null) rodObject.SetActive(false);
-//        if (reelObject != null) reelObject.SetActive(false);
-//    }
-
-//    void OnEnable() {
-//        if (minigameController != null) {
-//            minigameController.OnMinigameEnded += HandleMinigameEnded;
-//        }
-//    }
-
-//    void OnDisable() {
-//        if (minigameController != null) {
-//            minigameController.OnMinigameEnded -= HandleMinigameEnded;
-//        }
-//    }
-
-//    void Update() {
-//        // Keep inspector bool in sync 
-//        canFish = CanFish;
-
-//        bool shouldLock = (minigameController != null && minigameController.IsRunning);
-
-//        if (playerController != null) {
-//            playerController.MovementLocked = shouldLock;
-//        }
-
-//        if (shouldLock) {
-//            inputs.move = Vector2.zero;
-//            inputs.jump = false;
-//            inputs.sprint = false;
-//        }
-//    }
-
-//    void OnTriggerEnter(Collider other) {
-//        if (!other.TryGetComponent(out FishingHotspot hotspot)) return;
-//        currentHotspot = hotspot;
-
-//        //Show rod, reel and tackle
-//        if (rodObject != null) rodObject.SetActive(true);
-//        if (reelObject != null) reelObject.SetActive(true);
-
-//        //UI pop up here??
-//    }
-
-//    void OnTriggerExit(Collider other) {
-//        if (!other.TryGetComponent(out FishingHotspot hotspot)) return;
-//        if (currentHotspot == hotspot) currentHotspot = null;
-
-//        //Hide rod, reel and tackle
-//        if (rodObject != null) rodObject.SetActive(false);
-//        if (reelObject != null) reelObject.SetActive(false);
-
-//        //Need END FIGHT logic
-//    }
-//    #endregion
-
-//    #region Utility Methods
-//    public void OnCastPressed() {
-//        if (minigameController == null) {
-//            if (!CanFish) return;
-//            inputs.cast = !inputs.cast;
-//            return;
-//        }
-
-//        // If minigame is running, treat cast as "cancel/stop"
-//        if (minigameController.IsRunning) {
-//            StopFishing();
-//            return;
-//        }
-//        else {
-//            TryStartFishing();
-//        }
-//    }
-
-//    public void TryStartFishing() {
-//        if (!CanFish) return;
-
-//        inputs.cast = true;
-//        playerController.MovementLocked = true;
-
-//        //Choose fish from spawn table here
-
-//        if (useSpinningRod) {
-//            minigameController.StartSpinningRodMinigame(difficulty, extendedFight);
-//        }
-//        else {
-//            minigameController.StartCastingRodMinigame(difficulty, extendedFight);
-//        }
-
-//        SwitchToMinigameMap();
-//    }
-
-//    public void StopFishing() {
-//        inputs.cast = false;
-
-//        if (minigameController != null) {
-//            minigameController.StopMinigame(MinigameEndReason.Cancelled);
-//        }
-
-//        SwitchToGameplayMap();
-//    }
-
-//    void HandleMinigameEnded(MinigameResult result) {
-
-//        inputs.cast = false;
-//        playerController.MovementLocked = false;
-
-//        SwitchToGameplayMap();
-//    }
-
-//    void SwitchToMinigameMap() {
-//        if (playerInput != null) playerInput.SwitchCurrentActionMap(minigameMapName);
-
-//        Cursor.lockState = CursorLockMode.None;
-//        Cursor.visible = true;
-//    }
-//    void SwitchToGameplayMap() {
-//        if (playerInput != null) playerInput.SwitchCurrentActionMap(gameplayMapName);
-
-//        Cursor.lockState = CursorLockMode.Locked;
-//        Cursor.visible = false;
-//    }
-//    #endregion
-
-//}

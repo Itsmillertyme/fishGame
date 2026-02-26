@@ -15,6 +15,8 @@ public class FishSpeciesConfig : ScriptableObject {
     public string description;
     [Tooltip("The environments in which this species of fish can be found")]
     public List<Environment> environments;
+    [Tooltip("Prefab of model with animator")]
+    public GameObject Prefab;
 
     [Space(10)]
     [Tooltip("True if this is a Trophy variant of the fish.")]
