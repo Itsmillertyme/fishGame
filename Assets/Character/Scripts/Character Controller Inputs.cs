@@ -57,6 +57,14 @@ public class CharacterControllerInputs : MonoBehaviour {
         Vector2 scroll = value.Get<Vector2>();
         ZoomInput(scroll.y);
     }
+
+    public void OnToggleMinigame(InputValue value) {
+        FindFirstObjectByType<DemoUIController>().ChangeMinigameMode();
+    }
+    public void OnToggleControls(InputValue value) {
+        FindFirstObjectByType<DemoUIController>().ShowHideControls();
+    }
+
     #endregion
 
     #region Utility Methods

@@ -1,6 +1,8 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterControllerInputs))]
 public class FishingInteractor : MonoBehaviour {
@@ -201,16 +203,6 @@ public class FishingInteractor : MonoBehaviour {
 
     IEnumerator ShowCaughtFish(FishSpeciesConfig species, float fishSize01) {
 
-        //switch to cutscene cam
-        //get a point out infront of player
-        //spawn model at that point
-        //lerp model to hand of player model
-        //switch to holding animation
-        //delay X seconds/until input
-        //delete model
-        //back to idle animation
-        //switch back to main cam
-
         rodObject.SetActive(false);
         reelObject.SetActive(false);
 
@@ -218,15 +210,62 @@ public class FishingInteractor : MonoBehaviour {
 
         yield return new WaitForSeconds(0.5f);
 
-        //Vector3 p1 = transform.position;
-        //Vector3 p2 = transform.GetChild(0).position; //Cam root
-
-        //Vector3 spawnPosition = p1 + (p1 - p2).normalized * -10;
-
         Vector3 spawnPosition = transform.position + transform.forward * 10f;
 
         GameObject caughtFish = Instantiate(pendingSpecies.Prefab, spawnPosition, Quaternion.Euler(-90, 0, -90));
         caughtFish.name = species.name + " - " + fishSize01;
+
+        if (pendingSpecies.isTrophy) {
+            caughtFish.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+        }
+
+        GameObject billboardGO = new GameObject("Billboard");
+        billboardGO.transform.SetParent(caughtFish.transform, false);
+
+        billboardGO.AddComponent<BillboardWorldCanvas>();
+        Vector3 p = billboardGO.transform.position;
+
+
+        GameObject canvasGO = new GameObject("Canvas");
+        canvasGO.transform.SetParent(billboardGO.transform, false);
+
+        Canvas fishCanvas = canvasGO.AddComponent<Canvas>();
+        fishCanvas.renderMode = RenderMode.WorldSpace;
+        fishCanvas.worldCamera = Camera.main;
+
+        canvasGO.AddComponent<CanvasScaler>();
+        canvasGO.AddComponent<GraphicRaycaster>();
+
+        RectTransform canvasRect = fishCanvas.GetComponent<RectTransform>();
+        canvasRect.sizeDelta = new Vector2(800, 300);
+        canvasRect.localScale = Vector3.one * 0.01f;
+        canvasRect.anchoredPosition = Vector3.up * 4f;
+
+        GameObject textGO = new GameObject("text");
+        textGO.transform.SetParent(fishCanvas.transform, false);
+
+        RectTransform textRect = textGO.AddComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+
+        TextMeshProUGUI tmp = textGO.AddComponent<TextMeshProUGUI>();
+
+        float length = -1;
+        float weight = -1;
+
+        pendingSpecies.TryResolveLengthWeight(pendingSize01, out length, out weight);
+
+        tmp.text = $"{pendingSpecies.name}\nLength: {length.ToString("F2")} inches \nWeight: {weight.ToString("F2")} lbs";
+
+        tmp.fontSize = 36;
+        tmp.alignment = TextAlignmentOptions.Center;
+
+        tmp.enableAutoSizing = true;
+        tmp.fontSizeMin = 12;
+        tmp.fontSizeMax = 72;
+
 
         Animator animator = GetComponent<Animator>();
         animator.SetBool("IsShowingFish", true);
@@ -259,7 +298,13 @@ public class FishingInteractor : MonoBehaviour {
         rodObject.SetActive(true);
         reelObject.SetActive(true);
 
+        playerController.MovementLocked = false;
+
+        SwitchToGameplayMap();
+
         Destroy(caughtFish);
+
+
 
     }
 

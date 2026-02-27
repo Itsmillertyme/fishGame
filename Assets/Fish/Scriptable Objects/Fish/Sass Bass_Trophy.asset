@@ -14,14 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FishSpeciesConfig
   displayName: Sass Bass
   icon: {fileID: 0}
+  caughtPictures: []
   description: "The Sass Bass is hungry, and makes it everyone\u2019s problem. It
     likes to snag snacks before other fish can, and it will put up one HECK of a
     fight to stay in the pond. Your best bet is to find bait it doesn\u2019t like."
   environments: 0000000002000000
+  Prefab: {fileID: 8848912004881509116, guid: 4d288c40751511e448da7612bed6f77f, type: 3}
   isTrophy: 1
   strength: 5
   aggression: 3
   curiosity: 4
+  isDiscovered: 0
   spinning:
     timeMultiplier: 1.35
     arcMultiplier: 0.88
@@ -249,6 +252,53 @@ MonoBehaviour:
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  sizeRange:
+    minLength: 8
+    maxLength: 24
+    minWeight: 0.5
+    maxWeight: 8
+    distribution:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0.3846154
+        outSlope: 0.3846154
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.65
+        value: 0.25
+        inSlope: 0.5876923
+        outSlope: 0.5876923
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.9
+        value: 0.6
+        inSlope: 1.9199998
+        outSlope: 1.9199998
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 3.9999988
+        outSlope: 3.9999988
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
