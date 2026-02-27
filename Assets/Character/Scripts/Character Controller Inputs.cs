@@ -65,6 +65,10 @@ public class CharacterControllerInputs : MonoBehaviour {
         FindFirstObjectByType<DemoUIController>().ShowHideControls();
     }
 
+    public void OnToggleMenu(InputValue value) {
+        FindFirstObjectByType<PhoneMenuController>().OnButtonClick();
+    }
+
     #endregion
 
     #region Utility Methods

@@ -216,7 +216,7 @@ public class FishingInteractor : MonoBehaviour {
         caughtFish.name = species.name + " - " + fishSize01;
 
         if (pendingSpecies.isTrophy) {
-            caughtFish.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+            caughtFish.transform.localScale = new Vector3(0.12f, 0.12f, 0.12f);
         }
 
         GameObject billboardGO = new GameObject("Billboard");
@@ -261,6 +261,7 @@ public class FishingInteractor : MonoBehaviour {
 
         tmp.fontSize = 36;
         tmp.alignment = TextAlignmentOptions.Center;
+        tmp.color = Color.black;
 
         tmp.enableAutoSizing = true;
         tmp.fontSizeMin = 12;
