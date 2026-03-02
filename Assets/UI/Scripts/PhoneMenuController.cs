@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 
 public class PhoneMenuController : MonoBehaviour
 {
@@ -17,7 +18,12 @@ public class PhoneMenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+#if UNITY_EDITOR
+        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            OnButtonClick();
+        }
+#endif
     }
 
     public void OnButtonClick()
@@ -28,7 +34,7 @@ public class PhoneMenuController : MonoBehaviour
         }
         else if (phoneMenu.activeInHierarchy)
         {
-            phoneWidget.SetActive(false);
+            phoneMenu.SetActive(false);
         }
     }
 }
