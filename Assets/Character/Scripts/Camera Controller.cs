@@ -8,48 +8,36 @@ public class CameraController : MonoBehaviour {
     [Tooltip("The follow target set in the Cinemachine Camera that the camera will follow (rotated for look).")]
     public GameObject cinemachineCameraTarget;
 
-    [Tooltip("Cinemachine camera (CinemachineCamera) to zoom. In CM 3.x, reference the base type.")]
-    public CinemachineVirtualCameraBase virtualCamera;
-
     [Tooltip("Inputs component on the player.")]
     public CharacterControllerInputs inputs;
 
+
+    [Header("Virtual Cams")]
+    [Tooltip("Your normal gameplay vcam (the one you rotate/zoom).")]
+    public CinemachineVirtualCameraBase gameplayCam;
+
+    [Tooltip("Your cutscene vcam (static framing / facing player).")]
+    public CinemachineVirtualCameraBase cutsceneCam;
+
     [Header("Look Settings")]
-    [Tooltip("How far in degrees can you move the camera up")]
     public float topClamp = 65.0f;
-
-    [Tooltip("How far in degrees can you move the camera down")]
     public float bottomClamp = -45.0f;
-
-    [Tooltip("Additional degrees to override the camera. Useful for fine tuning camera position when locked")]
     public float cameraAngleOverride = 0.0f;
 
     [Space(5)]
-    [Tooltip("Mouse look sensitivity multiplier.")]
     public float mouseLookSensitivity = 10.0f;
-
-    [Tooltip("Gamepad look sensitivity multiplier.")]
     public float gamepadLookSensitivity = 120.0f;
 
     [Space(5)]
-    [Tooltip("For locking the camera position on all axis")]
     public bool lockCameraPosition = false;
 
     [Header("Zoom Settings")]
-    [Tooltip("Minimum zoom distance.")]
     public float minZoom = 1.5f;
-
-    [Tooltip("Maximum zoom distance.")]
     public float maxZoom = 6.0f;
-
-    [Tooltip("Scroll sensitivity for zoom normalized value (bigger = more zoom per scroll).")]
     public float zoomInputSensitivity = 0.08f;
-
-    [Tooltip("How quickly the camera eases toward the target zoom distance.")]
     public float zoomSmoothSpeed = 10.0f;
 
     [Header("Zoom Curve")]
-    [Tooltip("Zoom response curve from near (0) to far (1). Use EaseInOut for smooth ends.")]
     public AnimationCurve zoomResponse = null;
 
     private float cinemachineTargetYaw;
@@ -62,13 +50,14 @@ public class CameraController : MonoBehaviour {
     private float targetDistance;
 
     private const float threshold = 0.01f;
+
+    private bool inCutscene = false;
     #endregion
 
     #region Unity Methods
     private void Awake() {
         playerInput = GetComponent<PlayerInput>();
 
-        // If you didn't set a curve in the inspector, make a good default.
         if (zoomResponse == null) {
             zoomResponse = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         }
@@ -87,20 +76,51 @@ public class CameraController : MonoBehaviour {
     }
 
     private void LateUpdate() {
+        if (inCutscene) return;
+
         CameraRotation();
         CameraZoom();
     }
     #endregion
 
     #region Utility Methods
+    public void EnterCutsceneCam() {
+        if (cutsceneCam == null || gameplayCam == null) return;
+
+        inCutscene = true;
+
+        if (inputs != null) {
+            inputs.zoom = 0f;
+            inputs.look = Vector2.zero;
+        }
+
+        cutsceneCam.Priority += 10;
+    }
+
+    public void ExitCutsceneCam() {
+        if (cutsceneCam == null || gameplayCam == null) return;
+
+        inCutscene = false;
+
+        cutsceneCam.Priority -= 10;
+
+        if (cinemachineCameraTarget != null) {
+            cinemachineTargetYaw = cinemachineCameraTarget.transform.rotation.eulerAngles.y;
+            cinemachineTargetPitch = cinemachineCameraTarget.transform.rotation.eulerAngles.x;
+        }
+
+        InitializeZoomFromCamera();
+    }
+
     private bool IsCurrentDeviceMouse() {
         return playerInput != null && playerInput.currentControlScheme == "KeyboardMouse";
     }
 
     private void InitializeZoomFromCamera() {
-        if (virtualCamera == null) return;
+        // Zoom should read/write the gameplay cam (not cutscene cam)
+        if (gameplayCam == null) return;
 
-        CinemachineComponentBase body = virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
+        CinemachineComponentBase body = gameplayCam.GetCinemachineComponent(CinemachineCore.Stage.Body);
 
         if (body is CinemachineThirdPersonFollow thirdPersonFollow) {
             currentDistance = thirdPersonFollow.CameraDistance;
@@ -116,7 +136,6 @@ public class CameraController : MonoBehaviour {
             return;
         }
 
-        // Fallback
         currentDistance = Mathf.Lerp(minZoom, maxZoom, 0.5f);
         targetDistance = currentDistance;
         zoomNormalized = 0.5f;
@@ -148,27 +167,21 @@ public class CameraController : MonoBehaviour {
 
     private void CameraZoom() {
         if (inputs == null) return;
-        if (virtualCamera == null) return;
+        if (gameplayCam == null) return;
 
         float scroll = inputs.zoom;
 
-        // Update the normalized zoom intent
         if (Mathf.Abs(scroll) > 0.01f) {
             zoomNormalized -= scroll * zoomInputSensitivity;
             zoomNormalized = Mathf.Clamp01(zoomNormalized);
-
-            // Clear zoom so it doesn't get reused
             inputs.zoom = 0f;
         }
 
-        // Use curve to shape the response
         float curved = zoomResponse.Evaluate(zoomNormalized);
         targetDistance = Mathf.Lerp(minZoom, maxZoom, curved);
-
-        // Smoothly move toward target
         currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.deltaTime * zoomSmoothSpeed);
 
-        CinemachineComponentBase body = virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
+        CinemachineComponentBase body = gameplayCam.GetCinemachineComponent(CinemachineCore.Stage.Body);
 
         if (body is CinemachineThirdPersonFollow thirdPersonFollow) {
             thirdPersonFollow.CameraDistance = currentDistance;
@@ -180,10 +193,8 @@ public class CameraController : MonoBehaviour {
             return;
         }
 
-        // Fallback
-        if (virtualCamera is CinemachineCamera cmCamera) {
+        if (gameplayCam is CinemachineCamera cmCamera) {
             float fov = cmCamera.Lens.FieldOfView;
-            // Map distance intent to FOV a bit (optional fallback only)
             float fovTarget = Mathf.Lerp(25f, 75f, zoomNormalized);
             cmCamera.Lens.FieldOfView = Mathf.Lerp(fov, fovTarget, Time.deltaTime * zoomSmoothSpeed);
         }
@@ -194,5 +205,8 @@ public class CameraController : MonoBehaviour {
         if (angle > 360f) angle -= 360f;
         return Mathf.Clamp(angle, min, max);
     }
+
+
     #endregion
 }
+

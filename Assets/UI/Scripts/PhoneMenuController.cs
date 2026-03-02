@@ -4,13 +4,11 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 
-public class PhoneMenuController : MonoBehaviour
-{
+public class PhoneMenuController : MonoBehaviour {
     public GameObject phoneMenu;
     public GameObject phoneWidget;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+    void Start() {
         phoneWidget.SetActive(true);
         phoneMenu.SetActive(false);
     }
@@ -26,10 +24,8 @@ public class PhoneMenuController : MonoBehaviour
 #endif
     }
 
-    public void OnButtonClick()
-    {
-        if (!phoneMenu.activeInHierarchy)
-        {
+    public void OnButtonClick() {
+        if (!phoneMenu.activeInHierarchy) {
             phoneMenu.SetActive(true);
         }
         else if (phoneMenu.activeInHierarchy)
