@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9038b7cbbb14c9240adb4ce6f5f14041, type: 3}
+  m_Name: Clover Dover
+  m_EditorClassIdentifier: Assembly-CSharp::Card
+  upgradeType: 0
+  id: 7
+  cardName: Clover Dover
+  passiveDescription: This lucky lure seems to snap up a rarer fish more often
+  strength: 0
+  luck: 1.5
+  attraction: 0
+  oceanBoost: 0
+  pondBoost: 0
+  lakeBoost: 0
+  riverBoost: 0
+  freshwaterBoost: 0
+  saltwaterBoost: 0
+  timidBoost: 0
+  aggressiveBoost: 0
+  upgradePrefab: {fileID: 0}
+  cardImage: {fileID: 0}
