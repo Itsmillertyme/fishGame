@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class PhoneMenuController : MonoBehaviour {
     public GameObject phoneMenu;
     public GameObject phoneWidget;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
         phoneWidget.SetActive(true);
@@ -27,10 +28,12 @@ public class PhoneMenuController : MonoBehaviour {
     public void OnButtonClick() {
         if (!phoneMenu.activeInHierarchy) {
             phoneMenu.SetActive(true);
+            phoneWidget.SetActive(false);
         }
         else if (phoneMenu.activeInHierarchy)
         {
             phoneMenu.SetActive(false);
+            phoneWidget.SetActive(true);
         }
     }
 }
