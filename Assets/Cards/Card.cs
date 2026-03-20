@@ -9,7 +9,7 @@ public enum UpgradeType
 
 [CreateAssetMenu(
     fileName = "NewCard",
-    menuName = "Fishing/Card",
+    menuName = "Card/Card",
     order = 0)]
 public class Card : ScriptableObject
 {
