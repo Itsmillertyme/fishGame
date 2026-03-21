@@ -167,6 +167,28 @@ public class PlayerDataRuntime : MonoBehaviour
         return true;
     }
 
+    public void LoadEquippedCardsToTackleBox(TackleBox tackleBox)
+    {
+        // Rod
+        var rodCard = GetEquippedCard(UpgradeType.Rod);
+        tackleBox.EquipRod(rodCard != null ? rodCard.upgradePrefab.GetComponent<RodItem>() : null);
+
+        // Reel  
+        var reelCard = GetEquippedCard(UpgradeType.Reel);
+        tackleBox.EquipReel(reelCard != null ? reelCard.upgradePrefab.GetComponent<ReelItem>() : null);
+
+        // Lure
+        var lureCard = GetEquippedCard(UpgradeType.Lure);
+        tackleBox.EquipLure(lureCard != null ? lureCard.upgradePrefab.GetComponent<LureItem>() : null);
+    }
+
+    public Card GetEquippedCard(UpgradeType type)
+    {
+        var id = GetEquippedCardId(type);
+        return id == 0 ? null : GetCardDefinition(id);
+    }
+
+
     public int GetEquippedCardId(UpgradeType type)
     {
         return type switch
