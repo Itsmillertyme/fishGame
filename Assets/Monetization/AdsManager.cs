@@ -1,96 +1,124 @@
 using UnityEngine;
 using Unity.Services.LevelPlay;
 
+/// <summary>
+/// Manages all ad showing logic for fishGame monetization.
+/// References pre-created ad objects from AdsInitializer.
+/// Handles timing, daily limits, and callbacks for rewards.
+/// </summary>
 public class AdsManager : MonoBehaviour
 {
-    // Placement names from dashboard (e.g., "RewardedVideo", "Interstitial", "Banner")
-    [SerializeField] private string rewardedPlacement = "RewardedVideo";
-    [SerializeField] private string interstitialPlacement = "Interstitial";
-    [SerializeField] private string bannerPlacement = "Banner";
+    [Header("Drag AdsInitializer from scene here")]
+    [SerializeField] private AdsInitialization initializer;  // Holds the actual LevelPlay ad objects
 
-    private bool rewardedReady = false;
-    private bool interstitialReady = false;
-    private float interstitialCooldown = 0f; // For ~2 min spacing
+    /// <summary>
+    /// Cooldown timer for interstitial ads (~2 minutes between shows as per design doc).
+    /// Prevents spam during gameplay.
+    /// </summary>
+    private float interstitialCooldown = 0f;
+
+    /// <summary>
+    /// Stores callback to run when rewarded ad completes (e.g., add FishCoins).
+    /// Set before showing ad, invoked on success.
+    /// </summary>
+    private System.Action rewardedCallback;
 
     void Start()
     {
-        // Register ad events
-        LevelPlay.OnRewardedVideoAdShowResult += OnRewardedShowResult;
-        LevelPlay.OnRewardedVideoAdReady += (placement) => { if (placement == rewardedPlacement) rewardedReady = true; };
-        LevelPlay.OnRewardedVideoAdShowFailed += (placement, error) => { rewardedReady = false; LoadRewarded(); };
-
-        LevelPlay.OnInterstitialAdReady += (placement) => { if (placement == interstitialPlacement) interstitialReady = true; };
-        LevelPlay.OnInterstitialAdShowFailed += (placement, error) => { interstitialReady = false; LoadInterstitial(); };
-
-        // Load initial ads
-        LoadRewarded();
-        LoadInterstitial();
-        LoadBanner();
+        /*
+         * Attach event listeners to ad objects created in AdsInitializer.
+         * These fire automatically when ad lifecycle events happen (load, show, reward, close).
+         * 
+         * OnAdRewarded: Fires when player watches full rewarded video.
+         * Lambda for OnAdClosed: Reloads ad automatically after close (keeps queue ready).
+         */
+        initializer.rewardedAd.OnAdRewarded += OnAdRewarded;  // Triggers reward grant
+        initializer.rewardedAd.OnAdClosed += (info) => initializer.rewardedAd.LoadAd();  // Auto-reload
+        initializer.interstitialAd.OnAdClosed += (info) => initializer.interstitialAd.LoadAd();  // Auto-reload
     }
 
-    // Rewarded (for upgrades, 3x/day limit)
+    /// <summary>
+    /// Public method to show rewarded ad from anywhere in game (e.g., challenge screen).
+    /// Checks: ad ready + under daily limit (3x as per design doc).
+    /// Sets callback, shows ad, handles failure by reloading.
+    /// </summary>
     public void ShowRewarded(System.Action onReward)
     {
-        if (rewardedReady && DailyRewardedCount() < 3)
+        // IsAdReady() = SDK confirms ad is downloaded and cached
+        if (initializer.rewardedAd.IsAdReady() && DailyRewardedCount() < 3)
         {
-            rewardedCallback = onReward;
-            LevelPlay.ShowRewardedVideo(rewardedPlacement);
+            rewardedCallback = onReward;  // Store user callback (e.g., AddFishCoins(100))
+            initializer.rewardedAd.ShowAd();  // Triggers SDK ad display
         }
         else
         {
-            LoadRewarded(); // Auto-reload
+            // Not ready or limit hit ? reload for next time
+            initializer.rewardedAd.LoadAd();
         }
     }
 
-    private void LoadRewarded() => LevelPlay.LoadRewardedVideo(rewardedPlacement);
-
-    private System.Action rewardedCallback;
-    private void OnRewardedShowResult(bool didWatch, LevelPlayPlacementInfo placementInfo)
+    /// <summary>
+    /// SDK callback when rewarded video is fully watched.
+    /// Delegate signature: LevelPlayAdInfo first (ad metadata), LevelPlayReward second (reward data).
+    /// Grants user's callback + increments daily counter.
+    /// </summary>
+    private void OnAdRewarded(LevelPlayAdInfo adInfo, LevelPlayReward reward)
     {
-        if (didWatch && rewardedCallback != null)
-        {
-            rewardedCallback(); // Grant FishCoins or booster
-            IncrementDailyRewarded();
-        }
-        rewardedReady = false;
-        LoadRewarded();
+        // Log reward details (e.g., "coins x100")
+        Debug.Log($"Reward granted: {reward.Name} x{reward.Amount}");
+
+        rewardedCallback?.Invoke();  // Run user's code (FishCoins, booster, etc.)
+        rewardedCallback = null;     // Clear reference
+
+        IncrementDailyRewarded();    // Track 3x/day limit
     }
 
-    // Interstitial (every couple mins)
-    public bool CanShowInterstitial() => interstitialReady && Time.time > interstitialCooldown;
-
+    /// <summary>
+    /// Public method for interstitial (skippable ad every ~2 mins during gameplay).
+    /// Checks: ad ready + cooldown elapsed.
+    /// Auto-reloads after show via OnAdClosed listener.
+    /// </summary>
     public void ShowInterstitial()
     {
-        if (CanShowInterstitial())
+        // Double-check: SDK ready + 120s since last interstitial
+        if (initializer.interstitialAd.IsAdReady() && Time.time > interstitialCooldown)
         {
-            LevelPlay.ShowInterstitial(interstitialPlacement);
-            interstitialCooldown = Time.time + 120f; // 2 min cooldown
+            initializer.interstitialAd.ShowAd();
+            interstitialCooldown = Time.time + 120f;  // Reset 2-minute cooldown
         }
+        // Silently fails if not ready (no spam)
     }
 
-    private void LoadInterstitial() => LevelPlay.LoadInterstitial(interstitialPlacement);
+    /// <summary>
+    /// Simple banner methods.
+    /// ShowAd(): Displays persistent bottom banner (as per design doc).
+    /// DestroyAd(): Removes banner (e.g., during minigames).
+    /// </summary>
+    public void ShowBanner() => initializer.bannerAd.ShowAd();
+    public void HideBanner() => initializer.bannerAd.DestroyAd();
 
-    // Banner (bottom screen)
-    public void ShowBanner()
-    {
-        LevelPlay.LoadBanner(bannerPlacement, LevelPlayBannerSize.BANNER, LevelPlayBannerPosition.BOTTOM_CENTER);
-        LevelPlay.ShowBanner(bannerPlacement);
-    }
+    /// <summary>
+    /// PlayerPrefs-based daily counter for rewarded ads (resets at midnight).
+    /// Prevents abuse beyond design doc limit (3x/day).
+    /// </summary>
+    private int DailyRewardedCount() => PlayerPrefs.GetInt("RewardedDaily_" + System.DateTime.Now.Date.ToString(), 0);
 
-    public void HideBanner() => LevelPlay.HideBanner(bannerPlacement);
-
-    // Utils (PlayerPrefs for simplicity; use cloud saves later)
-    private int DailyRewardedCount()
-    {
-        string key = "RewardedDaily_" + System.DateTime.Now.Date.ToString();
-        return PlayerPrefs.GetInt(key, 0);
-    }
-
-    private void IncrementDailyRewarded() => PlayerPrefs.SetInt("RewardedDaily_" + System.DateTime.Now.Date.ToString(), DailyRewardedCount() + 1);
+    /// <summary>
+    /// Increments daily rewarded counter.
+    /// Key format ensures reset each day.
+    /// </summary>
+    private void IncrementDailyRewarded() =>
+        PlayerPrefs.SetInt("RewardedDaily_" + System.DateTime.Now.Date.ToString(), DailyRewardedCount() + 1);
 
     void OnDestroy()
     {
-        LevelPlay.OnRewardedVideoAdShowResult -= OnRewardedShowResult;
-        // Unregister other events...
+        /*
+         * Clean shutdown: DestroyAd() releases native resources.
+         * Prevents memory leaks when scene unloads or app quits.
+         * Safe to call even if null.
+         */
+        initializer.rewardedAd?.DestroyAd();
+        initializer.interstitialAd?.DestroyAd();
+        initializer.bannerAd?.DestroyAd();
     }
 }
