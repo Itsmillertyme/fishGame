@@ -7,11 +7,13 @@ using UnityEngine.InputSystem;
 public class PhoneMenuController : MonoBehaviour {
     public GameObject phoneMenu;
     public GameObject phoneWidget;
+    public GameObject anglerpedia;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
         phoneWidget.SetActive(true);
-        phoneMenu.SetActive(false);
+        phoneMenu.SetActive(true);
+        anglerpedia.SetActive(true);
     }
 
     // Update is called once per frame
