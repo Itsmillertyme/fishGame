@@ -11,10 +11,10 @@ public class AnglerpediaController : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private AnglerpediaDetailView detailView;
-    [SerializeField] private AnglerpediaItemView[] itemViews; // drag 4 in inspector
+    [SerializeField] private AnglerpediaItemView[] itemViews;
     [SerializeField] private Button nextPageButton;
     [SerializeField] private Button prevPageButton;
-    [SerializeField] private TMP_Text pageInfoText; // "Page 1/3"
+    [SerializeField] private TMP_Text pageInfoText;
 
     [Header("Filter")]
     [SerializeField] private Environment currentEnvironmentFilter;
@@ -72,7 +72,6 @@ public class AnglerpediaController : MonoBehaviour
             }
         }
 
-        // Update pagination UI
         int maxPage = Mathf.Max(0, (_filteredFish.Count - 1) / ITEMS_PER_PAGE);
         prevPageButton.interactable = _currentPageIndex > 0;
         nextPageButton.interactable = _currentPageIndex < maxPage;

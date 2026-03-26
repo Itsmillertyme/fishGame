@@ -13,7 +13,7 @@ public class AnglerpediaDetailView : MonoBehaviour
 
     [Header("Stats")]
     [SerializeField] private TMP_Text statsText;
-    [SerializeField] private Image strengthBar, aggressionBar, curiosityBar; // or sliders
+    [SerializeField] private Image strengthBar, aggressionBar, curiosityBar;
 
     [Header("Size Info")]
     [SerializeField] private TMP_Text sizeText;
