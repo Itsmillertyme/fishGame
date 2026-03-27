@@ -41,7 +41,7 @@ public class AnglerpediaDetailView : MonoBehaviour
         iconImage.sprite = fish.icon;
         nameText.text = fish.displayName;
         descriptionText.text = fish.description;
-        environmentsText.text = string.Join(", ", fish.environments);
+      //  environmentsText.text = string.Join(", ", fish.environments);
         //trophyBadge.gameObject.SetActive(fish.isTrophy);
 
         // Stats
