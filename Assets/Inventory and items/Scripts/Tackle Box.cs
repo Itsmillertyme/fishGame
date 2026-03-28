@@ -67,6 +67,9 @@ public class TackleBox : MonoBehaviour {
 
     public void EquipLure(LureItem lure) { equippedLure = lure; }
 
+    public RodItem GetEquippedRod() { return equippedRod; }
+    public ReelItem GetEquippedReel() { return equippedReel; }
+    public LureItem GetEquippedLure() { return equippedLure; }
     #endregion
 }
 
