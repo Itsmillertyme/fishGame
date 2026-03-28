@@ -10,43 +10,43 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7d7168176dc1e64da4db5f16839a4bd, type: 3}
-  m_Name: Sass Bass_Trophy
+  m_Name: Beta Finch_trophy
   m_EditorClassIdentifier: Assembly-CSharp::FishSpeciesConfig
-  displayName: Sass Bass
+  displayName: Beta Finch
   icon: {fileID: 0}
   caughtPictures: []
-  description: "The Sass Bass is hungry, and makes it everyone\u2019s problem. It
-    likes to snag snacks before other fish can, and it will put up one HECK of a
-    fight to stay in the pond. Your best bet is to find bait it doesn\u2019t like."
-  environments: 0000000002000000
+  description: A colorful fish with a beak-shaped snout known for its fight and beauty.
+    Its territorial nature is contradicted by its patterns and flowy, almost feather-like,
+    fins.
+  environments: 00000000
   Prefab: {fileID: 0}
   isTrophy: 1
-  strength: 5
-  aggression: 3
-  curiosity: 4
+  strength: 1
+  aggression: 4
+  curiosity: 5
   isDiscovered: 0
   spinning:
-    timeMultiplier: 1.34
-    arcMultiplier: 0.83
-    relocationBonus: 1
-    landGainMultiplier: 0.84
-    slackFillMultiplier: 1.24
-    slackDecayMultiplier: 0.98
-    steeringMultiplier: 1
+    timeMultiplier: 1.1
+    arcMultiplier: 0.88
+    relocationBonus: 2
+    landGainMultiplier: 0.96
+    slackFillMultiplier: 1.16
+    slackDecayMultiplier: 0.93
+    steeringMultiplier: 1.05
   casting:
-    timeMultiplier: 1.3
-    heatStartMultiplier: 1.14
-    backlashThresholdMultiplier: 0.9
-    heatRiseMultiplier: 1.24
-    heatFallHoldMultiplier: 0.9
-    heatFallHoldSurgeMultiplier: 0.88
-    landGainNoHoldCalmMultiplier: 0.9
-    landGainNoHoldSurgeMultiplier: 0.82
+    timeMultiplier: 1.14
+    heatStartMultiplier: 1.12
+    backlashThresholdMultiplier: 0.91
+    heatRiseMultiplier: 1.2
+    heatFallHoldMultiplier: 0.92
+    heatFallHoldSurgeMultiplier: 0.89
+    landGainNoHoldCalmMultiplier: 0.98
+    landGainNoHoldSurgeMultiplier: 0.86
     landLossHoldSurgeMultiplier: 1.14
-    pulseBonus: 1
-    surgeDurationMultiplier: 1.12
-    pulseJitterMultiplier: 1.02
-    pulseStartEndMarginMultiplier: 0.98
+    pulseBonus: 2
+    surgeDurationMultiplier: 1.08
+    pulseJitterMultiplier: 1.1
+    pulseStartEndMarginMultiplier: 0.96
   sizeScaling:
     timeBySize:
       serializedVersion: 2
@@ -61,8 +61,8 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.52
-        value: 1.1
+        time: 0.5
+        value: 1.09
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -71,7 +71,7 @@ MonoBehaviour:
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 1.3
+        value: 1.25
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -94,7 +94,7 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.52
+        time: 0.5
         value: 0.94
         inSlope: 0
         outSlope: 0
@@ -104,7 +104,7 @@ MonoBehaviour:
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 0.84
+        value: 0.85
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -127,8 +127,8 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.52
-        value: 1.15
+        time: 0.5
+        value: 1.16
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -137,7 +137,7 @@ MonoBehaviour:
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 1.42
+        value: 1.4
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -160,7 +160,7 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.52
+        time: 0.5
         value: 0.94
         inSlope: 0
         outSlope: 0
@@ -170,7 +170,7 @@ MonoBehaviour:
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 0.84
+        value: 0.85
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -193,8 +193,8 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.52
-        value: 1.13
+        time: 0.5
+        value: 1.14
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -203,7 +203,7 @@ MonoBehaviour:
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 1.38
+        value: 1.36
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.52
+        time: 0.5
         value: 0
         inSlope: 0
         outSlope: 0
@@ -247,10 +247,10 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   sizeRange:
-    minLength: 14
-    maxLength: 36
-    minWeight: 1.4
-    maxWeight: 18
+    minLength: 5
+    maxLength: 13
+    minWeight: 0.18
+    maxWeight: 1.4
     distribution:
       serializedVersion: 2
       m_Curve:

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 872c39256cf628744bc1b52f5592822a, type: 3}
+  m_Name: Pond Challenge Definition
+  m_EditorClassIdentifier: Assembly-CSharp::WaterBodyDefinition
+  id: Peepaws_Pond
+  displayName: Peepaw's Pond
+  sceneName: 
+  spawnTable: {fileID: 11400000, guid: b31eb0f8d19b6684e8759fe66c50e1d6, type: 2}
+  progressionTier: 0
+  minChallengesToGenerate: 2
+  maxChallengesToGenerate: 4
+  challengePool:
+  - {fileID: 11400000, guid: 83ab888cb7c2bd943836f4c8e574335d, type: 2}
