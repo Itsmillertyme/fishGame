@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public interface IMinigame {
 
     #region Variables
@@ -16,72 +14,4 @@ public interface IMinigame {
     #endregion
 }
 
-#region Structs
-public struct MinigameInput {
-    public Vector2 pointerScreenPos;
-    public Vector2 dragDelta;
 
-    // Screen region (based on pointer x)
-    public float pointerX01;
-    public bool isLeftSide;
-    public bool isRightSide;
-
-    public bool primaryDown;
-    public bool primaryHeld;
-    public bool primaryUp;
-
-    public bool cancelDown;
-}
-
-public struct MinigameResult {
-    public MinigameEndReason reason;
-    public float land01;
-    public float slack01;
-
-    public bool success => reason == MinigameEndReason.Success;
-    public CatchInfo? catchInfo;
-}
-
-public struct MinigameContext {
-    public MinigameType type;
-    public MinigameDifficulty difficulty;
-    public bool extendedFight;
-
-    public FishSpeciesConfig species;
-    public float fishSize01;
-
-    public SpinningRodSettings spinning;
-    public CastingRodSettings casting;
-}
-
-public struct CatchInfo {
-    public FishSpeciesConfig species;
-    public float fishSize01;
-    public bool isTrophy;
-
-    public float length;
-    public float weight;
-}
-#endregion
-
-#region Enums
-public enum MinigameEndReason {
-    None,
-    Success,
-    TimeOut,
-    SlackMaxed,
-    Backlash,     // reserved for casting rod game
-    Cancelled
-}
-
-public enum MinigameType {
-    SpinningRod,
-    CastingRod
-}
-
-public enum MinigameDifficulty {
-    Easy,
-    Medium,
-    Hard
-}
-#endregion
