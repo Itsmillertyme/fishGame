@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a129c2abdd09ff54ab4dc472d035517a, type: 3}
+  m_Name: Pond
+  m_EditorClassIdentifier: Assembly-CSharp::FishSpawnTable
+  entries:
+  - normalConfig: {fileID: 11400000, guid: 64d16923e6fed5240a0914c6607e37e9, type: 2}
+    trophyConfig: {fileID: 11400000, guid: 8e94441dd677651449a0c6dbffb5fdc4, type: 2}
+    weight: 10
+    trophyChance: 0.1
+    sizeSkewPower: 0.56
+  - normalConfig: {fileID: 11400000, guid: c863a9721f16e474d96af376730c5c24, type: 2}
+    trophyConfig: {fileID: 11400000, guid: 67aee081d5786a84baf1269a2380757a, type: 2}
+    weight: 25
+    trophyChance: 0.17
+    sizeSkewPower: 0.48
+  - normalConfig: {fileID: 11400000, guid: b45b995bb7ec48c41ba6b0869fe7bb49, type: 2}
+    trophyConfig: {fileID: 11400000, guid: ba759ed74fce7b043913bd32cfbcd3ef, type: 2}
+    weight: 25
+    trophyChance: 0.15
+    sizeSkewPower: 0.28
+  - normalConfig: {fileID: 11400000, guid: a339d2b2e204d294989803bc10f012a1, type: 2}
+    trophyConfig: {fileID: 11400000, guid: e419cbfc5795f934398862ea11f877ff, type: 2}
+    weight: 10
+    trophyChance: 0.08
+    sizeSkewPower: 0.41
+  - normalConfig: {fileID: 11400000, guid: 1e23879558bf8eb45abef56c6ef053ac, type: 2}
+    trophyConfig: {fileID: 11400000, guid: 1e23879558bf8eb45abef56c6ef053ac, type: 2}
+    weight: 30
+    trophyChance: 0.2
+    sizeSkewPower: 0.16

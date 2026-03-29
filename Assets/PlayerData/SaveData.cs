@@ -4,6 +4,7 @@ using UnityEngine;
 public class SaveData : MonoBehaviour
 {
     [SerializeField] private PlayerDataRuntime playerDataRuntime;
+    [SerializeField] private TackleBox tackleBox;
 
     private const string FILE_NAME = "playerdata.json";
 
@@ -29,6 +30,8 @@ public class SaveData : MonoBehaviour
             string json = File.ReadAllText(SavePath);
             var loaded = JsonUtility.FromJson<PlayerData>(json);
             playerDataRuntime.InitializeFromLoaded(loaded);
+            playerDataRuntime.LoadEquippedCardsToTackleBox(tackleBox);
+
             Debug.Log("Loaded player data");
         }
         else
