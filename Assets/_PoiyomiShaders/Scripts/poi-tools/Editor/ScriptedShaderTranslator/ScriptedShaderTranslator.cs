@@ -53,6 +53,14 @@ namespace Poi.Tools.ShaderTranslator
         }
 
         /// <summary>
+        /// Public accessor for GetTargetShader, used by upgrade controllers for deferred shader swapping
+        /// </summary>
+        public Shader ResolveTargetShader(Material sourceMaterial, string newShaderName = "")
+        {
+            return GetTargetShader(sourceMaterial, newShaderName);
+        }
+
+        /// <summary>
         /// Conditional that's checked before everything else.
         /// </summary>
         /// <param name="sourceMaterial">Material to check</param>
@@ -69,13 +77,26 @@ namespace Poi.Tools.ShaderTranslator
         /// <param name="newShaderName">Shader to translate to</param>
         public void Translate(Material sourceMaterial, string newShaderName)
         {
-            if(!CanTranslateMaterial(sourceMaterial))
+            Translate(sourceMaterial, newShaderName, false);
+        }
+
+        /// <summary>
+        /// Switch shader and translate material
+        /// </summary>
+        /// <param name="sourceMaterial">Material to translate</param>
+        /// <param name="newShaderName">Shader to translate to</param>
+        /// <param name="deferShaderSwap">If true, shader swap is deferred - call ApplyDeferredShaderSwap after all translations.
+        /// When deferring, caller is responsible for validating CanTranslateMaterial before calling.</param>
+        public void Translate(Material sourceMaterial, string newShaderName, bool deferShaderSwap)
+        {
+            // Skip CanTranslateMaterial when deferring - caller validates the chain
+            if(!deferShaderSwap && !CanTranslateMaterial(sourceMaterial))
                 return;
 
             Shader newShader = GetTargetShader(sourceMaterial, newShaderName);
             if(!newShader)
             {
-                Debug.LogError($"Translation failed. Can't find shader <b>{newShader}</b> in project.");
+                Debug.LogError($"Translation failed. Can't find shader in project. Material: <b>{sourceMaterial.name}</b>, Source shader: <b>{sourceMaterial.shader.name}</b>");
                 return;
             }
 
@@ -92,23 +113,40 @@ namespace Poi.Tools.ShaderTranslator
                 Material = sourceMaterial,
                 originalRenderQueue = sourceMaterial.renderQueue,
                 SourcePropertiesAndValues = SourceShader.GetPropertiesWithValues(sourceMaterial),
-                ThryShaderEditor = new ShaderEditor()
+                ThryShaderEditor = new ShaderEditor(),
+                DeferredTargetShader = deferShaderSwap ? newShader : null
             };
 
-            context.ThryShaderEditor.SetShader(newShader, sourceMaterial.shader); // Seems like this needs to run first
-            sourceMaterial.shader = newShader; // Then we need to actually switch shader
+            context.ThryShaderEditor.SetShader(newShader, sourceMaterial.shader);
+
+            if(!deferShaderSwap)
+                sourceMaterial.shader = newShader;
 
             context.ThryShaderEditor.FakePartialInitilizationForLocaleGathering(newShader);
             context.ThryShaderEditor.Materials[0] = sourceMaterial;
 
-            Debug.Log($"Translating material <b>{sourceMaterial.name}</b> to <b>{newShaderName}</b>");
+            Debug.Log($"Translating material <b>{sourceMaterial.name}</b> to <b>{newShaderName}</b>{(deferShaderSwap ? " (shader swap deferred)" : "")}");
 
             DoBeforeTranslation(context);
             RunAutomaticTranslations(context);
             DoAfterTranslation(context);
 
-            // Fix keywords to ensure they match property values
-            ShaderEditor.FixKeywords(new Material[] { sourceMaterial });
+            if(!deferShaderSwap)
+                ShaderEditor.FixKeywords(new Material[] { sourceMaterial });
+        }
+
+        /// <summary>
+        /// Apply deferred shader swap and fix keywords. Call after all deferred translations are complete.
+        /// </summary>
+        public static void ApplyDeferredShaderSwap(Material material, Shader targetShader)
+        {
+            if(material == null || targetShader == null)
+                return;
+
+            int renderQueue = material.renderQueue;
+            material.shader = targetShader;
+            material.renderQueue = renderQueue;
+            ShaderEditor.FixKeywords(new Material[] { material });
         }
 
         /// <summary>
@@ -179,22 +217,34 @@ namespace Poi.Tools.ShaderTranslator
             if(!context.ThryShaderEditor.PropertyDictionary.TryGetValue(propertyName, out var thryProperty))
                 return;
 
+#if UNITY_6000_2_OR_NEWER
             var propType = thryProperty.MaterialProperty.propertyType;
-            switch(propType)
+#else
+            var propType = thryProperty.MaterialProperty.type;
+#endif
+            switch (propType)
             {
+#if UNITY_6000_2_OR_NEWER
                 case UnityEngine.Rendering.ShaderPropertyType.Color:
+#else
+                case MaterialProperty.PropType.Color:
+#endif
                     thryProperty.ColorValue = (Color)value;
                     break;
+#if UNITY_6000_2_OR_NEWER
                 case UnityEngine.Rendering.ShaderPropertyType.Vector:
+#else
+                case MaterialProperty.PropType.Vector:
+#endif
                     Vector4 vectorValue = default;
 
-                    if(value is Vector2 vec2)
+                    if (value is Vector2 vec2)
                         vectorValue = new Vector4(vec2.x, vec2.y, 0, 0);
-                    else if(value is Vector3 vec3)
+                    else if (value is Vector3 vec3)
                         vectorValue = new Vector4(vec3.x, vec3.y, vec3.z, 0);
-                    else if(value is Vector4 vec4)
+                    else if (value is Vector4 vec4)
                         vectorValue = vec4;
-                    else if(value is Color col)
+                    else if (value is Color col)
                         vectorValue = new Vector4(col.r, col.g, col.b, col.a);
                     else
                         throw new InvalidCastException($"Can't cast {value.GetType()} to {typeof(Vector4)}");
@@ -202,17 +252,28 @@ namespace Poi.Tools.ShaderTranslator
 
                     thryProperty.VectorValue = vectorValue;
                     break;
+#if UNITY_6000_2_OR_NEWER
                 case UnityEngine.Rendering.ShaderPropertyType.Texture:
-                    if(isTextureSTValue)
+#else
+                case MaterialProperty.PropType.Texture:
+#endif
+                    if (isTextureSTValue)
                         thryProperty.MaterialProperty.textureScaleAndOffset = (Vector4)value;
                     else
                         thryProperty.TextureValue = (Texture)value;
                     break;
-#if UNITY_2022_1_OR_NEWER
+#if UNITY_6000_2_OR_NEWER
                 case UnityEngine.Rendering.ShaderPropertyType.Int:
+#elif UNITY_2022_1_OR_NEWER
+                case MaterialProperty.PropType.Int:
 #endif
+#if UNITY_6000_2_OR_NEWER
                 case UnityEngine.Rendering.ShaderPropertyType.Float:
                 case UnityEngine.Rendering.ShaderPropertyType.Range:
+#else
+                case MaterialProperty.PropType.Float:
+                case MaterialProperty.PropType.Range:
+#endif
                     thryProperty.FloatValue = 1f; // Ok so, hear me out. Either Thry or Unity doesn't seem to like it when I'm setting a value that's 0 to 0, and when the stored shader value loads, it gets overwritten. Setting it to something else fixes it
                     thryProperty.FloatValue = Convert.ToSingle(value);
                     break;
