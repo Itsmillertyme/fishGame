@@ -21,18 +21,24 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ripplefin
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9444ce77bf4418748b1e8591b9d97f85, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _METALLICSPECGLOSSMAP
+  - BSSBLOOMFOGTYPE_HEIGHT
+  - MOCHIE_PBR
+  - VIGNETTE_MASKED
+  - _LIGHTINGMODE_MULTILAYER_MATH
+  - _RIM2STYLE_POIYOMI
+  - _RIMSTYLE_POIYOMI
+  - _STOCHASTICMODE_DELIOT_HEITZ
+  - _STYLIZEDREFLECTIONMODE_UNITYCHAN
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: 2000
+  stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -2242,6 +2248,7 @@ Material:
     - _Matcap2Rotation: 0
     - _Matcap2Screen: 0
     - _Matcap2Smoothness: 1
+    - _Matcap2SmoothnessEnabled: 0
     - _Matcap2TPSDepthEnabled: 0
     - _Matcap2TPSMaskStrength: 1
     - _Matcap2UVMode: 1
@@ -2293,6 +2300,7 @@ Material:
     - _Matcap3Rotation: 0
     - _Matcap3Screen: 0
     - _Matcap3Smoothness: 1
+    - _Matcap3SmoothnessEnabled: 0
     - _Matcap3TPSDepthEnabled: 0
     - _Matcap3TPSMaskStrength: 1
     - _Matcap3UVMode: 1
@@ -2334,6 +2342,7 @@ Material:
     - _Matcap4Rotation: 0
     - _Matcap4Screen: 0
     - _Matcap4Smoothness: 1
+    - _Matcap4SmoothnessEnabled: 0
     - _Matcap4TPSDepthEnabled: 0
     - _Matcap4TPSMaskStrength: 1
     - _Matcap4UVMode: 1
@@ -2372,6 +2381,7 @@ Material:
     - _MatcapRotation: 0
     - _MatcapScreen: 0
     - _MatcapSmoothness: 1
+    - _MatcapSmoothnessEnabled: 0
     - _MatcapTPSDepthEnabled: 0
     - _MatcapTPSMaskStrength: 1
     - _MatcapUVMode: 1
@@ -3366,6 +3376,10 @@ Material:
     - m_end_TextPosition: 0
     - m_end_TruchetAudioLink: 0
     - m_end_UVTileDissolve: 0
+    - m_end_UVTileDissolveRow0: 0
+    - m_end_UVTileDissolveRow1: 0
+    - m_end_UVTileDissolveRow2: 0
+    - m_end_UVTileDissolveRow3: 0
     - m_end_Uzumore: 0
     - m_end_VideoSettings: 0
     - m_end_VoronoiAudioLink: 0
@@ -3518,6 +3532,10 @@ Material:
     - m_start_TextPosition: 0
     - m_start_TruchetAudioLink: 0
     - m_start_UVTileDissolve: 0
+    - m_start_UVTileDissolveRow0: 0
+    - m_start_UVTileDissolveRow1: 0
+    - m_start_UVTileDissolveRow2: 0
+    - m_start_UVTileDissolveRow3: 0
     - m_start_Uzumore: 0
     - m_start_VideoSettings: 0
     - m_start_VoronoiAudioLink: 0
@@ -3662,6 +3680,9 @@ Material:
     - s_end_EmissionCenterOut1: 0
     - s_end_EmissionCenterOut2: 0
     - s_end_EmissionCenterOut3: 0
+    - s_end_EmissionCenterOutEnabled1: 0
+    - s_end_EmissionCenterOutEnabled2: 0
+    - s_end_EmissionCenterOutEnabled3: 0
     - s_end_EmissionHueShift0: 0
     - s_end_EmissionHueShift1: 0
     - s_end_EmissionHueShift2: 0
@@ -3670,10 +3691,14 @@ Material:
     - s_end_EmissionLightBased1: 0
     - s_end_EmissionLightBased2: 0
     - s_end_EmissionLightBased3: 0
+    - s_end_EmissionScrolling1: 0
+    - s_end_EmissionScrolling2: 0
+    - s_end_EmissionScrolling3: 0
     - s_end_FixedRimBlending: 0
     - s_end_FixedRimColor: 0
     - s_end_FixedRimMasking: 0
     - s_end_FixedRimShapeControl: 0
+    - s_end_FlipBookAdvanced: 0
     - s_end_FlipbookCrossfade: 0
     - s_end_FlipbookHueShift: 0
     - s_end_FlipbookManualFrameControl: 0
@@ -3921,6 +3946,8 @@ Material:
     - s_start_EmissionCenterOut1: 0
     - s_start_EmissionCenterOut2: 0
     - s_start_EmissionCenterOut3: 0
+    - s_start_EmissionCenterOutEnabled1: 0
+    - s_start_EmissionCenterOutEnabled3: 0
     - s_start_EmissionHueShift0: 0
     - s_start_EmissionHueShift1: 0
     - s_start_EmissionHueShift2: 0
@@ -3929,10 +3956,14 @@ Material:
     - s_start_EmissionLightBased1: 0
     - s_start_EmissionLightBased2: 0
     - s_start_EmissionLightBased3: 0
+    - s_start_EmissionScrolling1: 0
+    - s_start_EmissionScrolling2: 0
+    - s_start_EmissionScrolling3: 0
     - s_start_FixedRimBlending: 1
     - s_start_FixedRimColor: 1
     - s_start_FixedRimMasking: 0
     - s_start_FixedRimShapeControl: 1
+    - s_start_FlipBookAdvanced: 0
     - s_start_FlipbookCrossfade: 0
     - s_start_FlipbookHueShift: 0
     - s_start_FlipbookManualFrameControl: 0

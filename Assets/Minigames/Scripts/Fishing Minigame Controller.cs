@@ -6,7 +6,11 @@ public class FishingMinigameController : MonoBehaviour {
     [Header("References")]
     [SerializeField] MinigameInputRouter inputRouter;
     [SerializeField] MinigameUIView uiView;
+
+    [Header("Audio")]
     [SerializeField] AudioSource minigameAudioSource;
+    [SerializeField] AudioClip successClip;
+    [SerializeField] AudioClip failureClip;
 
     [Header("Settings")]
     [SerializeField] FishingMinigameSettings settings;
@@ -151,6 +155,13 @@ public class FishingMinigameController : MonoBehaviour {
         lastInZone = false;
 
         if (minigameAudioSource != null) minigameAudioSource.Stop();
+
+        if (result.reason == MinigameEndReason.Success) {
+            HandleMinigameSuccessSFX();
+        }
+        else {
+            HandleMinigameFailSFX();
+        }
 
         OnMinigameEnded?.Invoke(result);
 
@@ -386,6 +397,7 @@ public class FishingMinigameController : MonoBehaviour {
         if (clip == null) return;
 
         minigameAudioSource.clip = clip;
+        minigameAudioSource.loop = true;
         minigameAudioSource.Play();
     }
 
@@ -409,7 +421,27 @@ public class FishingMinigameController : MonoBehaviour {
 
         minigameAudioSource.Stop();
         minigameAudioSource.clip = clip;
+        minigameAudioSource.loop = true;
         minigameAudioSource.Play();
     }
+
+    void HandleMinigameSuccessSFX() {
+        AudioClip clip = successClip;
+
+        minigameAudioSource.Stop();
+        minigameAudioSource.clip = clip;
+        minigameAudioSource.loop = false;
+        minigameAudioSource.Play();
+    }
+
+    void HandleMinigameFailSFX() {
+        AudioClip clip = failureClip;
+
+        minigameAudioSource.Stop();
+        minigameAudioSource.clip = clip;
+        minigameAudioSource.loop = false;
+        minigameAudioSource.Play();
+    }
+
     #endregion
 }

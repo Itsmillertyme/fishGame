@@ -363,6 +363,8 @@ public class FishingInteractor : MonoBehaviour {
         }
 
         if (result.reason == MinigameEndReason.Success) {
+            ChallengeProgressProcessor challengeProgressProcessor = new ChallengeProgressProcessor();
+            challengeProgressProcessor.ProcessFishCaught((CatchInfo) result.catchInfo, tackleBox.GetEquippedRod(), tackleBox.GetEquippedReel(), tackleBox.GetEquippedLure());
             showFishRoutine = StartCoroutine(ShowCaughtFish(pendingSpecies, pendingSize01));
         }
         else {

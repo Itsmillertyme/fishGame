@@ -7,6 +7,7 @@ public class RunBootstrapTester : MonoBehaviour {
     [SerializeField] GameSessionController gameSessionController;
     [SerializeField] TackleBox playerTackleBox;
     [SerializeField] FishingInteractor fishingInteractor;
+    [SerializeField] ChallengeUIController challengeUIController;
 
     [Header("Debug")]
     [SerializeField] bool autoStartRunOnAwake = true;
@@ -51,6 +52,7 @@ public class RunBootstrapTester : MonoBehaviour {
         }
 
         gameSessionController.StartNewRun();
+        challengeUIController.BuildChallengeUI();
 
         if (markCurrentBodyVisited) {
             WaterBodyRuntimeState currentWaterBody = gameSessionController.GetCurrentWaterBody();
