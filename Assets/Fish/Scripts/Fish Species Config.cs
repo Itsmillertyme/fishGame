@@ -17,6 +17,8 @@ public class FishSpeciesConfig : ScriptableObject {
     public List<Environment> environments;
     [Tooltip("Prefab of model with animator")]
     public GameObject Prefab;
+    [Tooltip("Unique ID for persistence / lookups (e.g. 'largemouth_bass').")]
+    public string id;
 
     [Space(10)]
     [Tooltip("True if this is a Trophy variant of the fish.")]
