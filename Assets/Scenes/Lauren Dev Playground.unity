@@ -1530,6 +1530,7 @@ MonoBehaviour:
   phoneMenu: {fileID: 738080801}
   phoneWidget: {fileID: 1182302619}
   anglerpedia: {fileID: 581820022}
+  settingsMenu: {fileID: 1838974206}
 --- !u!1 &278961522
 GameObject:
   m_ObjectHideFlags: 0
@@ -2738,19 +2739,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 418519034}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1614489879}
-        m_TargetAssemblyTypeName: PhoneMenuController, Assembly-CSharp
-        m_MethodName: OnButtonClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &418519034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3636,7 +3625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnglerpediaController
   database: {fileID: 11400000, guid: 92e3387f89043f14f8a657ab5d69b2a6, type: 2}
-  playerData: {fileID: 0}
+  playerData: {fileID: 1300484042}
   detailView: {fileID: 736130239}
   itemViews:
   - {fileID: 1402246608}
@@ -8580,10 +8569,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1300484040}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 232de7570c9ac804f92263f37724fb97, type: 3}
+  m_Script: {fileID: 11500000, guid: 08c4c1234745ee54ea0f9e8d5aa9a2cf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AnglerTest
-  anglerpedia: {fileID: 738080801}
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDataRuntime
+  cosmeticRegistry: {fileID: 11400000, guid: bbb6a15dfb787cc48b559670c9d32000, type: 2}
+  cardRegistry: {fileID: 11400000, guid: 1d10019b240966b44b1b3efe54dac500, type: 2}
 --- !u!1 &1315871787
 GameObject:
   m_ObjectHideFlags: 0
@@ -10159,8 +10149,6 @@ GameObject:
   - component: {fileID: 1614489876}
   - component: {fileID: 1614489878}
   - component: {fileID: 1614489877}
-  - component: {fileID: 1614489879}
-  - component: {fileID: 1614489880}
   m_Layer: 5
   m_Name: phone
   m_TagString: Untagged
@@ -10228,36 +10216,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1614489875}
   m_CullTransparentMesh: 1
---- !u!114 &1614489879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1614489875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5c87eea928da5b4da3514afe2d54d27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PhoneMenuController
-  phoneMenu: {fileID: 581820022}
-  phoneWidget: {fileID: 418519031}
-  anglerpedia: {fileID: 581820022}
---- !u!114 &1614489880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1614489875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5c87eea928da5b4da3514afe2d54d27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PhoneMenuController
-  phoneMenu: {fileID: 1838974206}
-  phoneWidget: {fileID: 1952844597}
-  anglerpedia: {fileID: 581820022}
 --- !u!1 &1617492945
 GameObject:
   m_ObjectHideFlags: 0
@@ -12226,19 +12184,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1952844600}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1614489880}
-        m_TargetAssemblyTypeName: PhoneMenuController, Assembly-CSharp
-        m_MethodName: OnButtonClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1952844600
 MonoBehaviour:
   m_ObjectHideFlags: 0

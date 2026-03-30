@@ -66,7 +66,7 @@ public class CharacterControllerInputs : MonoBehaviour {
     }
 
     public void OnToggleMenu(InputValue value) {
-        FindFirstObjectByType<PhoneMenuController>().OnButtonClick();
+        FindFirstObjectByType<PhoneMenuController>().OnPhoneButtonClick();
     }
 
     #endregion
