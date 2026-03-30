@@ -20,6 +20,7 @@ MonoBehaviour:
     fight to stay in the pond. Your best bet is to find bait it doesn\u2019t like."
   environments: 0000000002000000
   Prefab: {fileID: 8848912004881509116, guid: 4d288c40751511e448da7612bed6f77f, type: 3}
+  id: sass_bass
   isTrophy: 0
   strength: 5
   aggression: 3
