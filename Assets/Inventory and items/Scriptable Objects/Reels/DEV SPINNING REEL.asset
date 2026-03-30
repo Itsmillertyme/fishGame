@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   reelPrefab: {fileID: 0}
   reelType: 0
-  slackGainMultiplier: 0.5
-  slackDecayMultiplier: 2
-  heatGainMultiplier: 0.5
-  heatDecayMultiplier: 2
+  slackGainMultiplier: 0.1
+  slackDecayMultiplier: 5
+  heatGainMultiplier: 0.1
+  heatDecayMultiplier: 5

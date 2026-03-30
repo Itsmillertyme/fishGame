@@ -19,7 +19,7 @@ MonoBehaviour:
     and watching shiny things drift by. It\u2019s not very strong, but once it gets
     curious, it\u2019s hard to scare away."
   environments: 0000000002000000
-  Prefab: {fileID: 0}
+  Prefab: {fileID: 5744012832843620297, guid: f833ca078e245c64badb01fd322907a1, type: 3}
   isTrophy: 0
   strength: 3
   aggression: 2

@@ -16,4 +16,4 @@ MonoBehaviour:
   icon: {fileID: 0}
   lurePrefab: {fileID: 0}
   biteDelayAddSeconds: -100
-  biteDelayMultiplier: 1
+  biteDelayMultiplier: 0.25

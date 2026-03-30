@@ -19,7 +19,7 @@ MonoBehaviour:
     easily intrigued, a little stubborn, and has just enough attitude to tug back
     when hooked."
   environments: 01000000
-  Prefab: {fileID: 0}
+  Prefab: {fileID: 2973713578162849489, guid: 4db7739deec40074c894dbd4cf3fa2cd, type: 3}
   isTrophy: 0
   strength: 2
   aggression: 1
