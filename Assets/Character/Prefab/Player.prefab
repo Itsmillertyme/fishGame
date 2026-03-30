@@ -228,6 +228,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8576654055341693474}
+  - component: {fileID: 1691545706985100870}
+  - component: {fileID: 7365050490065446876}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -253,6 +255,32 @@ Transform:
   - {fileID: 7385408522102675965}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -210.85, z: 0}
+--- !u!114 &1691545706985100870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207696333980148156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4da931663e5e1c94b997b0b885ccda27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DontDestroyOnLoadPlayer
+--- !u!114 &7365050490065446876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207696333980148156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 316731f4303981d4da832344b72a4693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HubPlayerSpawner
+  playerPrefab: {fileID: 207696333980148156}
+  spawnPoint: {fileID: 0}
 --- !u!1 &236942456844497682
 GameObject:
   m_ObjectHideFlags: 0
@@ -3279,6 +3307,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PhoneMenuController
   phoneMenu: {fileID: 2105748264937619886}
   phoneWidget: {fileID: 4971486776806264345}
+  anglerpedia: {fileID: 0}
+  settingsMenu: {fileID: 0}
 --- !u!1 &4357716563592366359
 GameObject:
   m_ObjectHideFlags: 0
