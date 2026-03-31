@@ -9,6 +9,34 @@ namespace Thry.ThryEditor.Drawers
 		string[] _otherProperties = new string[3];
 		MaterialProperty[] _otherMaterialProps = new MaterialProperty[3];
 
+		static string FormatUdimLabel(string raw)
+		{
+			if (string.IsNullOrEmpty(raw)) return raw;
+
+			if (!(raw[0] == 'u' || raw[0] == 'U')) return raw;
+
+			int vIndex = -1;
+			for (int i = 1; i < raw.Length; i++)
+			{
+				char c = raw[i];
+				if (c == 'v' || c == 'V')
+				{
+					vIndex = i;
+					break;
+				}
+			}
+
+			if (vIndex <= 1 || vIndex >= raw.Length - 1) return raw;
+
+			string aStr = raw.Substring(1, vIndex - 1);
+			string bStr = raw.Substring(vIndex + 1);
+
+			if (!int.TryParse(aStr, out int a)) return raw;
+			if (!int.TryParse(bStr, out int b)) return raw;
+
+			return $"{a}, {b}";
+		}
+
 		public ThryMultiFloatButtonsDrawer(string label0, string label1, string label2, string label3, string prop1, string prop2, string prop3)
 		{
 			_labels[0] = label0;
@@ -60,14 +88,14 @@ namespace Thry.ThryEditor.Drawers
 					{
 						bool on = props[i].floatValue > 0.5f;
 						EditorGUI.showMixedValue = props[i].hasMixedValue;
-						bool newOn = GUI.Toggle(buttonRect, on, _labels[i], "Button");
+						bool newOn = GUI.Toggle(buttonRect, on, FormatUdimLabel(_labels[i]), "Button");
 						EditorGUI.showMixedValue = false;
 
 						if (newOn != on)
 						{
 							props[i].floatValue = newOn ? 1f : 0f;
 							anyChanged = true;
-							
+
 							// Force other properties to invalidate their cached default value check
 							// so the main property's IsPropertyValueDefault will be recalculated
 							if (i > 0 && ShaderEditor.Active.PropertyDictionary.TryGetValue(_otherProperties[i - 1], out var changedProp))
@@ -94,7 +122,7 @@ namespace Thry.ThryEditor.Drawers
 		public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
 		{
 			ShaderProperty.RegisterDrawer(this);
-			
+
 			// Register additional properties for default value checking (for the * indicator feature)
 			// Must be done here (not in OnGUI) because Content is accessed before OnGUI runs
 			if (ShaderEditor.Active?.PropertyDictionary != null)
@@ -104,7 +132,6 @@ namespace Thry.ThryEditor.Drawers
 					mainShaderProp.AdditionalDefaultCheckProperties = _otherProperties;
 				}
 			}
-			
 			return base.GetPropertyHeight(prop, label, editor);
 		}
 	}

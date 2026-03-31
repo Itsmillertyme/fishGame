@@ -1,6 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Thry.ThryEditor.Drawers
 {
@@ -64,10 +65,10 @@ namespace Thry.ThryEditor.Drawers
 
         static bool IsPropertyTypeSuitable(MaterialProperty prop)
         {
-            return prop.propertyType == UnityEngine.Rendering.ShaderPropertyType.Float
-                   || prop.propertyType == UnityEngine.Rendering.ShaderPropertyType.Range
+            return prop.GetPropertyType() == ShaderPropertyType.Float
+                   || prop.GetPropertyType() == ShaderPropertyType.Range
 #if UNITY_2022_1_OR_NEWER
-                   || prop.propertyType == UnityEngine.Rendering.ShaderPropertyType.Int;
+                   || prop.GetPropertyType() == ShaderPropertyType.Int;
 #endif
             ;
         }

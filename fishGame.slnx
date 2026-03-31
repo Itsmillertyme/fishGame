@@ -34,6 +34,7 @@
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Unity.Searcher.Editor.csproj" />
   <Project Path="UnityEditor.TestRunner.csproj" />
+  <Project Path="Poiyomi.ModularShaderSystem.csproj" />
   <Project Path="Unity.VisualScripting.Core.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.Runtime.csproj" />
   <Project Path="Unity.LevelPlay.Editor.csproj" />
@@ -52,6 +53,7 @@
   <Project Path="Unity.TextMeshPro.csproj" />
   <Project Path="UnityEditor.Purchasing.csproj" />
   <Project Path="Unity.TextMeshPro.Editor.csproj" />
+  <Project Path="Poi.Tools.csproj" />
   <Project Path="Unity.Services.Analytics.Editor.csproj" />
   <Project Path="Unity.Burst.Editor.csproj" />
   <Project Path="Unity.Rider.Editor.csproj" />
@@ -83,11 +85,11 @@
   <Project Path="Purchasing.Common.csproj" />
   <Project Path="Unity.Services.Core.Threading.csproj" />
   <Project Path="Unity.Settings.Editor.csproj" />
-  <Project Path="Poi.Tools.csproj" />
   <Project Path="Unity.InputSystem.TestFramework.csproj" />
   <Project Path="UnityEditor.XR.LegacyInputHelpers.csproj" />
   <Project Path="Unity.ShaderGraph.Utilities.csproj" />
   <Project Path="Unity.VisualScripting.Shared.Editor.csproj" />
+  <Project Path="Runtime.csproj" />
   <Project Path="Unity.Services.Core.Device.csproj" />
   <Project Path="Unity.Services.Core.Analytics.csproj" />
   <Project Path="UnityEngine.Purchasing.AppleStub.csproj" />

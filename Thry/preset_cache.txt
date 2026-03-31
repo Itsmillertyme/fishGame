@@ -11,6 +11,7 @@ Example/Video Effects/TN Panel;a79dd004459fd1d45961efa3622c4f47
 Shading/Shading/Cloth;2807a42a52df1c44d97cf5e17934fb66
 Shading/Shading/Shade Maps;0dfb68f3451a286408b0be70c899a6c2
 SpecialFX/DepthFX/Fade Near Object;85ae851a357ebf4429ba502c9c0a1a64
+Blu's Shading Styles/Anthro Balanced Wrapped;288888fa0d7529943a4137082063ce92
 Example/Ice;8d183e97b99f26040a156cbc60955feb
 Example/Sunglasses (Early Outline);e882f4d57a954904b8a144bdcea017ea
 Lighting/Full UTS2;b3ea4f0c69d93b14ca1f17342c9502fa
@@ -135,6 +136,7 @@ Min Brightness/.01 (Recognizable);82c5aafb37530a643b4e3f9421d5fda5
 Min Brightness/.1 (Glowstick);a5dc2b822da4d1a428581dfadf5f3dbb
 Min Brightness/0 (Correct);26af5cb87deb3ed4c8c2032134d84d5d
 "PBR";372d7ee2fdaa3914986be8eb2b0cdd0d
+Blu's Custom;0eb1ace2030fc5b4085d0ce62e18d84e
 Teeh Custom;9392d94f15870434facaa649d54973f0
 
 m_start_OutlineAudioLink
@@ -253,12 +255,20 @@ Organic/Lemon;014007aa7d4da6743804412155792a66
 Organic/Pearl;45a536b06cced25408ffc2ee9ae76747
 Skin/Sclera;f7aeb9ab10b4b6347a95239ed20720fa
 Skin/Skin I;3a4b3cb3767aa55408a9dec7a41dc03c
+Default Fallback;aba6938c5cd9c794f80902ba8fa2259f
 Teeh's Fallback;d8e3c66db574ae04c8efa46fcc233130
 
 m_start_clearCoat
 Inorganic/Car Paint;85d2476e67e6610419e0265098613b3b
 Inorganic/Gem;0f70a47cca5e8f74e9acad7f202e1d8a
+Default Fallback;aba6938c5cd9c794f80902ba8fa2259f
 Teeh's Fallback;d8e3c66db574ae04c8efa46fcc233130
+
+m_start_PoiShading
+Add Pass/ToonHard;6ab708189f12c864b872e8df6a2ee79b
+Add Pass/UTS Style;d6d1c75edfd0ec94ab3a549a6bdcef28
+"PBR";372d7ee2fdaa3914986be8eb2b0cdd0d
+Anthro Balanced Wrapped;0eb1ace2030fc5b4085d0ce62e18d84e
 
 m_start_blending
 Add;cde15326d0e161d46a3c9fe4ea0e93a4
@@ -282,33 +292,33 @@ m_start_CubeMap
 Add Fake Reflections;96fd1f4c49b942647b8851a0e9d7970c
 Skybox;d81ca65a9d60213408b2809b50d034ca
 
-m_start_PoiShading
-Add Pass/ToonHard;6ab708189f12c864b872e8df6a2ee79b
-Add Pass/UTS Style;d6d1c75edfd0ec94ab3a549a6bdcef28
-
 m_start_Matcap2
 AudioLink/10W;c0880ad625af101439c2010fe559c70b
 AudioLink/2000W;20c11aecc28938d4998d41560aa967b1
 AudioLink/250W;c95a9bc7749242640a7217af09ef3bb4
 Iridescence;3ad1ae4010aa7124fa46fada6c006deb
+Vibrant Light Spots;90c085369f89a8842b53c054af744f27
 
 m_start_Matcap3
 AudioLink/10W;c0880ad625af101439c2010fe559c70b
 AudioLink/2000W;20c11aecc28938d4998d41560aa967b1
 AudioLink/250W;c95a9bc7749242640a7217af09ef3bb4
 Iridescence;3ad1ae4010aa7124fa46fada6c006deb
+Vibrant Light Spots;90c085369f89a8842b53c054af744f27
 
 m_start_Matcap4
 AudioLink/10W;c0880ad625af101439c2010fe559c70b
 AudioLink/2000W;20c11aecc28938d4998d41560aa967b1
 AudioLink/250W;c95a9bc7749242640a7217af09ef3bb4
 Iridescence;3ad1ae4010aa7124fa46fada6c006deb
+Vibrant Light Spots;90c085369f89a8842b53c054af744f27
 
 m_start_matcap
 AudioLink/10W;c0880ad625af101439c2010fe559c70b
 AudioLink/2000W;20c11aecc28938d4998d41560aa967b1
 AudioLink/250W;c95a9bc7749242640a7217af09ef3bb4
 Iridescence;3ad1ae4010aa7124fa46fada6c006deb
+Vibrant Light Spots;90c085369f89a8842b53c054af744f27
 
 m_start_RimAudioLink
 10W;59e992582e0872c4486edd6e6948399b
@@ -345,13 +355,14 @@ Shape/Soft;eaad09f045806194f885f7ca3402a774
 Shape/Toon;ca3c16976bcbb8941bdac9151420af93
 Shape/Vague;dc8b5c6210105f244a16ac66c4bf2c9b
 
-m_start_reflectionRim
-Example;11ce4bd1b7b381f4abef3a8d553a0cc8
-
 m_start_stylizedSpec
+Default Fallback;aba6938c5cd9c794f80902ba8fa2259f
 lil Style;fffc9a264f0cea34e98d4ce8bcac38cd
 Teeh's Fallback;d8e3c66db574ae04c8efa46fcc233130
 UTS Style;520c0c3795796fb439a68661b0844ffc
+
+m_start_reflectionRim
+Example;11ce4bd1b7b381f4abef3a8d553a0cc8
 
 m_start_poiSSAO
 Masking / Write SSAO to Global Mask 4B;66f7fcad117c7004c996e76130140098
