@@ -10,7 +10,11 @@ namespace Poi.Tools.ShaderTranslator
     {
         public string name;
         public string description;
+#if UNITY_6000_2_OR_NEWER
         public UnityEngine.Rendering.ShaderPropertyType type;
+#else
+        public MaterialProperty.PropType type;
+#endif
         public string[] attributes;
 
         public float defaultFloatValue;

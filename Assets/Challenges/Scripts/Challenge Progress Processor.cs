@@ -13,7 +13,7 @@ public class ChallengeProgressProcessor {
 
         WaterBodyRuntimeState currentWaterBody = controller.GetCurrentWaterBody();
 
-        if (currentWaterBody == null) {
+        if (currentWaterBody == null || currentWaterBody.Definition == null) {
             Debug.LogWarning("ChallengeProgressProcessor: No current water body.");
             return;
         }
@@ -43,6 +43,12 @@ public class ChallengeProgressProcessor {
         }
 
         currentWaterBody.RefreshCompletedChallengeCount();
+
+        ChallengeUIController challengeUI = Object.FindFirstObjectByType<ChallengeUIController>();
+
+        if (challengeUI != null) {
+            challengeUI.RefreshAllChallengeUI();
+        }
     }
 
     private bool DoesMatch(ChallengeDefinition definition, CatchInfo catchInfo, RodItem rod, ReelItem reel, LureItem lure) {

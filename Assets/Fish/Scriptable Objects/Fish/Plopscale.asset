@@ -13,18 +13,19 @@ MonoBehaviour:
   m_Name: Plopscale
   m_EditorClassIdentifier: Assembly-CSharp::FishSpeciesConfig
   displayName: Plopscale
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 1580104ae67871e4d86a54ed9a6e7ff3, type: 3}
   caughtPictures: []
   description: "Plopscale lives for lazy pond days and surprise snacks. It\u2019s
     easily intrigued, a little stubborn, and has just enough attitude to tug back
     when hooked."
-  environments: 01000000
-  Prefab: {fileID: 0}
+  environments: 0000000001000000
+  Prefab: {fileID: 2973713578162849489, guid: 4db7739deec40074c894dbd4cf3fa2cd, type: 3}
+  id: 
   isTrophy: 0
   strength: 2
   aggression: 1
   curiosity: 4
-  isDiscovered: 0
+  isDiscovered: 1
   spinning:
     timeMultiplier: 1.05
     arcMultiplier: 0.97

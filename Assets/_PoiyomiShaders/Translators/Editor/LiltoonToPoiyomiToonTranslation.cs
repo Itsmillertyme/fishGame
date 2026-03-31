@@ -26,9 +26,17 @@ namespace Poi.Tools.ShaderTranslator.Translations
             if (isFakeShadow)
                 return Shader.Find(".poiyomi/Extras/Poiyomi Fake Shadow");
             
+            bool isMulti = sourceShaderName.IndexOf("multi", StringComparison.CurrentCultureIgnoreCase) != -1;
             bool isFurShader = sourceShaderName.IndexOf("fur", StringComparison.CurrentCultureIgnoreCase) != -1;
-            bool isTwoPassFur = sourceShaderName.IndexOf("twopass", StringComparison.CurrentCultureIgnoreCase) != -1 || 
+            bool isTwoPassFur = sourceShaderName.IndexOf("twopass", StringComparison.CurrentCultureIgnoreCase) != -1 ||
                                 sourceShaderName.IndexOf("two pass", StringComparison.CurrentCultureIgnoreCase) != -1;
+
+            // For Multi shader, check _TransparentMode property for fur (4=Fur, 5=FurCutout)
+            if (isMulti)
+            {
+                int transparentMode = (int)sourceMaterial.GetFloat("_TransparentMode");
+                isFurShader = transparentMode == 4 || transparentMode == 5;
+            }
 
             if (isFurShader)
             {
@@ -71,24 +79,69 @@ namespace Poi.Tools.ShaderTranslator.Translations
             {
                 SetTargetRenderingPreset(context, PoiShaderRenderingPreset.Transparent);
             }
+            else if (shaderName.IndexOf("multi", StringComparison.CurrentCultureIgnoreCase) != -1)
+            {
+                // lilToon Multi uses _TransparentMode property instead of separate shader names
+                // 0=Opaque, 1=Cutout, 2=Transparent, 3=Refraction, 4=Fur, 5=FurCutout, 6=Gem
+                int transparentMode = (int)GetSourcePropertyValue<float>(context, "_TransparentMode");
+                switch (transparentMode)
+                {
+                    case 1: // Cutout
+                    case 5: // FurCutout
+                        SetTargetRenderingPreset(context, PoiShaderRenderingPreset.Cutout);
+                        break;
+                    case 2: // Transparent
+                    case 4: // Fur
+                        if (GetSourcePropertyValue<bool>(context, "_UseReflection"))
+                            SetTargetRenderingPreset(context, PoiShaderRenderingPreset.Transparent);
+                        else
+                            SetTargetRenderingPreset(context, PoiShaderRenderingPreset.TransClipping);
+                        break;
+                    case 3: // Refraction
+                    case 6: // Gem
+                        SetTargetRenderingPreset(context, PoiShaderRenderingPreset.Transparent);
+                        break;
+                    // case 0 (Opaque) is the default, no preset change needed
+                }
+            }
         }
 
         protected override void DoAfterTranslation(TranslationContext context)
         {
             //Unity 2019 doesn't have .Contains(string, StringComparison) so using .IndexOf() instead
+            bool isMulti = SourceShader.Shader.name.IndexOf("multi", StringComparison.CurrentCultureIgnoreCase) != -1;
             bool hasOutline = SourceShader.Shader.name.IndexOf("outline", StringComparison.CurrentCultureIgnoreCase) != -1;
+
+            // For Multi shader, check _UseOutline property
+            if (isMulti)
+                hasOutline = GetSourcePropertyValue<bool>(context, "_UseOutline");
 
             if (hasOutline)
                 SetTargetPropertyValue(context, "_EnableOutlines", 1);
 
             // Set fur rendering mode based on liltoon shader type
             bool isFurShader = SourceShader.Shader.name.IndexOf("fur", StringComparison.CurrentCultureIgnoreCase) != -1;
+
+            // For Multi shader, check _TransparentMode for fur (4=Fur, 5=FurCutout)
+            if (isMulti)
+            {
+                int transparentMode = (int)GetSourcePropertyValue<float>(context, "_TransparentMode");
+                isFurShader = transparentMode == 4 || transparentMode == 5;
+            }
+
             if (isFurShader)
             {
-                bool isTwoPassFur = SourceShader.Shader.name.IndexOf("twopass", StringComparison.CurrentCultureIgnoreCase) != -1 || 
+                bool isTwoPassFur = SourceShader.Shader.name.IndexOf("twopass", StringComparison.CurrentCultureIgnoreCase) != -1 ||
                                     SourceShader.Shader.name.IndexOf("two pass", StringComparison.CurrentCultureIgnoreCase) != -1;
                 bool isCutoutFur = SourceShader.Shader.name.IndexOf("cutout", StringComparison.CurrentCultureIgnoreCase) != -1;
-                
+
+                // For Multi shader, derive from _TransparentMode
+                if (isMulti)
+                {
+                    int transparentMode = (int)GetSourcePropertyValue<float>(context, "_TransparentMode");
+                    isCutoutFur = transparentMode == 5; // FurCutout
+                }
+
                 if (isTwoPassFur || !isCutoutFur)
                 {
                     SetTargetPropertyValue(context, "_FurRenderingMode", 1f); // Transparent
@@ -124,6 +177,18 @@ namespace Poi.Tools.ShaderTranslator.Translations
         {
             var properties = new List<PropertyTranslation>()
             {
+                #region UV Settings
+                new PropertyTranslation("_MainTex_ScrollRotate", (prop, context) =>
+                {
+                    // _MainTex_ScrollRotate: x=scrollX, y=scrollY, z=angle(radians), w=rotate(value * PI * 2)
+                    var sr = GetSourcePropertyValue<Vector4>(context, "_MainTex_ScrollRotate");
+                    SetTargetPropertyValue(context, "_UVSettingsPan0", new Vector4(sr.x, sr.y, 0, 0));
+                    SetTargetPropertyValue(context, "_UVSettingsAngle0", sr.z * Mathf.Rad2Deg);
+                    SetTargetPropertyValue(context, "_UVSettingsRotate0", sr.w / (Mathf.PI * 2.0f) * 360.0f);
+                }),
+                new PropertyTranslation("_ShiftBackfaceUV", "_UVSettingsShiftBackfaceUV"),
+                #endregion
+
                 #region Main Color
                 new PropertyTranslation("_AlphaMaskMode", "_MainAlphaMaskMode"),
                 new PropertyTranslation("_Cutoff", "_Cutoff"),
@@ -174,11 +239,13 @@ namespace Poi.Tools.ShaderTranslator.Translations
                     if(!GetSourcePropertyValue<bool>(context, "_UseBumpMap"))
                         SetTargetPropertyValue(context, "_BumpScale", 0);
                 }),
-                new PropertyTranslation("_UseBump2ndMap", "_DetailEnabled", IsBump2ndEnabled),
-                new PropertyTranslation("_Bump2ndMap", "_DetailNormalMap", IsBump2ndEnabled),
-                new PropertyTranslation("_Bump2ndMap_ST", "_DetailNormalMap_ST", IsBump2ndEnabled),
-                new PropertyTranslation("_Bump2ndScale", "_DetailNormalMapScale", IsBump2ndEnabled),
-                new PropertyTranslation("_Bump2ndMap_UVMode", "_DetailNormalMapUV", IsBump2ndEnabled),
+                new PropertyTranslation("_UseBump2ndMap", "_UseBump2ndMap", IsBump2ndEnabled),
+                new PropertyTranslation("_Bump2ndMap", "_Bump2ndMap", IsBump2ndEnabled),
+                new PropertyTranslation("_Bump2ndMap_ST", "_Bump2ndMap_ST", IsBump2ndEnabled),
+                new PropertyTranslation("_Bump2ndScale", "_Bump2ndScale", IsBump2ndEnabled),
+                new PropertyTranslation("_Bump2ndMap_UVMode", "_Bump2ndMapUV", IsBump2ndEnabled),
+                new PropertyTranslation("_Bump2ndScaleMask", "_Bump2ndScaleMask", IsBump2ndEnabled),
+                new PropertyTranslation("_Bump2ndScaleMask_ST", "_Bump2ndScaleMask_ST", IsBump2ndEnabled),
                 #endregion
 
                 #region Emission
@@ -305,14 +372,14 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 new PropertyTranslation("_UseMatCap2nd", "_Matcap2Enable"),
                 new PropertyTranslation("_MatCap2ndTex", "_Matcap2"),
                 new PropertyTranslation("_MatCap2ndTex_ST", "_Matcap2_ST"),
-                new PropertyTranslation("_MatCap2ndColor", "_Matcap2Color"),
                 new PropertyTranslation("_MatCap2ndMainStrength", "_Matcap2BaseColorMix"),
                 new PropertyTranslation("_MatCap2ndNormalStrength", "_Matcap2Normal"),
                 new PropertyTranslation("_MatCap2ndBlendMask", "_Matcap2Mask"),
                 new PropertyTranslation("_MatCap2ndBlendMask_ST", "_Matcap2Mask_ST"),
                 new PropertyTranslation("_MatCap2ndColor", (prop, context) =>
                 {
-                    float alpha = GetSourcePropertyValue<Color>(context, prop).a;
+                    Color matcapColor = GetSourcePropertyValue<Color>(context, prop);
+                    float alpha = matcapColor.a;
                     int blendMode = GetSourcePropertyValue<int>(context, "_MatCap2ndBlendMode");
                     float replaceValue = 0;
                     switch(blendMode)
@@ -323,6 +390,12 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         case 2: SetTargetPropertyValue(context, "_Matcap2Screen", alpha); break;
                         case 3: SetTargetPropertyValue(context, "_Matcap2Multiply", alpha); break;
                     }
+                    // Reset replace to 0 if it's not being used because by default it's on 1 in poi
+                    SetTargetPropertyValue(context, "_Matcap2Replace", replaceValue);
+                    matcapColor.a = 1.0f; // If we don't do this, we double the intensity by accident
+                    SetTargetPropertyValue(context, "_Matcap2Color", matcapColor);
+                    // liltoon doesn't have this option (AFAIK) and is 0.5f in code
+                    SetTargetPropertyValue(context, "_Matcap2Border", 0.5f);
                 }),
                 new PropertyTranslation("_MatCap2ndLod", (prop, context) =>
                 {
@@ -332,7 +405,7 @@ namespace Poi.Tools.ShaderTranslator.Translations
                         return;
 
                     SetTargetPropertyValue(context, "_Matcap2SmoothnessEnabled", true);
-                    SetTargetPropertyValue(context, "_Matcap2Smoothness", smoothness / 10); // liltoon goes up to 10
+                    SetTargetPropertyValue(context, "_Matcap2Smoothness", 1 - (smoothness / 10)); // liltoon goes up to 10
                 }),
                 new PropertyTranslation("_MatCap2ndCustomNormal", "_Matcap1CustomNormal"),
                 new PropertyTranslation("_MatCap2ndBumpScale", "_Matcap1NormalMapScale"),
@@ -398,7 +471,83 @@ namespace Poi.Tools.ShaderTranslator.Translations
                 #endregion
 
                 #region Glitter
+                new PropertyTranslation("_UseGlitter", (prop, context) =>
+                {
+                    bool enabled = GetSourcePropertyValue<bool>(context, prop);
+                    if (!enabled)
+                        return;
+
+                    SetTargetPropertyValue(context, "_GlitterEnable", 1);
+                    SetTargetPropertyValue(context, "_GlitterMode", 1); // Linear Emission mode
+                    SetTargetPropertyValue(context, "_GlitterLinearMinBrightness", 0); // LilToon goes to 0
+                    SetTargetPropertyValue(context, "_GlitterLinearBrightness", 1); // LilToon uses HDR color for brightness
+
+                    // liltoon _GlitterParams1 = (tilingX, tilingY, size, contrast)
+                    Vector4 params1 = GetSourcePropertyValue<Vector4>(context, "_GlitterParams1");
+                    SetTargetPropertyValue(context, "_GlitterFrequency", params1.x); // Use X tiling as frequency
+                    SetTargetPropertyValue(context, "_GlitterSize", params1.z);
+                    SetTargetPropertyValue(context, "_GlitterLinearContrast", params1.w);
+
+                    // liltoon _GlitterParams2 = (speed, angle, lightDir, randomColor)
+                    Vector4 params2 = GetSourcePropertyValue<Vector4>(context, "_GlitterParams2");
+                    SetTargetPropertyValue(context, "_GlitterLinearSpeed", params2.x);
+                    SetTargetPropertyValue(context, "_GlitterLinearAngle", params2.y);
+                    SetTargetPropertyValue(context, "_GlitterLinearLightDirection", params2.z);
+                    
+                    // Random color: lilToon subtracts random amount from RGB, approximate with random colors
+                    if (params2.w > 0)
+                    {
+                        SetTargetPropertyValue(context, "_GlitterRandomColors", 1);
+                        // Map random color strength to saturation/brightness variation
+                        float minVal = 1 - params2.w;
+                        SetTargetPropertyValue(context, "_GlitterMinMaxSaturation", new Vector4(minVal, 1, 0, 1));
+                        SetTargetPropertyValue(context, "_GlitterMinMaxBrightness", new Vector4(minVal, 1, 0, 1));
+                    }
+
+                    // Direct property mappings
+                    float postContrast = GetSourcePropertyValue<float>(context, "_GlitterPostContrast");
+                    SetTargetPropertyValue(context, "_GlitterLinearPostContrast", postContrast);
+
+                    float sensitivity = GetSourcePropertyValue<float>(context, "_GlitterSensitivity");
+                    SetTargetPropertyValue(context, "_GlitterLinearSensitivity", sensitivity);
+
+                    float normalStrength = GetSourcePropertyValue<float>(context, "_GlitterNormalStrength");
+                    SetTargetPropertyValue(context, "_GlitterUseNormals", normalStrength);
+
+                    float enableLighting = GetSourcePropertyValue<float>(context, "_GlitterEnableLighting");
+                    SetTargetPropertyValue(context, "_GlitterScaleWithLighting", enableLighting);
+
+                    float shadowMask = GetSourcePropertyValue<float>(context, "_GlitterShadowMask");
+                    SetTargetPropertyValue(context, "_GlitterHideInShadow", shadowMask);
+
+                    float scaleRandomize = GetSourcePropertyValue<float>(context, "_GlitterScaleRandomize");
+                    if (scaleRandomize > 0)
+                    {
+                        SetTargetPropertyValue(context, "_GlitterRandomSize", 1);
+                        float size = params1.z;
+                        float minSize = size * (1 - scaleRandomize);
+                        SetTargetPropertyValue(context, "_GlitterMinMaxSize", new Vector4(minSize, size, 0, 1));
+                    }
+
+                    float vrParallax = GetSourcePropertyValue<float>(context, "_GlitterVRParallaxStrength");
+                    SetTargetPropertyValue(context, "_GlitterLinearVRParallax", vrParallax);
+                    
+                    // Angle randomize maps to random rotation
+                    bool angleRandomize = GetSourcePropertyValue<bool>(context, "_GlitterAngleRandomize");
+                    if (angleRandomize)
+                        SetTargetPropertyValue(context, "_GlitterRandomRotation", 1);
+                    
+                    // Shape texture only used when ApplyShape is enabled
+                    bool applyShape = GetSourcePropertyValue<bool>(context, "_GlitterApplyShape");
+                    if (applyShape)
+                    {
+                        var shapeTex = GetSourcePropertyValue<Texture>(context, "_GlitterShapeTex");
+                        if (shapeTex != null)
+                            SetTargetPropertyValue(context, "_GlitterTexture", shapeTex);
+                    }
+                }),
                 new PropertyTranslation("_GlitterUVMode", "_GlitterUV"),
+                new PropertyTranslation("_GlitterColor", "_GlitterColor"),
                 new PropertyTranslation("_GlitterColorTex", "_GlitterColorMap"),
                 new PropertyTranslation("_GlitterColorTex_UVMode", "_GlitterColorMapUV"),
                 new PropertyTranslation("_GlitterColorTex_ST", "_GlitterColorMap_ST"),

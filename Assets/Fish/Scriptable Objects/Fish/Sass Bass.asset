@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sass Bass
   m_EditorClassIdentifier: Assembly-CSharp::FishSpeciesConfig
   displayName: Sass Bass
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 20887586aa7577646baf3ee51a4c945f, type: 3}
   caughtPictures: []
   description: "The Sass Bass is hungry, and makes it everyone\u2019s problem. It
     likes to snag snacks before other fish can, and it will put up one HECK of a
@@ -25,7 +25,7 @@ MonoBehaviour:
   strength: 5
   aggression: 3
   curiosity: 4
-  isDiscovered: 0
+  isDiscovered: 1
   spinning:
     timeMultiplier: 1.35
     arcMultiplier: 0.88
