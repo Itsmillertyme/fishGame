@@ -3,10 +3,8 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class EndGame : MonoBehaviour
-{
-    public void QuitGame()
-    {
+public class EndGame : MonoBehaviour {
+    public void QuitGame() {
         Debug.Log("Quitting game...");
 
 #if UNITY_EDITOR

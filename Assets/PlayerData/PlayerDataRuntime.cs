@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerDataRuntime : MonoBehaviour
-{
+public class PlayerDataRuntime : MonoBehaviour {
     public PlayerData Data { get; private set; } = new PlayerData();
 
     private Dictionary<string, FishCatchEntry> _fishCatchById;
@@ -15,17 +14,21 @@ public class PlayerDataRuntime : MonoBehaviour
     [SerializeField] private CosmeticRegistry cosmeticRegistry;
     [SerializeField] private CardRegistry cardRegistry;
 
-    public void InitializeFromLoaded(PlayerData loaded)
-    {
+    private void Awake() {
+        if (Data == null)
+            Data = new PlayerData();
+
+        RebuildLookups();
+    }
+
+    public void InitializeFromLoaded(PlayerData loaded) {
         Data = loaded ?? new PlayerData();
         RebuildLookups();
     }
 
-    private void RebuildLookups()
-    {
+    private void RebuildLookups() {
         _fishCatchById = new Dictionary<string, FishCatchEntry>();
-        foreach (var entry in Data.fishCaughtPerSpecies)
-        {
+        foreach (var entry in Data.fishCaughtPerSpecies) {
             if (entry != null && !string.IsNullOrEmpty(entry.speciesId))
                 _fishCatchById[entry.speciesId] = entry;
         }
@@ -38,8 +41,7 @@ public class PlayerDataRuntime : MonoBehaviour
 
     // ---- Public API ----
 
-    public void OnFishCaught(string speciesId)
-    {
+    public void OnFishCaught(string speciesId) {
         if (string.IsNullOrEmpty(speciesId)) return;
 
         // Discovered
@@ -47,8 +49,7 @@ public class PlayerDataRuntime : MonoBehaviour
             Data.fishDiscoveredIds.Add(speciesId);
 
         // Caught count
-        if (!_fishCatchById.TryGetValue(speciesId, out var entry))
-        {
+        if (!_fishCatchById.TryGetValue(speciesId, out var entry)) {
             entry = new FishCatchEntry { speciesId = speciesId, totalCaught = 0 };
             _fishCatchById[speciesId] = entry;
             Data.fishCaughtPerSpecies.Add(entry);
@@ -56,10 +57,8 @@ public class PlayerDataRuntime : MonoBehaviour
         entry.totalCaught++;
     }
 
-    public CosmeticDefinition GetCosmeticDefinition(string cosmeticId)
-    {
-        if (cosmeticRegistry == null)
-        {
+    public CosmeticDefinition GetCosmeticDefinition(string cosmeticId) {
+        if (cosmeticRegistry == null) {
             Debug.LogError("CosmeticRegistry is not assigned on PlayerDataRuntime.");
             return null;
         }
@@ -67,20 +66,17 @@ public class PlayerDataRuntime : MonoBehaviour
     }
 
     // Equip by cosmetic id (checks ownership and type)
-    public bool EquipCosmetic(string cosmeticId)
-    {
+    public bool EquipCosmetic(string cosmeticId) {
         var def = GetCosmeticDefinition(cosmeticId);
         if (def == null)
             return false;
 
-        if (!HasCosmetic(cosmeticId))
-        {
+        if (!HasCosmetic(cosmeticId)) {
             Debug.LogWarning($"Attempted to equip cosmetic not owned: {cosmeticId}");
             return false;
         }
 
-        switch (def.Type)
-        {
+        switch (def.Type) {
             case CosmeticType.PlayerHat:
                 Data.equippedPlayerHatCosmeticId = cosmeticId;
                 break;
@@ -100,10 +96,8 @@ public class PlayerDataRuntime : MonoBehaviour
         return true;
     }
 
-    public string GetEquippedCosmeticId(CosmeticType type)
-    {
-        return type switch
-        {
+    public string GetEquippedCosmeticId(CosmeticType type) {
+        return type switch {
             CosmeticType.PlayerHat => Data.equippedPlayerHatCosmeticId,
             CosmeticType.PlayerShirt => Data.equippedPlayerShirtCosmeticId,
             CosmeticType.PlayerBoots => Data.equippedPlayerBootsCosmeticId,
@@ -111,47 +105,40 @@ public class PlayerDataRuntime : MonoBehaviour
         };
     }
 
-    public CosmeticDefinition GetEquippedCosmetic(CosmeticType type)
-    {
+    public CosmeticDefinition GetEquippedCosmetic(CosmeticType type) {
         var id = GetEquippedCosmeticId(type);
         return GetCosmeticDefinition(id);
     }
 
     // Helpers for UI:
-    public IEnumerable<CosmeticDefinition> GetOwnedCosmeticsOfType(CosmeticType type)
-    {
+    public IEnumerable<CosmeticDefinition> GetOwnedCosmeticsOfType(CosmeticType type) {
         if (cosmeticRegistry == null)
             yield break;
 
-        foreach (var def in cosmeticRegistry.AllCosmetics)
-        {
+        foreach (var def in cosmeticRegistry.AllCosmetics) {
             if (def != null && def.Type == type && HasCosmetic(def.Id))
                 yield return def;
         }
     }
 
-    public void AddCard(int cardId)
-    {
+    public void AddCard(int cardId) {
         if (_cardsOwned.Add(cardId))
             Data.cardIdsOwned.Add(cardId);
     }
 
     public bool HasCard(int cardId) => _cardsOwned.Contains(cardId);
 
-    public bool EquipCard(int cardId)
-    {
+    public bool EquipCard(int cardId) {
         var def = GetCardDefinition(cardId);
         if (def == null)
             return false;
 
-        if (!HasCard(cardId))
-        {
+        if (!HasCard(cardId)) {
             Debug.LogWarning($"Attempted to equip card not owned: {cardId}");
             return false;
         }
 
-        switch (def.upgradeType)
-        {
+        switch (def.upgradeType) {
             case UpgradeType.Rod:
                 Data.equippedRodCardId = cardId;
                 break;
@@ -167,8 +154,7 @@ public class PlayerDataRuntime : MonoBehaviour
         return true;
     }
 
-    public void LoadEquippedCardsToTackleBox(TackleBox tackleBox)
-    {
+    public void LoadEquippedCardsToTackleBox(TackleBox tackleBox) {
         // Rod
         var rodCard = GetEquippedCard(UpgradeType.Rod);
         tackleBox.EquipRod(rodCard != null ? rodCard.upgradePrefab.GetComponent<RodItem>() : null);
@@ -182,35 +168,29 @@ public class PlayerDataRuntime : MonoBehaviour
         tackleBox.EquipLure(lureCard != null ? lureCard.upgradePrefab.GetComponent<LureItem>() : null);
     }
 
-    public Card GetEquippedCard(UpgradeType type)
-    {
+    public Card GetEquippedCard(UpgradeType type) {
         var id = GetEquippedCardId(type);
         return id == 0 ? null : GetCardDefinition(id);
     }
 
 
-    public int GetEquippedCardId(UpgradeType type)
-    {
-        return type switch
-        {
+    public int GetEquippedCardId(UpgradeType type) {
+        return type switch {
             UpgradeType.Rod => Data.equippedRodCardId,
             UpgradeType.Reel => Data.equippedReelCardId,
             UpgradeType.Lure => Data.equippedLureCardId,
             _ => 0
         };
     }
-    public Card GetCardDefinition(int cardId)
-    {
-        if (cardRegistry == null)
-        {
+    public Card GetCardDefinition(int cardId) {
+        if (cardRegistry == null) {
             Debug.LogError("CardRegistry is not assigned on PlayerDataRuntime.");
             return null;
         }
         return cardRegistry.GetById(cardId);
     }
 
-    public int GetTotalCaught(string speciesId)
-    {
+    public int GetTotalCaught(string speciesId) {
         return _fishCatchById != null && _fishCatchById.TryGetValue(speciesId, out var entry)
             ? entry.totalCaught
             : 0;
@@ -218,21 +198,18 @@ public class PlayerDataRuntime : MonoBehaviour
 
     public bool IsFishDiscovered(string speciesId) => _fishDiscovered.Contains(speciesId);
 
-    public void AddCosmetic(string cosmeticId)
-    {
+    public void AddCosmetic(string cosmeticId) {
         if (string.IsNullOrEmpty(cosmeticId))
             return;
 
-        if (_cosmeticsOwned.Add(cosmeticId))
-        {
+        if (_cosmeticsOwned.Add(cosmeticId)) {
             Data.cosmeticIdsOwned.Add(cosmeticId);
         }
     }
 
     public bool HasCosmetic(string cosmeticId) => _cosmeticsOwned.Contains(cosmeticId);
 
-    public void DiscoverArea(string areaId)
-    {
+    public void DiscoverArea(string areaId) {
         if (_areasDiscovered.Add(areaId))
             Data.areaIdsDiscovered.Add(areaId);
     }

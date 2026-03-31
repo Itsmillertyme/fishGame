@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Anglerpedia
   m_EditorClassIdentifier: Assembly-CSharp::Anglerpedia
   allSpecies:
+  - {fileID: 11400000, guid: b9d785139ec832a4a85859a31c88dec6, type: 2}
+  - {fileID: 11400000, guid: e3d27ab1cc06fce43b43cf9e2319865a, type: 2}
+  - {fileID: 11400000, guid: b45b995bb7ec48c41ba6b0869fe7bb49, type: 2}
   - {fileID: 11400000, guid: 0c151fc386cd64f45b239680db8bd80b, type: 2}
-  - {fileID: 11400000, guid: 90d1d30edbb339343a9a13666c817019, type: 2}
-  - {fileID: 11400000, guid: 7018d27e1193d774bbe98bc7f2dc3daa, type: 2}
-  - {fileID: 11400000, guid: eefa77580881eab4b8c1685fee0a3fa3, type: 2}

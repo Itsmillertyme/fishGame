@@ -239,7 +239,7 @@ public class FishingInteractor : MonoBehaviour {
         RectTransform canvasRect = fishCanvas.GetComponent<RectTransform>();
         canvasRect.sizeDelta = new Vector2(800, 300);
         canvasRect.localScale = Vector3.one * 0.01f;
-        canvasRect.anchoredPosition = Vector3.up * 4f;
+        canvasRect.anchoredPosition = Vector3.up * 8f;
 
         GameObject textGO = new GameObject("text");
         textGO.transform.SetParent(fishCanvas.transform, false);

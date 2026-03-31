@@ -1,16 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PhoneMenuController : MonoBehaviour
-{
+public class PhoneMenuController : MonoBehaviour {
     public GameObject phoneMenu;
     public GameObject phoneWidget;
 
     public GameObject anglerpedia;
     public GameObject settingsMenu;
 
-    private void Start()
-    {
+    private void Start() {
         phoneWidget.SetActive(true);
         phoneMenu.SetActive(false);
 
@@ -18,8 +16,7 @@ public class PhoneMenuController : MonoBehaviour
         settingsMenu.SetActive(false);
     }
 
-    private void Update()
-    {
+    private void Update() {
 #if UNITY_EDITOR || UNITY_STANDALONE
         if (Keyboard.current == null)
             return;
@@ -35,21 +32,17 @@ public class PhoneMenuController : MonoBehaviour
 #endif
     }
 
-    public void OnPhoneButtonClick()
-    {
-        if (!phoneMenu.activeSelf)
-        {
+    public void OnPhoneButtonClick() {
+        if (!phoneMenu.activeSelf) {
             phoneMenu.SetActive(true);
             phoneWidget.SetActive(false);
         }
-        else
-        {
+        else {
             ClosePhoneMenu();
         }
     }
 
-    public void OpenAnglerpedia()
-    {
+    public void OpenAnglerpedia() {
         phoneMenu.SetActive(true);
         phoneWidget.SetActive(false);
 
@@ -57,8 +50,7 @@ public class PhoneMenuController : MonoBehaviour
         settingsMenu.SetActive(false);
     }
 
-    public void OpenSettings()
-    {
+    public void OpenSettings() {
         phoneMenu.SetActive(true);
         phoneWidget.SetActive(false);
 
@@ -66,8 +58,7 @@ public class PhoneMenuController : MonoBehaviour
         anglerpedia.SetActive(false);
     }
 
-    public void ClosePhoneMenu()
-    {
+    public void ClosePhoneMenu() {
         phoneMenu.SetActive(false);
         phoneWidget.SetActive(true);
 

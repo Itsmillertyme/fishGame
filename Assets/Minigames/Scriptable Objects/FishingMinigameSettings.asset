@@ -34,7 +34,7 @@ MonoBehaviour:
     slackDistancePower: 1.8
     maxRelevantDistanceDeg: 120
     degreesPerPixel: 0.1
-    maxCursorDegPerSecond: 240
+    maxCursorDegPerSecond: 360
     steeringSmoothing: 0.25
     spinningRodLandSound: {fileID: 8300000, guid: b78b62aa8d05bdb4ca4cdadd93077a22, type: 3}
     spinningRodSlackSound: {fileID: 8300000, guid: d7b0ff129729f504fbcd6a99e187c5a8, type: 3}

@@ -17,13 +17,14 @@ MonoBehaviour:
   caughtPictures: []
   description: George is a friendly creature. He is so happy and whimsical. You will
     love him so, so much!
-  environments: 01000000
+  environments: 0000000001000000
   Prefab: {fileID: 8108320134377769930, guid: 2f100e6b3e67a324799029dddb6bbcb4, type: 3}
+  id: 
   isTrophy: 1
   strength: 3
   aggression: 1
   curiosity: 5
-  isDiscovered: 0
+  isDiscovered: 1
   spinning:
     timeMultiplier: 1.12
     arcMultiplier: 0.96

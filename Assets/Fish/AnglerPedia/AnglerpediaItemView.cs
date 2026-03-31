@@ -1,9 +1,8 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-public class AnglerpediaItemView : MonoBehaviour
-{
+public class AnglerpediaItemView : MonoBehaviour {
     [SerializeField] private Image iconImage;
     [SerializeField] private Button button;
     [SerializeField] private GameObject lockedOverlay;
@@ -14,25 +13,24 @@ public class AnglerpediaItemView : MonoBehaviour
     private bool _isDiscovered;
     private System.Action<FishSpeciesConfig> _onClicked;
 
-    public void Bind(FishSpeciesConfig fish, bool isDiscovered, System.Action<FishSpeciesConfig> onClicked)
-    {
+    public void Bind(FishSpeciesConfig fish, bool isDiscovered, System.Action<FishSpeciesConfig> onClicked) {
         _fish = fish;
         _isDiscovered = isDiscovered;
         _onClicked = onClicked;
 
-        if (fish != null)
-        {
+        //JACOB CHANGED LINE 25, 29 & 30 TO USE fish.isDiscovered IN THE GAMEPLAY DEMO BECUASE IT WAS ALWAYS SHOWING FALSE, EVEN WHEN IT SHOULDN'T
+
+        if (fish != null) {
             iconImage.sprite = fish.icon;
-            nameText.text = isDiscovered ? fish.displayName : "???";
+            nameText.text = fish.isDiscovered ? fish.displayName : "???";
             //trophyBadge.gameObject.SetActive(fish.isTrophy);
         }
 
-        lockedOverlay.SetActive(!isDiscovered);
-        button.interactable = isDiscovered;
+        lockedOverlay.SetActive(!fish.isDiscovered);
+        button.interactable = fish.isDiscovered;
     }
 
-    private void Awake()
-    {
+    private void Awake() {
         button.onClick.AddListener(OnClick);
     }
 
