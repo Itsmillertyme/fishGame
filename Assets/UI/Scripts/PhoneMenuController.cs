@@ -1,41 +1,68 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 
 public class PhoneMenuController : MonoBehaviour {
     public GameObject phoneMenu;
     public GameObject phoneWidget;
-    public GameObject anglerpedia;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() {
+    public GameObject anglerpedia;
+    public GameObject settingsMenu;
+
+    private void Start() {
         phoneWidget.SetActive(true);
-        phoneMenu.SetActive(true);
-        anglerpedia.SetActive(true);
+        phoneMenu.SetActive(false);
+
+        anglerpedia.SetActive(false);
+        settingsMenu.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-#if UNITY_EDITOR
-        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            OnButtonClick();
-        }
+    private void Update() {
+#if UNITY_EDITOR || UNITY_STANDALONE
+        if (Keyboard.current == null)
+            return;
+
+        if (Keyboard.current.qKey.wasPressedThisFrame)
+            OpenAnglerpedia();
+
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+            OpenSettings();
+
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+            ClosePhoneMenu();
 #endif
     }
 
-    public void OnButtonClick() {
-        if (!phoneMenu.activeInHierarchy) {
+    public void OnPhoneButtonClick() {
+        if (!phoneMenu.activeSelf) {
             phoneMenu.SetActive(true);
             phoneWidget.SetActive(false);
         }
-        else if (phoneMenu.activeInHierarchy)
-        {
-            phoneMenu.SetActive(false);
-            phoneWidget.SetActive(true);
+        else {
+            ClosePhoneMenu();
         }
+    }
+
+    public void OpenAnglerpedia() {
+        phoneMenu.SetActive(true);
+        phoneWidget.SetActive(false);
+
+        anglerpedia.SetActive(true);
+        settingsMenu.SetActive(false);
+    }
+
+    public void OpenSettings() {
+        phoneMenu.SetActive(true);
+        phoneWidget.SetActive(false);
+
+        settingsMenu.SetActive(true);
+        anglerpedia.SetActive(false);
+    }
+
+    public void ClosePhoneMenu() {
+        phoneMenu.SetActive(false);
+        phoneWidget.SetActive(true);
+
+        anglerpedia.SetActive(false);
+        settingsMenu.SetActive(false);
     }
 }

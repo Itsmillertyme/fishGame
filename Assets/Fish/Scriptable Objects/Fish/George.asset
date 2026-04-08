@@ -13,17 +13,18 @@ MonoBehaviour:
   m_Name: George
   m_EditorClassIdentifier: Assembly-CSharp::FishSpeciesConfig
   displayName: George
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 948fd4eb074bafc46ac8734bcfc2a04d, type: 3}
   caughtPictures: []
   description: George is a friendly creature. He is so happy and whimsical. You will
     love him so, so much!
-  environments: 01000000
-  Prefab: {fileID: 0}
+  environments: 0000000001000000
+  Prefab: {fileID: 8108320134377769930, guid: 2f100e6b3e67a324799029dddb6bbcb4, type: 3}
+  id: 
   isTrophy: 0
   strength: 3
   aggression: 1
   curiosity: 5
-  isDiscovered: 0
+  isDiscovered: 1
   spinning:
     timeMultiplier: 1.08
     arcMultiplier: 0.98

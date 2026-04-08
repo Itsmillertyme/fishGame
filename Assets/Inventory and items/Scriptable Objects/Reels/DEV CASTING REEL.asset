@@ -18,5 +18,5 @@ MonoBehaviour:
   reelType: 1
   slackGainMultiplier: 0.5
   slackDecayMultiplier: 2
-  heatGainMultiplier: 0.5
-  heatDecayMultiplier: 2
+  heatGainMultiplier: 1.33
+  heatDecayMultiplier: 0.68

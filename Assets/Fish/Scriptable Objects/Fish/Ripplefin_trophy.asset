@@ -13,18 +13,19 @@ MonoBehaviour:
   m_Name: Ripplefin_trophy
   m_EditorClassIdentifier: Assembly-CSharp::FishSpeciesConfig
   displayName: Ripplefin
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0b193a19737f8214ea52410dc9cd9487, type: 3}
   caughtPictures: []
   description: "Ripplefin is a chill little swimmer that loves cruising slow currents
     and watching shiny things drift by. It\u2019s not very strong, but once it gets
     curious, it\u2019s hard to scare away."
   environments: 0000000002000000
-  Prefab: {fileID: 0}
+  Prefab: {fileID: 5744012832843620297, guid: f833ca078e245c64badb01fd322907a1, type: 3}
+  id: 
   isTrophy: 1
   strength: 3
   aggression: 2
   curiosity: 3
-  isDiscovered: 0
+  isDiscovered: 1
   spinning:
     timeMultiplier: 1.16
     arcMultiplier: 0.93

@@ -19,15 +19,25 @@ namespace Poi.Tools.ShaderTranslator
         {
             Shader = shader;
             Properties = new List<ShaderProperty>();
+#if UNITY_6000_2_OR_NEWER
+            int propertyCount = shader.GetPropertyCount();
+#else
             int propertyCount = ShaderUtil.GetPropertyCount(shader);
+#endif
 
             for(int i = 0; i < propertyCount; ++i)
             {
                 var prop = new ShaderProperty
                 {
+#if UNITY_6000_2_OR_NEWER
+                    name = shader.GetPropertyName(i),
+                    description = shader.GetPropertyDescription(i),
+                    type = shader.GetPropertyType(i),
+#else
                     name = ShaderUtil.GetPropertyName(shader, i),
                     description = ShaderUtil.GetPropertyDescription(shader, i),
-                    type = (UnityEngine.Rendering.ShaderPropertyType)ShaderUtil.GetPropertyType(shader, i),
+                    type = (MaterialProperty.PropType)ShaderUtil.GetPropertyType(shader, i),
+#endif
                     attributes = shader.GetPropertyAttributes(i),
                 };
 
@@ -35,18 +45,38 @@ namespace Poi.Tools.ShaderTranslator
 
                 switch(prop.type)
                 {
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Color:
+#else
+                    case MaterialProperty.PropType.Color:
+#endif
                         break;
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Range:
+#else
+                    case MaterialProperty.PropType.Range:
+#endif
                         prop.rangeLimits = shader.GetPropertyRangeLimits(i);
                         break;
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Vector:
+#else
+                    case MaterialProperty.PropType.Vector:
+#endif
                         prop.defaultVector2Value = shader.GetPropertyDefaultVectorValue(i);
                         break;
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Float:
+#else
+                    case MaterialProperty.PropType.Float:
+#endif
                         prop.defaultFloatValue = shader.GetPropertyDefaultFloatValue(i);
                         break;
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Texture:
+#else
+                    case MaterialProperty.PropType.Texture:
+#endif
                         prop.defaultTextureName = shader.GetPropertyTextureDefaultName(i);
                         textureStProp = new ShaderProperty()
                         {
@@ -55,13 +85,17 @@ namespace Poi.Tools.ShaderTranslator
                             description = $"{prop.description}_ST",
                         };
                         break;
-#if UNITY_2021_1_OR_NEWER
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Int:
-                        prop.defaultIntValue = Convert.ToInt32(shader.GetPropertyDefaultFloatValue(i));
+                        prop.defaultIntValue = shader.GetPropertyDefaultIntValue(i);
                         break;
 #elif UNITY_2022_1_OR_NEWER
                     case MaterialProperty.PropType.Int:
                         prop.defaultIntValue = shader.GetPropertyDefaultIntValue(i);
+                        break;
+#elif UNITY_2021_1_OR_NEWER
+                    case MaterialProperty.PropType.Int:
+                        prop.defaultIntValue = Convert.ToInt32(shader.GetPropertyDefaultFloatValue(i));
                         break;
 #endif
                     default:
@@ -84,13 +118,25 @@ namespace Poi.Tools.ShaderTranslator
                 ShaderProperty prop = Properties[i];
                 switch(prop.type)
                 {
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Color:
+#else
+                    case MaterialProperty.PropType.Color:
+#endif
                         dict[prop] = material.GetColor(prop.name);
                         break;
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Vector:
+#else
+                    case MaterialProperty.PropType.Vector:
+#endif
                         dict[prop] = material.GetVector(prop.name);
                         break;
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Texture:
+#else
+                    case MaterialProperty.PropType.Texture:
+#endif
                         dict[prop] = material.GetTexture(prop.name);
 
                         // Grab the next property which should be the _ST property representing scale and offset
@@ -99,13 +145,22 @@ namespace Poi.Tools.ShaderTranslator
                         var texOffset = material.GetTextureOffset(prop.name);
                         dict[stProp] = new Vector4(texScale.x, texScale.y, texOffset.x, texOffset.y);
                         break;
-#if UNITY_2022_1_OR_NEWER
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Int:
                         dict[prop] = material.GetInt(prop.name);
                         break;
+#elif UNITY_2022_1_OR_NEWER
+                    case MaterialProperty.PropType.Int:
+                        dict[prop] = material.GetInt(prop.name);
+                        break;
 #endif
+#if UNITY_6000_2_OR_NEWER
                     case UnityEngine.Rendering.ShaderPropertyType.Float:
                     case UnityEngine.Rendering.ShaderPropertyType.Range:
+#else
+                    case MaterialProperty.PropType.Float:
+                    case MaterialProperty.PropType.Range:
+#endif
                         dict[prop] = material.GetFloat(prop.name);
                         break;
                     default:

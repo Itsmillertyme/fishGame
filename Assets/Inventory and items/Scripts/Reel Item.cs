@@ -9,12 +9,12 @@ public class ReelItem : ScriptableObject {
     public ReelType reelType;
 
     [Header("Spinning Modifiers")]
-    [Range(0.5f, 2f)] public float slackGainMultiplier = 1f;   // > 1 = harder
-    [Range(0.5f, 2f)] public float slackDecayMultiplier = 1f;  // > 1 = easier
+    [Range(0.1f, 5f)] public float slackGainMultiplier = 1f;   // > 1 = harder
+    [Range(0.1f, 5f)] public float slackDecayMultiplier = 1f;  // > 1 = easier
 
     [Header("Casting Modifiers")]
-    [Range(0.5f, 2f)] public float heatGainMultiplier = 1f;    // > 1 = harder
-    [Range(0.5f, 2f)] public float heatDecayMultiplier = 1f;   // > 1 = easier
+    [Range(0.1f, 5f)] public float heatGainMultiplier = 1f;    // > 1 = harder
+    [Range(0.1f, 5f)] public float heatDecayMultiplier = 1f;   // > 1 = easier
 
 
 }

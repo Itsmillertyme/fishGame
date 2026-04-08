@@ -15,5 +15,5 @@ MonoBehaviour:
   displayName: DEV ROD
   icon: {fileID: 0}
   rodPrefab: {fileID: 0}
-  landGainMultiplier: 5
-  castingLandLossMultiplier: 0.1
+  landGainMultiplier: 1.23
+  castingLandLossMultiplier: 1.26
