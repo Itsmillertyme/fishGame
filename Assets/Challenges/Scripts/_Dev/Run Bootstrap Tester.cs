@@ -52,7 +52,10 @@ public class RunBootstrapTester : MonoBehaviour {
         }
 
         gameSessionController.StartNewRun();
-        challengeUIController.BuildChallengeUI();
+
+        if (challengeUIController != null) {
+            challengeUIController.BuildChallengeUI();
+        }
 
         if (markCurrentBodyVisited) {
             WaterBodyRuntimeState currentWaterBody = gameSessionController.GetCurrentWaterBody();
@@ -61,6 +64,8 @@ public class RunBootstrapTester : MonoBehaviour {
                 currentWaterBody.MarkVisited();
             }
         }
+
+        ValidateGeneratedChallenges();
 
         Debug.Log("RunBootstrapTester: Test run started.");
     }
@@ -149,7 +154,11 @@ public class RunBootstrapTester : MonoBehaviour {
         for (int i = 0; i < currentRun.WaterBodies.Count; i++) {
             WaterBodyRuntimeState waterBodyState = currentRun.WaterBodies[i];
 
-            if (waterBodyState == null || waterBodyState.ActiveChallenges == null || waterBodyState.ActiveChallenges.Count == 0) {
+            if (waterBodyState == null || waterBodyState.Definition == null) {
+                continue;
+            }
+
+            if (waterBodyState.ActiveChallenges == null || waterBodyState.ActiveChallenges.Count == 0) {
                 continue;
             }
 
@@ -159,8 +168,11 @@ public class RunBootstrapTester : MonoBehaviour {
                 continue;
             }
 
-            firstChallenge.SetProgress(firstChallenge.Definition.TargetCount);
-            waterBodyState.RefreshCompletedChallengeCount();
+            gameSessionController.SetChallengeProgress(
+                waterBodyState.Definition.Id,
+                firstChallenge.Definition.Id,
+                firstChallenge.Definition.TargetCount
+            );
         }
 
         Debug.Log("RunBootstrapTester: Completed the first challenge in each water body.");
@@ -282,5 +294,212 @@ public class RunBootstrapTester : MonoBehaviour {
         LogCurrentRunState();
     }
 
+    [ContextMenu("Validate Generated Challenges")]
+    public void ValidateGeneratedChallenges() {
+        if (gameSessionController == null || gameSessionController.CurrentRun == null) {
+            Debug.LogWarning("RunBootstrapTester: No active run exists.");
+            return;
+        }
+
+        RunState currentRun = gameSessionController.CurrentRun;
+        bool foundIssue = false;
+
+        for (int i = 0; i < currentRun.WaterBodies.Count; i++) {
+            WaterBodyRuntimeState waterBodyState = currentRun.WaterBodies[i];
+
+            if (waterBodyState == null || waterBodyState.Definition == null) {
+                continue;
+            }
+
+            bool hasDuplicateType = false;
+
+            for (int j = 0; j < waterBodyState.ActiveChallenges.Count; j++) {
+                ChallengeInstance a = waterBodyState.ActiveChallenges[j];
+
+                if (a == null || a.Definition == null) {
+                    continue;
+                }
+
+                for (int k = j + 1; k < waterBodyState.ActiveChallenges.Count; k++) {
+                    ChallengeInstance b = waterBodyState.ActiveChallenges[k];
+
+                    if (b == null || b.Definition == null) {
+                        continue;
+                    }
+
+                    if (a.Definition.ObjectiveType == b.Definition.ObjectiveType) {
+                        hasDuplicateType = true;
+                        foundIssue = true;
+
+                        Debug.LogError(
+                            "RunBootstrapTester: Duplicate challenge type found in water body '" +
+                            waterBodyState.Definition.DisplayName +
+                            "'. Type: " + a.Definition.ObjectiveType +
+                            " | Challenge A: " + a.Definition.DisplayName +
+                            " | Challenge B: " + b.Definition.DisplayName
+                        );
+                    }
+                }
+            }
+
+            if (!hasDuplicateType) {
+                Debug.Log(
+                    "RunBootstrapTester: Generation valid for water body '" +
+                    waterBodyState.Definition.DisplayName +
+                    "'. No duplicate challenge types found."
+                );
+            }
+        }
+
+        if (!foundIssue) {
+            Debug.Log("RunBootstrapTester: All generated water bodies passed validation.");
+        }
+    }
+
+    [ContextMenu("Simulate Matching Catch (Current Water Body)")]
+    public void SimulateMatchingCatchForCurrentWaterBody() {
+        if (gameSessionController == null || gameSessionController.CurrentRun == null) {
+            Debug.LogWarning("RunBootstrapTester: No active run.");
+            return;
+        }
+
+        if (playerTackleBox == null) {
+            Debug.LogWarning("RunBootstrapTester: No TackleBox reference.");
+            return;
+        }
+
+        FishSpawnTable spawnTable = fishingInteractor?.CurrentHotspot?.SpawnTable;
+
+        if (spawnTable == null) {
+            Debug.LogWarning("RunBootstrapTester: No spawn table available for matching simulation.");
+            return;
+        }
+
+        WaterBodyRuntimeState waterBody = gameSessionController.GetCurrentWaterBody();
+
+        if (waterBody == null || waterBody.ActiveChallenges == null || waterBody.ActiveChallenges.Count == 0) {
+            Debug.LogWarning("RunBootstrapTester: No active challenges.");
+            return;
+        }
+
+        ChallengeInstance targetChallenge = waterBody.ActiveChallenges[0];
+
+        if (targetChallenge == null || targetChallenge.Definition == null) {
+            Debug.LogWarning("RunBootstrapTester: First challenge is invalid.");
+            return;
+        }
+
+        ChallengeDefinition definition = targetChallenge.Definition;
+
+        FishSpeciesConfig species = null;
+        RodItem rod = playerTackleBox.GetEquippedRod();
+        ReelItem reel = playerTackleBox.GetEquippedReel();
+        LureItem lure = playerTackleBox.GetEquippedLure();
+
+        switch (definition.ObjectiveType) {
+            case ChallengeObjectiveType.CatchTotalFish:
+                species = GetSpawnableMatchingSpecies(spawnTable, definition);
+                break;
+
+            case ChallengeObjectiveType.CatchSpecies:
+                species = GetFirstRequiredSpecies(definition);
+                break;
+
+            case ChallengeObjectiveType.CatchUsingRod:
+                rod = GetFirstRequiredRod(definition) ?? rod;
+                species = GetSpawnableMatchingSpecies(spawnTable, definition);
+                break;
+
+            case ChallengeObjectiveType.CatchUsingReel:
+                reel = GetFirstRequiredReel(definition) ?? reel;
+                species = GetSpawnableMatchingSpecies(spawnTable, definition);
+                break;
+
+            case ChallengeObjectiveType.CatchUsingLure:
+                lure = GetFirstRequiredLure(definition) ?? lure;
+                species = GetSpawnableMatchingSpecies(spawnTable, definition);
+                break;
+
+            default:
+                species = GetSpawnableMatchingSpecies(spawnTable, definition);
+                break;
+        }
+
+        if (species == null) {
+            Debug.LogWarning("RunBootstrapTester: Failed to resolve species for matching test.");
+            return;
+        }
+
+        float size01 = 0.5f;
+        float length = 0f;
+        float weight = 0f;
+
+        if (!species.TryResolveLengthWeight(size01, out length, out weight)) {
+            Debug.LogWarning("RunBootstrapTester: Failed to resolve fish length/weight.");
+            return;
+        }
+
+        CatchInfo catchInfo = new CatchInfo {
+            species = species,
+            fishSize01 = size01,
+            isTrophy = definition.RequireTrophy,
+            length = length,
+            weight = weight
+        };
+
+        progressProcessor.ProcessFishCaught(catchInfo, rod, reel, lure);
+
+        Debug.Log("RunBootstrapTester: Simulated MATCHING catch for: " + definition.DisplayName);
+    }
+
+    FishSpeciesConfig GetFirstRequiredSpecies(ChallengeDefinition definition) {
+        if (definition == null || definition.RequiredSpecies == null || definition.RequiredSpecies.Count == 0) {
+            return null;
+        }
+
+        return definition.RequiredSpecies[0];
+    }
+
+    RodItem GetFirstRequiredRod(ChallengeDefinition definition) {
+        if (definition == null || definition.RequiredRods == null || definition.RequiredRods.Count == 0) {
+            return null;
+        }
+
+        return definition.RequiredRods[0];
+    }
+
+    ReelItem GetFirstRequiredReel(ChallengeDefinition definition) {
+        if (definition == null || definition.RequiredReels == null || definition.RequiredReels.Count == 0) {
+            return null;
+        }
+
+        return definition.RequiredReels[0];
+    }
+
+    LureItem GetFirstRequiredLure(ChallengeDefinition definition) {
+        if (definition == null || definition.RequiredLures == null || definition.RequiredLures.Count == 0) {
+            return null;
+        }
+
+        return definition.RequiredLures[0];
+    }
+
+    FishSpeciesConfig GetSpawnableMatchingSpecies(FishSpawnTable spawnTable, ChallengeDefinition definition) {
+        if (spawnTable == null) {
+            return null;
+        }
+
+        if (definition != null && definition.RequiredSpecies != null && definition.RequiredSpecies.Count > 0) {
+            return definition.RequiredSpecies[0];
+        }
+
+        FishRoll roll = spawnTable.Roll();
+
+        if (roll.config == null) {
+            return null;
+        }
+
+        return roll.config;
+    }
     #endregion
 }

@@ -20,4 +20,20 @@ MonoBehaviour:
   minChallengesToGenerate: 2
   maxChallengesToGenerate: 4
   challengePool:
+  - {fileID: 11400000, guid: e76203287e078744e996de50870b1ace, type: 2}
+  - {fileID: 11400000, guid: 717f86d14439f7946b661f6ddce8d183, type: 2}
+  - {fileID: 11400000, guid: c6f0fa37cc40aef4f9f5bd86fd778064, type: 2}
+  - {fileID: 11400000, guid: a2a20856552a00b4c8701e3e0d01a553, type: 2}
+  - {fileID: 11400000, guid: 41d43042d2a78c44a8ea3d85e16b6a56, type: 2}
+  - {fileID: 11400000, guid: bfb3d12b0e2ea62418e1ad429d8ce15b, type: 2}
+  - {fileID: 11400000, guid: 4500a386a8e0b2e4aa233e1020b1d9c4, type: 2}
+  - {fileID: 11400000, guid: 6b2e62000c91e734580b27c942616840, type: 2}
+  - {fileID: 11400000, guid: 99048a2aef99a0245816bda22586db46, type: 2}
   - {fileID: 11400000, guid: 83ab888cb7c2bd943836f4c8e574335d, type: 2}
+  - {fileID: 11400000, guid: 9d2df9ade4283bd44b2abee1fc122dfa, type: 2}
+  - {fileID: 11400000, guid: 3aa9acf3912da6349b8b1c3a58a2a7b6, type: 2}
+  - {fileID: 11400000, guid: 0138ad8aaa259e041bafc59837653b6e, type: 2}
+  - {fileID: 11400000, guid: 68e2e6a748ae4d844a64228faabbcce2, type: 2}
+  - {fileID: 11400000, guid: 71fdb9aa13e87fd4e952746b7ed54a4d, type: 2}
+  - {fileID: 11400000, guid: e6e32b65fe72cb04fa52baccb6abccb7, type: 2}
+  - {fileID: 11400000, guid: bf5ddcb2867350c4bb8fa2b9e29072df, type: 2}

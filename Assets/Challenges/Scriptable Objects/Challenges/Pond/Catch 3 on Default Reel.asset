@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab80d80c0fcfa44db28e0ae5615411c, type: 3}
+  m_Name: Catch 3 on Default Reel
+  m_EditorClassIdentifier: Assembly-CSharp::ChallengeDefinition
+  id: pond_use_default_reel
+  displayName: Catch 3 Fish Using A Default Reel
+  description: Catch 3 fish in the pond using the default spinning or casting reel.
+  selectionWeight: 2
+  objectiveType: 3
+  targetCount: 3
+  requiredSpecies: []
+  requiredRods: []
+  requiredReels:
+  - {fileID: 11400000, guid: 54085206056affa47a4f39470d15d2b5, type: 2}
+  - {fileID: 11400000, guid: 73ef5ff9a6955c14082a1a59b1405bf4, type: 2}
+  requiredLures: []
+  requireTrophy: 0

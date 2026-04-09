@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab80d80c0fcfa44db28e0ae5615411c, type: 3}
+  m_Name: Catch 2 Trophy
+  m_EditorClassIdentifier: Assembly-CSharp::ChallengeDefinition
+  id: pond_catch_trophy_2
+  displayName: Catch 2 Trophy Fish
+  description: Catch two trophy fish in the pond.
+  selectionWeight: 1
+  objectiveType: 0
+  targetCount: 2
+  requiredSpecies: []
+  requiredRods: []
+  requiredReels: []
+  requiredLures: []
+  requireTrophy: 1
