@@ -15,9 +15,7 @@ public class PlayerDataRuntime : MonoBehaviour {
     [SerializeField] private CardRegistry cardRegistry;
 
     private void Awake() {
-        if (Data == null)
-            Data = new PlayerData();
-
+        Data ??= new PlayerData();
         RebuildLookups();
     }
 
@@ -126,7 +124,13 @@ public class PlayerDataRuntime : MonoBehaviour {
             Data.cardIdsOwned.Add(cardId);
     }
 
-    public bool HasCard(int cardId) => _cardsOwned.Contains(cardId);
+    public bool HasCard(int cardId) {
+        if (_cardsOwned == null) {
+            RebuildLookups();
+        }
+
+        return _cardsOwned != null && _cardsOwned.Contains(cardId);
+    }
 
     public bool EquipCard(int cardId) {
         var def = GetCardDefinition(cardId);
@@ -196,7 +200,13 @@ public class PlayerDataRuntime : MonoBehaviour {
             : 0;
     }
 
-    public bool IsFishDiscovered(string speciesId) => _fishDiscovered.Contains(speciesId);
+    public bool IsFishDiscovered(string speciesId) {
+        if (_fishDiscovered == null) {
+            RebuildLookups();
+        }
+
+        return !string.IsNullOrEmpty(speciesId) && _fishDiscovered != null && _fishDiscovered.Contains(speciesId);
+    }
 
     public void AddCosmetic(string cosmeticId) {
         if (string.IsNullOrEmpty(cosmeticId))
@@ -207,12 +217,24 @@ public class PlayerDataRuntime : MonoBehaviour {
         }
     }
 
-    public bool HasCosmetic(string cosmeticId) => _cosmeticsOwned.Contains(cosmeticId);
+    public bool HasCosmetic(string cosmeticId) {
+        if (_cosmeticsOwned == null) {
+            RebuildLookups();
+        }
+
+        return !string.IsNullOrEmpty(cosmeticId) && _cosmeticsOwned != null && _cosmeticsOwned.Contains(cosmeticId);
+    }
 
     public void DiscoverArea(string areaId) {
         if (_areasDiscovered.Add(areaId))
             Data.areaIdsDiscovered.Add(areaId);
     }
 
-    public bool IsAreaDiscovered(string areaId) => _areasDiscovered.Contains(areaId);
+    public bool IsAreaDiscovered(string areaId) {
+        if (_areasDiscovered == null) {
+            RebuildLookups();
+        }
+
+        return !string.IsNullOrEmpty(areaId) && _areasDiscovered != null && _areasDiscovered.Contains(areaId);
+    }
 }

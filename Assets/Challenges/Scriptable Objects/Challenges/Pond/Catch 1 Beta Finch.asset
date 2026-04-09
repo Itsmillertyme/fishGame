@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab80d80c0fcfa44db28e0ae5615411c, type: 3}
+  m_Name: Catch 1 Beta Finch
+  m_EditorClassIdentifier: Assembly-CSharp::ChallengeDefinition
+  id: pond_catch_beta_finch_1
+  displayName: Catch a Beta Finch
+  description: Catch a Beta Finch of any size on the tackle of your choosing
+  selectionWeight: 4
+  objectiveType: 1
+  targetCount: 1
+  requiredSpecies:
+  - {fileID: 11400000, guid: 64d16923e6fed5240a0914c6607e37e9, type: 2}
+  - {fileID: 11400000, guid: 8e94441dd677651449a0c6dbffb5fdc4, type: 2}
+  requiredRods: []
+  requiredReels: []
+  requiredLures: []
+  requireTrophy: 0

@@ -32,7 +32,7 @@ public class ChallengeProgressProcessor {
             }
 
             if (DoesMatch(challenge.Definition, catchInfo, rod, reel, lure)) {
-                challenge.AddProgress(1);
+                controller.AddProgressToChallenge(currentWaterBody.Definition.Id, challenge.Definition.Id, 1);
 
                 Debug.Log($"Challenge Progressed: {challenge.Definition.DisplayName} ({challenge.CurrentProgressValue}/{challenge.Definition.TargetCount})");
 
@@ -43,30 +43,111 @@ public class ChallengeProgressProcessor {
         }
 
         currentWaterBody.RefreshCompletedChallengeCount();
-
-        ChallengeUIController challengeUI = Object.FindFirstObjectByType<ChallengeUIController>();
-
-        if (challengeUI != null) {
-            challengeUI.RefreshAllChallengeUI();
-        }
     }
 
-    private bool DoesMatch(ChallengeDefinition definition, CatchInfo catchInfo, RodItem rod, ReelItem reel, LureItem lure) {
+    bool DoesMatch(ChallengeDefinition definition, CatchInfo catchInfo, RodItem rod, ReelItem reel, LureItem lure) {
+        if (definition.RequireTrophy && !catchInfo.isTrophy) {
+            return false;
+        }
+
+        bool baseMatch = false;
+
         switch (definition.ObjectiveType) {
             case ChallengeObjectiveType.CatchTotalFish:
-                return true;
+                baseMatch = true;
+                break;
 
             case ChallengeObjectiveType.CatchSpecies:
-                return catchInfo.species == definition.RequiredSpecies;
+                baseMatch = MatchesSpecies(definition, catchInfo);
+                break;
 
             case ChallengeObjectiveType.CatchUsingRod:
-                return rod == definition.RequiredRod;
+                baseMatch = MatchesRod(definition, rod);
+                break;
 
             case ChallengeObjectiveType.CatchUsingReel:
-                return reel == definition.RequiredReel;
+                baseMatch = MatchesReel(definition, reel);
+                break;
 
             case ChallengeObjectiveType.CatchUsingLure:
-                return lure == definition.RequiredLure;
+                baseMatch = MatchesLure(definition, lure);
+                break;
+        }
+
+        if (!baseMatch) {
+            return false;
+        }
+
+        if (!MatchesSpecies(definition, catchInfo)) {
+            return false;
+        }
+
+        if (!MatchesRod(definition, rod)) {
+            return false;
+        }
+
+        if (!MatchesReel(definition, reel)) {
+            return false;
+        }
+
+        if (!MatchesLure(definition, lure)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool MatchesSpecies(ChallengeDefinition definition, CatchInfo catchInfo) {
+        if (definition.RequiredSpecies == null || definition.RequiredSpecies.Count == 0) {
+            return true;
+        }
+
+        for (int i = 0; i < definition.RequiredSpecies.Count; i++) {
+            if (catchInfo.species == definition.RequiredSpecies[i]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool MatchesRod(ChallengeDefinition definition, RodItem rod) {
+        if (definition.RequiredRods == null || definition.RequiredRods.Count == 0) {
+            return true;
+        }
+
+        for (int i = 0; i < definition.RequiredRods.Count; i++) {
+            if (rod == definition.RequiredRods[i]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool MatchesReel(ChallengeDefinition definition, ReelItem reel) {
+        if (definition.RequiredReels == null || definition.RequiredReels.Count == 0) {
+            return true;
+        }
+
+        for (int i = 0; i < definition.RequiredReels.Count; i++) {
+            if (reel == definition.RequiredReels[i]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool MatchesLure(ChallengeDefinition definition, LureItem lure) {
+        if (definition.RequiredLures == null || definition.RequiredLures.Count == 0) {
+            return true;
+        }
+
+        for (int i = 0; i < definition.RequiredLures.Count; i++) {
+            if (lure == definition.RequiredLures[i]) {
+                return true;
+            }
         }
 
         return false;

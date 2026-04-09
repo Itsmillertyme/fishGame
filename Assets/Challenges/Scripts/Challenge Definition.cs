@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Fishing/Challenges/Challenge Definition", fileName = "ChallengeDefinition")]
@@ -17,10 +18,11 @@ public class ChallengeDefinition : ScriptableObject {
     [SerializeField] int targetCount = 1;
 
     [Header("Optional Filters")]
-    [SerializeField] FishSpeciesConfig requiredSpecies;
-    [SerializeField] RodItem requiredRod;
-    [SerializeField] ReelItem requiredReel;
-    [SerializeField] LureItem requiredLure;
+    [SerializeField] List<FishSpeciesConfig> requiredSpecies = new List<FishSpeciesConfig>();
+    [SerializeField] List<RodItem> requiredRods = new List<RodItem>();
+    [SerializeField] List<ReelItem> requiredReels = new List<ReelItem>();
+    [SerializeField] List<LureItem> requiredLures = new List<LureItem>();
+    [SerializeField] bool requireTrophy;
 
     public string Id => id;
     public string DisplayName => displayName;
@@ -28,10 +30,11 @@ public class ChallengeDefinition : ScriptableObject {
     public float SelectionWeight => selectionWeight;
     public ChallengeObjectiveType ObjectiveType => objectiveType;
     public int TargetCount => targetCount;
-    public FishSpeciesConfig RequiredSpecies => requiredSpecies;
-    public RodItem RequiredRod => requiredRod;
-    public ReelItem RequiredReel => requiredReel;
-    public LureItem RequiredLure => requiredLure;
+    public IReadOnlyList<FishSpeciesConfig> RequiredSpecies => requiredSpecies;
+    public IReadOnlyList<RodItem> RequiredRods => requiredRods;
+    public IReadOnlyList<ReelItem> RequiredReels => requiredReels;
+    public IReadOnlyList<LureItem> RequiredLures => requiredLures;
+    public bool RequireTrophy => requireTrophy;
 
     #endregion
 
@@ -46,6 +49,11 @@ public class ChallengeDefinition : ScriptableObject {
         if (targetCount < 1) {
             targetCount = 1;
         }
+
+        RemoveNulls(requiredSpecies);
+        RemoveNulls(requiredRods);
+        RemoveNulls(requiredReels);
+        RemoveNulls(requiredLures);
     }
 #endif
 
@@ -67,6 +75,18 @@ public class ChallengeDefinition : ScriptableObject {
 
     public bool UsesLure() {
         return objectiveType == ChallengeObjectiveType.CatchUsingLure;
+    }
+
+    private void RemoveNulls<T>(List<T> list) where T : Object {
+        if (list == null) {
+            return;
+        }
+
+        for (int i = list.Count - 1; i >= 0; i--) {
+            if (list[i] == null) {
+                list.RemoveAt(i);
+            }
+        }
     }
 
     #endregion

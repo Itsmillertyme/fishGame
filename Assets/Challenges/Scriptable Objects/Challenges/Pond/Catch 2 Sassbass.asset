@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab80d80c0fcfa44db28e0ae5615411c, type: 3}
+  m_Name: Catch 2 Sassbass
+  m_EditorClassIdentifier: Assembly-CSharp::ChallengeDefinition
+  id: pond_catch_sassbass_2
+  displayName: Catch 2 Sassbass
+  description: Catch two Sassbass of any size on the tackle of your choosing
+  selectionWeight: 6
+  objectiveType: 1
+  targetCount: 2
+  requiredSpecies:
+  - {fileID: 11400000, guid: 0c151fc386cd64f45b239680db8bd80b, type: 2}
+  - {fileID: 11400000, guid: 1e23879558bf8eb45abef56c6ef053ac, type: 2}
+  requiredRods: []
+  requiredReels: []
+  requiredLures: []
+  requireTrophy: 0

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d58e7dd602410438b7645648e34087, type: 3}
   m_Name: Default Casting Loadout
   m_EditorClassIdentifier: Assembly-CSharp::DefaultLoadout
-  startingRod: {fileID: 0}
-  startingReel: {fileID: 0}
-  startingLure: {fileID: 0}
+  startingRod: {fileID: 11400000, guid: 4c7f168604ceb104ca9b2827793faac3, type: 2}
+  startingReel: {fileID: 11400000, guid: 54085206056affa47a4f39470d15d2b5, type: 2}
+  startingLure: {fileID: 11400000, guid: d13e5de7fad9ece4b824c696900ccfa1, type: 2}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class RunDebugOverlay : MonoBehaviour {
     #region Variables
@@ -59,17 +60,30 @@ public class RunDebugOverlay : MonoBehaviour {
         GUILayout.EndArea();
     }
 
-    private void LateUpdate() {
-        if (showOverlay) {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+    private void Update() {
+        if (WasTogglePressedThisFrame()) {
+            showOverlay = !showOverlay;
         }
+
+        if (!showOverlay) {
+            return;
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
+
+    //private void LateUpdate() {
+    //    if (showOverlay) {
+    //        Cursor.lockState = CursorLockMode.None;
+    //        Cursor.visible = true;
+    //    }
+    //}
     #endregion
 
     #region Utility Methods
 
-    private void BuildStyles() {
+    void BuildStyles() {
         headerStyle = new GUIStyle(GUI.skin.label);
         headerStyle.fontSize = 18;
         headerStyle.fontStyle = FontStyle.Bold;
@@ -94,13 +108,13 @@ public class RunDebugOverlay : MonoBehaviour {
         boxStyle.padding = new RectOffset(10, 10, 10, 10);
     }
 
-    private void DrawHeader() {
+    void DrawHeader() {
         GUILayout.Label("Run Debug Overlay", headerStyle);
         GUILayout.Label("Toggle: " + toggleKey, bodyStyle);
         GUILayout.Space(8f);
     }
 
-    private void DrawControls() {
+    void DrawControls() {
         GUILayout.Label("Controls", sectionStyle);
 
         GUILayout.BeginHorizontal();
@@ -138,7 +152,7 @@ public class RunDebugOverlay : MonoBehaviour {
         GUILayout.Space(10f);
     }
 
-    private void DrawRunState() {
+    void DrawRunState() {
         GUILayout.Label("Run State", sectionStyle);
 
         if (gameSessionController == null) {
@@ -171,7 +185,7 @@ public class RunDebugOverlay : MonoBehaviour {
         }
     }
 
-    private void DrawWaterBodyState(WaterBodyRuntimeState waterBodyState, int index) {
+    void DrawWaterBodyState(WaterBodyRuntimeState waterBodyState, int index) {
         if (waterBodyState == null || waterBodyState.Definition == null) {
             GUILayout.Label("Water Body [" + index + "] is null.", bodyStyle);
             return;
@@ -206,7 +220,7 @@ public class RunDebugOverlay : MonoBehaviour {
         GUILayout.EndVertical();
     }
 
-    private void DrawChallengeState(WaterBodyRuntimeState waterBodyState, ChallengeInstance challengeInstance, int index) {
+    void DrawChallengeState(WaterBodyRuntimeState waterBodyState, ChallengeInstance challengeInstance, int index) {
         if (challengeInstance == null || challengeInstance.Definition == null) {
             GUILayout.Label("Challenge [" + index + "] is null.", bodyStyle);
             return;
@@ -225,18 +239,26 @@ public class RunDebugOverlay : MonoBehaviour {
         GUILayout.BeginHorizontal();
 
         if (GUILayout.Button("+1 Progress", buttonStyle, GUILayout.Width(100f))) {
-            challengeInstance.AddProgress(1);
-            waterBodyState.RefreshCompletedChallengeCount();
+            gameSessionController.AddProgressToChallenge(
+                waterBodyState.Definition.Id,
+                challengeInstance.Definition.Id,
+                1
+            );
         }
 
         if (GUILayout.Button("Complete", buttonStyle, GUILayout.Width(100f))) {
-            challengeInstance.SetProgress(challengeInstance.Definition.TargetCount);
-            waterBodyState.RefreshCompletedChallengeCount();
+            gameSessionController.SetChallengeProgress(
+                waterBodyState.Definition.Id,
+                challengeInstance.Definition.Id,
+                challengeInstance.Definition.TargetCount
+            );
         }
 
         if (GUILayout.Button("Claim", buttonStyle, GUILayout.Width(100f))) {
-            challengeInstance.MarkClaimed();
-            waterBodyState.RefreshCompletedChallengeCount();
+            gameSessionController.ClaimChallenge(
+                waterBodyState.Definition.Id,
+                challengeInstance.Definition.Id
+            );
         }
 
         GUILayout.EndHorizontal();
@@ -244,7 +266,12 @@ public class RunDebugOverlay : MonoBehaviour {
         GUILayout.EndVertical();
     }
 
-    private void StartTestRun() {
+    void StartTestRun() {
+        if (runBootstrapTester != null) {
+            runBootstrapTester.StartTestRun();
+            return;
+        }
+
         if (gameSessionController == null) {
             Debug.LogError("RunDebugOverlay: No GameSessionController reference found.");
             return;
@@ -253,7 +280,7 @@ public class RunDebugOverlay : MonoBehaviour {
         gameSessionController.StartNewRun();
     }
 
-    private void UnlockAllWaterBodies() {
+    void UnlockAllWaterBodies() {
         if (gameSessionController == null || gameSessionController.CurrentRun == null) {
             return;
         }
@@ -271,7 +298,7 @@ public class RunDebugOverlay : MonoBehaviour {
         }
     }
 
-    private void CompleteFirstChallengeInEachWaterBody() {
+    void CompleteFirstChallengeInEachWaterBody() {
         if (gameSessionController == null || gameSessionController.CurrentRun == null) {
             return;
         }
@@ -281,7 +308,11 @@ public class RunDebugOverlay : MonoBehaviour {
         for (int i = 0; i < currentRun.WaterBodies.Count; i++) {
             WaterBodyRuntimeState waterBodyState = currentRun.WaterBodies[i];
 
-            if (waterBodyState == null || waterBodyState.ActiveChallenges == null || waterBodyState.ActiveChallenges.Count == 0) {
+            if (waterBodyState == null || waterBodyState.Definition == null) {
+                continue;
+            }
+
+            if (waterBodyState.ActiveChallenges == null || waterBodyState.ActiveChallenges.Count == 0) {
                 continue;
             }
 
@@ -291,12 +322,15 @@ public class RunDebugOverlay : MonoBehaviour {
                 continue;
             }
 
-            firstChallenge.SetProgress(firstChallenge.Definition.TargetCount);
-            waterBodyState.RefreshCompletedChallengeCount();
+            gameSessionController.SetChallengeProgress(
+                waterBodyState.Definition.Id,
+                firstChallenge.Definition.Id,
+                firstChallenge.Definition.TargetCount
+            );
         }
     }
 
-    private void MarkCurrentVisited() {
+    void MarkCurrentVisited() {
         if (gameSessionController == null) {
             return;
         }
@@ -310,7 +344,7 @@ public class RunDebugOverlay : MonoBehaviour {
         currentWaterBody.MarkVisited();
     }
 
-    private void RefreshCompletedCounts() {
+    void RefreshCompletedCounts() {
         if (gameSessionController == null || gameSessionController.CurrentRun == null) {
             return;
         }
@@ -328,13 +362,48 @@ public class RunDebugOverlay : MonoBehaviour {
         }
     }
 
-    private void SimulateCatch() {
+    void SimulateCatch() {
         if (runBootstrapTester == null) {
             Debug.LogWarning("RunDebugOverlay: RunBootstrapTester reference is missing.");
             return;
         }
 
         runBootstrapTester.SimulateCatch();
+    }
+
+    bool WasTogglePressedThisFrame() {
+        if (Keyboard.current == null) {
+            return false;
+        }
+
+        switch (toggleKey) {
+            case KeyCode.F1:
+                return Keyboard.current.f1Key.wasPressedThisFrame;
+            case KeyCode.F2:
+                return Keyboard.current.f2Key.wasPressedThisFrame;
+            case KeyCode.F3:
+                return Keyboard.current.f3Key.wasPressedThisFrame;
+            case KeyCode.F4:
+                return Keyboard.current.f4Key.wasPressedThisFrame;
+            case KeyCode.F5:
+                return Keyboard.current.f5Key.wasPressedThisFrame;
+            case KeyCode.F6:
+                return Keyboard.current.f6Key.wasPressedThisFrame;
+            case KeyCode.F7:
+                return Keyboard.current.f7Key.wasPressedThisFrame;
+            case KeyCode.F8:
+                return Keyboard.current.f8Key.wasPressedThisFrame;
+            case KeyCode.F9:
+                return Keyboard.current.f9Key.wasPressedThisFrame;
+            case KeyCode.F10:
+                return Keyboard.current.f10Key.wasPressedThisFrame;
+            case KeyCode.F11:
+                return Keyboard.current.f11Key.wasPressedThisFrame;
+            case KeyCode.F12:
+                return Keyboard.current.f12Key.wasPressedThisFrame;
+        }
+
+        return false;
     }
     #endregion
 }
