@@ -3,7 +3,9 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
+
 public class EndGame : MonoBehaviour {
+
     public void QuitGame() {
         Debug.Log("Quitting game...");
 
@@ -14,4 +16,5 @@ public class EndGame : MonoBehaviour {
             Application.Quit();
 #endif
     }
+    
 }
