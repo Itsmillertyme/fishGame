@@ -40,6 +40,9 @@ public class FishingInteractor : MonoBehaviour {
     [SerializeField] bool canFish;
     [SerializeField] FishingHotspot currentHotspot;
 
+    [Header("Ad Manager")]
+    [SerializeField] AdsManager adsManager;
+
     PlayerInput playerInput;
     CharacterControllerInputs inputs;
 
@@ -305,9 +308,11 @@ public class FishingInteractor : MonoBehaviour {
 
         Destroy(caughtFish);
 
-
+        if (adsManager != null)
+            adsManager.ShowInterstitial();
 
     }
+
 
     void StartMinigameNow(ReelType reelType, FishSpeciesConfig species, float fishSize01, TackleModifiers tackle) {
         if (minigameController == null) return;
@@ -371,6 +376,8 @@ public class FishingInteractor : MonoBehaviour {
             if (playerController != null) playerController.MovementLocked = false;
 
             SwitchToGameplayMap();
+            if (adsManager != null)
+                adsManager.ShowInterstitial();
         }
     }
 

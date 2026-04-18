@@ -28,4 +28,4 @@ MonoBehaviour:
   timidBoost: 1
   aggressiveBoost: 0
   upgradePrefab: {fileID: 0}
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 12037b1fbebf3e34b97d839926c1a092, type: 3}
