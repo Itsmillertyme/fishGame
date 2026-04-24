@@ -38,6 +38,8 @@ public class ChallengeProgressProcessor {
 
                 if (challenge.IsCompleted) {
                     Debug.Log($"Challenge Completed: {challenge.Definition.DisplayName}");
+
+                    AwardMoney(controller, currentWaterBody);
                 }
             }
         }
@@ -153,5 +155,23 @@ public class ChallengeProgressProcessor {
         return false;
     }
 
+    private void AwardMoney(GameSessionController controller, WaterBodyRuntimeState waterBody) {
+        PlayerDataRuntime player = GameObject.FindFirstObjectByType<PlayerDataRuntime>();
+
+        ProgressionTier tier = waterBody.Definition.ProgressionTier;
+
+        int reward = GetRandomRewardForTier(tier);
+
+        player.AddMoney(reward);
+    }
+
+    int GetRandomRewardForTier(ProgressionTier tier) {
+        switch (tier) {
+            case ProgressionTier.Tier1: return Random.Range(25, 51);
+            case ProgressionTier.Tier2: return Random.Range(50, 101);
+            case ProgressionTier.Tier3: return Random.Range(100, 176);
+            default: return 50;
+        }
+    }
     #endregion
 }
