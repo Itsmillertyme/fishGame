@@ -252,6 +252,34 @@ public class PlayerDataRuntime : MonoBehaviour {
 
         return !string.IsNullOrEmpty(areaId) && _areasDiscovered != null && _areasDiscovered.Contains(areaId);
     }
+
+    public int GetMoney() {
+        return Data.money;
+    }
+
+    public void AddMoney(int amount) {
+        if (amount <= 0) return;
+
+        Data.money += amount;
+    }
+
+    public bool TrySpendMoney(int amount) {
+
+        if (amount <= 0) return false;
+
+        if (Data.money < amount) {
+
+            Debug.Log("Not enough money");
+
+            return false;
+        }
+
+        Data.money -= amount;
+        Debug.Log($"Money Spent: {amount} | Remaining: {Data.money}");
+
+        return true;
+    }
+
     private string GetChallengeStateKey(string waterBodyId, string challengeId)
     {
         return waterBodyId + "::" + challengeId;
