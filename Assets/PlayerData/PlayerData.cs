@@ -21,6 +21,8 @@ public class PlayerData {
     public int equippedRodCardId;
     public int equippedReelCardId;
     public int equippedLureCardId;
+
+    public List<ChallengeSaveEntry> challengeStates = new List<ChallengeSaveEntry>();
 }
 
 [Serializable]
@@ -29,3 +31,11 @@ public class FishCatchEntry {
     public int totalCaught;
 }
 
+[Serializable]
+public class ChallengeSaveEntry
+{
+    public string waterBodyId;
+    public string challengeId;
+    public int progress;
+    public bool isClaimed;
+}
