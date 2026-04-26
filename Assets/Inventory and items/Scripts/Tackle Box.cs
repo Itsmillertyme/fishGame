@@ -10,6 +10,9 @@ public class TackleBox : MonoBehaviour {
     [SerializeField] RodItem equippedRod;
     [SerializeField] ReelItem equippedReel;
     [SerializeField] LureItem equippedLure;
+
+    [Header("Gear Mapper")]
+    [SerializeField] private GearMapper gearMapper;
     #endregion
 
     #region Unity Methods
@@ -59,6 +62,24 @@ public class TackleBox : MonoBehaviour {
         }
 
         return tackleMods;
+    }
+
+    public void EquipCard(Card card)
+    {
+        var item = gearMapper.GetItemForCard(card.id);
+
+        switch (card.upgradeType)
+        {
+            case UpgradeType.Rod:
+                EquipRod(item as RodItem);
+                break;
+            case UpgradeType.Reel:
+                EquipReel(item as ReelItem);
+                break;
+            case UpgradeType.Lure:
+                EquipLure(item as LureItem);
+                break;
+        }
     }
 
     public void EquipRod(RodItem rod) { equippedRod = rod; }

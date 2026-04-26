@@ -22,4 +22,9 @@ public class CardRegistry : ScriptableObject
         if (id == 0 || _byId == null) return null;
         return _byId.TryGetValue(id, out var card) ? card : null;
     }
+
+    public List<Card> GetAllCards()
+    {
+        return new List<Card>(cards);
+    }
 }
