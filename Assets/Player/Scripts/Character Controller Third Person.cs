@@ -222,7 +222,7 @@ public class CharacterControllerThirdPerson : MonoBehaviour {
         Vector3 inputDirection = new Vector3(inputs.move.x, 0.0f, inputs.move.y).normalized;
 
         if (inputs.move != Vector2.zero) {
-            // Preserve existing behavior: moving cancels cast/fishing.
+
             inputs.cast = false;
 
             targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y;
