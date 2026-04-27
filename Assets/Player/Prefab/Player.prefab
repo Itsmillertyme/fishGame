@@ -3580,7 +3580,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1392421256946947525
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6226,7 +6226,7 @@ GameObject:
   - component: {fileID: 2194190443372264807}
   - component: {fileID: 5589428436474610015}
   - component: {fileID: 97525065106376270}
-  - component: {fileID: 7780651021247841939}
+  - component: {fileID: 4243896993894004010}
   m_Layer: 5
   m_Name: InventoryPanel
   m_TagString: Untagged
@@ -6291,7 +6291,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7780651021247841939
+--- !u!114 &4243896993894004010
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6300,11 +6300,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 3839403957290724186}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
-  m_HorizontalFit: 0
-  m_VerticalFit: 0
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 100, y: 100}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1 &3860125707519953078
 GameObject:
   m_ObjectHideFlags: 0
@@ -7790,7 +7800,7 @@ MonoBehaviour:
   equippedRod: {fileID: 0}
   equippedReel: {fileID: 0}
   equippedLure: {fileID: 0}
-  gearMapper: {fileID: 0}
+  gearMapper: {fileID: 11400000, guid: 97128455a3434ea47ac6df8b9f7288fa, type: 2}
 --- !u!114 &7978785719869581886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8490,8 +8500,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8623585672218909083}
   - component: {fileID: 84434676281084279}
-  - component: {fileID: 5373045082550153645}
-  - component: {fileID: 3182296930686138377}
   m_Layer: 0
   m_Name: HUD
   m_TagString: Untagged
@@ -11220,8 +11228,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6449038888782626247}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0000804565, y: 0.9998631, z: -0.015740683, w: -0.0051106815}
-  m_LocalPosition: {x: -0.4699607, y: -3.1899986, z: 8.821025}
+  m_LocalRotation: {x: -0.00008045603, y: 0.9998631, z: -0.015740523, w: -0.0051106815}
+  m_LocalPosition: {x: -0.4699607, y: -3.1899996, z: 8.821025}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16965,7 +16973,7 @@ MonoBehaviour:
   equippedRod: {fileID: 0}
   equippedReel: {fileID: 0}
   equippedLure: {fileID: 0}
-  gearMapper: {fileID: 0}
+  gearMapper: {fileID: 11400000, guid: 97128455a3434ea47ac6df8b9f7288fa, type: 2}
 --- !u!114 &2615631606132417904
 MonoBehaviour:
   m_ObjectHideFlags: 0
