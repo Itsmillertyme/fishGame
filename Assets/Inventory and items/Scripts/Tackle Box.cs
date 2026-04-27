@@ -68,6 +68,12 @@ public class TackleBox : MonoBehaviour {
     {
         if (card == null) return;
 
+        if (gearMapper == null)
+        {
+            Debug.LogError("TackleBox: GearMapper is not assigned! Please assign it in the Inspector.");
+            return;
+        }
+
         var item = gearMapper.GetItemForCard<ScriptableObject>(card.id);
 
         switch (card.upgradeType)

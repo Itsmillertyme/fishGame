@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 public class TackleBoxUI : MonoBehaviour
 {
@@ -19,6 +20,28 @@ public class TackleBoxUI : MonoBehaviour
     [Header("List Container")]
     [SerializeField] private Transform cardListContainer;
     [SerializeField] private GameObject cardSlotPrefab;
+
+#if UNITY_EDITOR
+    private void Update()
+    {
+        // Check if Q key was just pressed
+        if (Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame)
+        {
+            ToggleTackleBox();
+        }
+    }
+    private void ToggleTackleBox()
+    {
+        if (tackleBoxPanel.activeSelf)
+        {
+            Close();
+        }
+        else
+        {
+            Open();
+        }
+    }
+#endif
 
     public void Open()
     {
