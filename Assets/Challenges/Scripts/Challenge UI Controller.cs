@@ -9,6 +9,11 @@ public class ChallengeUIController : MonoBehaviour {
     [Header("References")]
     [SerializeField] private GameSessionController sessionController;
     [SerializeField] private List<TierContainerBinding> tierContainers = new List<TierContainerBinding>();
+    [SerializeField] private PlayerDataRuntime playerData;
+    [SerializeField] private TextMeshProUGUI tier1TitleText;
+    [SerializeField] private TextMeshProUGUI tier2TitleText;
+    [SerializeField] private TextMeshProUGUI tier3TitleText;
+    [SerializeField] private string lockedTitleText = "???";
 
     [Header("UI")]
     [SerializeField] private TMP_Text challengeTextPrefab;
@@ -27,6 +32,10 @@ public class ChallengeUIController : MonoBehaviour {
 
 
     private void OnEnable() {
+        if (playerData == null) {
+            playerData = FindFirstObjectByType<PlayerDataRuntime>();
+        }
+
         if (sessionController == null) {
             sessionController = GameSessionController.Instance;
         }
@@ -35,6 +44,8 @@ public class ChallengeUIController : MonoBehaviour {
             sessionController.OnChallengeUpdated += HandleChallengeUpdated;
         }
 
+        ChallengeProgressProcessor.OnFirstChallengeCompletedForTier += HandleTierUnlocked;
+
         BuildChallengeUI();
     }
 
@@ -42,6 +53,8 @@ public class ChallengeUIController : MonoBehaviour {
         if (sessionController != null) {
             sessionController.OnChallengeUpdated -= HandleChallengeUpdated;
         }
+
+        ChallengeProgressProcessor.OnFirstChallengeCompletedForTier -= HandleTierUnlocked;
     }
     #endregion
 
@@ -58,12 +71,18 @@ public class ChallengeUIController : MonoBehaviour {
 
         ClearAllTierContainers();
 
+        UpdateTierTitles();
+
         IReadOnlyList<WaterBodyRuntimeState> waterBodies = sessionController.CurrentRun.WaterBodies;
 
         for (int i = 0; i < waterBodies.Count; i++) {
             WaterBodyRuntimeState waterBodyState = waterBodies[i];
 
             if (waterBodyState == null || waterBodyState.Definition == null) {
+                continue;
+            }
+
+            if (!IsTierUnlocked(waterBodyState.Definition.ProgressionTier)) {
                 continue;
             }
 
@@ -156,6 +175,81 @@ public class ChallengeUIController : MonoBehaviour {
         RefreshAllChallengeUI();
     }
 
+    bool IsTierUnlocked(ProgressionTier tier) {
+        if (tier == ProgressionTier.Tier1) {
+            return true;
+        }
+
+        if (playerData == null) {
+            playerData = FindFirstObjectByType<PlayerDataRuntime>();
+        }
+
+        if (playerData == null) {
+            return tier == ProgressionTier.Tier1;
+        }
+
+        if (tier == ProgressionTier.Tier2) {
+            return playerData.tier2Unlocked;
+        }
+
+        if (tier == ProgressionTier.Tier3) {
+            return playerData.tier3Unlocked;
+        }
+
+        return false;
+    }
+
+    void HandleTierUnlocked(ProgressionTier tier) {
+        RefreshAllChallengeUI();
+    }
+
+    void UpdateTierTitles() {
+        SetTierTitle(tier1TitleText, ProgressionTier.Tier1);
+        SetTierTitle(tier2TitleText, ProgressionTier.Tier2);
+        SetTierTitle(tier3TitleText, ProgressionTier.Tier3);
+    }
+
+    void SetTierTitle(TMP_Text titleText, ProgressionTier tier) {
+        if (titleText == null) {
+            return;
+        }
+
+        if (!IsTierUnlocked(tier)) {
+            titleText.text = lockedTitleText;
+            return;
+        }
+
+        WaterBodyRuntimeState waterBodyState = GetWaterBodyStateForTier(tier);
+
+        if (waterBodyState == null || waterBodyState.Definition == null) {
+            titleText.text = lockedTitleText;
+            return;
+        }
+
+        titleText.text = waterBodyState.Definition.DisplayName;
+    }
+
+    WaterBodyRuntimeState GetWaterBodyStateForTier(ProgressionTier tier) {
+        if (sessionController == null || sessionController.CurrentRun == null) {
+            return null;
+        }
+
+        IReadOnlyList<WaterBodyRuntimeState> waterBodies = sessionController.CurrentRun.WaterBodies;
+
+        for (int i = 0; i < waterBodies.Count; i++) {
+            WaterBodyRuntimeState waterBodyState = waterBodies[i];
+
+            if (waterBodyState == null || waterBodyState.Definition == null) {
+                continue;
+            }
+
+            if (waterBodyState.Definition.ProgressionTier == tier) {
+                return waterBodyState;
+            }
+        }
+
+        return null;
+    }
     #endregion
 
     #region Subclass

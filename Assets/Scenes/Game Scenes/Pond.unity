@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 12ccb828343c3405fb94289774b51aad, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -19266,6 +19266,10 @@ PrefabInstance:
       propertyPath: portal
       value: Hub
       objectReference: {fileID: 0}
+    - target: {fileID: 7220760250491172555, guid: a898c84a8f1adf1489b2b2a69c918f8a, type: 3}
+      propertyPath: portalDestinationSceneName
+      value: Hub
+      objectReference: {fileID: 0}
     - target: {fileID: 8248146201404556289, guid: a898c84a8f1adf1489b2b2a69c918f8a, type: 3}
       propertyPath: m_Name
       value: PortalPrefab
@@ -19297,6 +19301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelPlayerSpawner
   spawnPoint: {fileID: 1084385187}
   yOffset: 3
+  portalSFX: {fileID: 8300000, guid: 6c2d2300f820e3c41b78f4dd4bafa6fb, type: 3}
 --- !u!1 &2055288593
 GameObject:
   m_ObjectHideFlags: 0

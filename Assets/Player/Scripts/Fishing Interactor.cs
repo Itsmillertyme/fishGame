@@ -34,7 +34,6 @@ public class FishingInteractor : MonoBehaviour {
 
     [Header("DEBUG ONLY - Replace with tacklebox references")]
     [SerializeField] GameObject rodObject;
-    [SerializeField] GameObject reelObject;
 
     [Header("State (Read Only)")]
     [SerializeField] bool canFish;
@@ -56,6 +55,8 @@ public class FishingInteractor : MonoBehaviour {
     float pendingSize01;
     TackleModifiers pendingTackle;
 
+    [SerializeField] AudioClip castingSFX;
+
     public bool CanFish => currentHotspot != null;
     public bool IsFishing => inputs != null && inputs.cast;
     public FishingHotspot CurrentHotspot => currentHotspot;
@@ -69,7 +70,6 @@ public class FishingInteractor : MonoBehaviour {
         if (tackleBox == null) tackleBox = GetComponent<TackleBox>();
 
         if (rodObject != null) rodObject.SetActive(false);
-        if (reelObject != null) reelObject.SetActive(false);
     }
 
     void OnEnable() {
@@ -110,9 +110,6 @@ public class FishingInteractor : MonoBehaviour {
 
         // Show rod, reel and tackle
         if (rodObject != null) rodObject.SetActive(true);
-        if (reelObject != null) reelObject.SetActive(true);
-
-        // UI pop up here??
     }
 
     void OnTriggerExit(Collider other) {
@@ -121,7 +118,6 @@ public class FishingInteractor : MonoBehaviour {
 
         // Hide rod, reel and tackle
         if (rodObject != null) rodObject.SetActive(false);
-        if (reelObject != null) reelObject.SetActive(false);
 
         // If we walked out while waiting or fishing, stop.
         if (IsFishing || biteRoutine != null) {
@@ -146,6 +142,10 @@ public class FishingInteractor : MonoBehaviour {
         }
 
         TryStartFishing();
+    }
+
+    public void OnCastThrow() {
+        AudioSource.PlayClipAtPoint(castingSFX, transform.position, 0.65f);
     }
 
     public void TryStartFishing() {
@@ -207,7 +207,6 @@ public class FishingInteractor : MonoBehaviour {
     IEnumerator ShowCaughtFish(FishSpeciesConfig species, float fishSize01) {
 
         rodObject.SetActive(false);
-        reelObject.SetActive(false);
 
         cameraController.EnterCutsceneCam();
 
@@ -215,11 +214,11 @@ public class FishingInteractor : MonoBehaviour {
 
         Vector3 spawnPosition = transform.position + transform.forward * 10f;
 
-        GameObject caughtFish = Instantiate(pendingSpecies.Prefab, spawnPosition, Quaternion.Euler(-90, 0, -90));
+        GameObject caughtFish = Instantiate(pendingSpecies.Prefab, spawnPosition, Quaternion.Euler(-90, -90, -90));
         caughtFish.name = species.name + " - " + fishSize01;
 
         if (pendingSpecies.isTrophy) {
-            caughtFish.transform.localScale = new Vector3(0.12f, 0.12f, 0.12f);
+            caughtFish.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
         }
 
         GameObject billboardGO = new GameObject("Billboard");
@@ -273,7 +272,7 @@ public class FishingInteractor : MonoBehaviour {
 
         Animator animator = GetComponent<Animator>();
         animator.SetBool("IsShowingFish", true);
-        animator.CrossFade("DisplayFish", 0.25f);
+        //animator.CrossFade("DisplayFish", 0.25f);
 
         float elapsed = 0f;
         float duration = 0.5f;
@@ -300,7 +299,6 @@ public class FishingInteractor : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
 
         rodObject.SetActive(true);
-        reelObject.SetActive(true);
 
         playerController.MovementLocked = false;
 

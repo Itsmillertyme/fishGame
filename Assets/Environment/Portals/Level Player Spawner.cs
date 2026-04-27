@@ -4,6 +4,7 @@ public class LevelPlayerSpawner : MonoBehaviour {
     #region Variables
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private float yOffset = 0.1f;
+    [SerializeField] AudioClip portalSFX;
     #endregion
 
     #region Unity Methods
@@ -29,6 +30,15 @@ public class LevelPlayerSpawner : MonoBehaviour {
 
         controller.transform.position = spawnPoint.position + Vector3.up * yOffset;
         controller.transform.rotation = spawnPoint.rotation;
+
+        CameraController cameraController = controller.GetComponent<CameraController>();
+        cameraController.SnapBehindPlayer(controller.transform);
+
+        AudioSource.PlayClipAtPoint(
+                    portalSFX,
+                    transform.TransformPoint(controller.center),
+                    0.5f
+                );
 
         if (controller != null) {
             controller.enabled = true;
