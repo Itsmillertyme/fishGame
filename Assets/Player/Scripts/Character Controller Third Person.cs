@@ -110,6 +110,10 @@ public class CharacterControllerThirdPerson : MonoBehaviour {
         Move();
     }
 
+    private void OnEnable() {
+        CardShopUI.OnShopEntered += LockMovement;
+        CardShopUI.OnShopExited += UnlockMovement;
+    }
     private void OnDrawGizmosSelected() {
         Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
         Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
@@ -290,6 +294,14 @@ public class CharacterControllerThirdPerson : MonoBehaviour {
         if (verticalVelocity < terminalVelocity) {
             verticalVelocity += gravity * Time.deltaTime;
         }
+    }
+
+    private void LockMovement(int i) {
+        MovementLocked = true;
+    }
+
+    private void UnlockMovement(int i) {
+        MovementLocked = false;
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ public class PlayerDataRuntime : MonoBehaviour {
     [Header("Refs")]
     [SerializeField] private CosmeticRegistry cosmeticRegistry;
     [SerializeField] private CardRegistry cardRegistry;
+
+    public event Action<int> OnMoneyAmountChanged;
 
     public bool tier2Unlocked = false;
     public bool tier3Unlocked = false;
@@ -257,9 +260,13 @@ public class PlayerDataRuntime : MonoBehaviour {
     }
 
     public void AddMoney(int amount) {
-        if (amount <= 0) return;
+        if (amount == 0) return;
 
         Data.money += amount;
+
+        if (Data.money < 0) Data.money = 0;
+
+        OnMoneyAmountChanged?.Invoke(Data.money);
     }
 
     public bool TrySpendMoney(int amount) {
