@@ -206,6 +206,28 @@ public class CameraController : MonoBehaviour {
         return Mathf.Clamp(angle, min, max);
     }
 
+    public void SnapBehindPlayer(Transform playerTransform) {
+        if (playerTransform == null) return;
+        if (cinemachineCameraTarget == null) return;
+
+        cinemachineTargetYaw = playerTransform.eulerAngles.y;
+        cinemachineTargetPitch = 0f;
+
+        cinemachineCameraTarget.transform.rotation = Quaternion.Euler(
+            cinemachineTargetPitch + cameraAngleOverride,
+            cinemachineTargetYaw,
+            0.0f
+        );
+
+        if (inputs != null) {
+            inputs.look = Vector2.zero;
+            inputs.zoom = 0f;
+        }
+
+        if (gameplayCam != null) {
+            gameplayCam.PreviousStateIsValid = false;
+        }
+    }
 
     #endregion
 }

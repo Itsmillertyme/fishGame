@@ -15,6 +15,9 @@ public class PlayerDataRuntime : MonoBehaviour {
     [SerializeField] private CosmeticRegistry cosmeticRegistry;
     [SerializeField] private CardRegistry cardRegistry;
 
+    public bool tier2Unlocked = false;
+    public bool tier3Unlocked = false;
+
     private void Awake() {
         Data ??= new PlayerData();
         RebuildLookups();
@@ -25,11 +28,9 @@ public class PlayerDataRuntime : MonoBehaviour {
         RebuildLookups();
     }
 
-    private void RebuildLookups()
-    {
+    private void RebuildLookups() {
         _fishCatchById = new Dictionary<string, FishCatchEntry>();
-        foreach (var entry in Data.fishCaughtPerSpecies)
-        {
+        foreach (var entry in Data.fishCaughtPerSpecies) {
             if (entry != null && !string.IsNullOrEmpty(entry.speciesId))
                 _fishCatchById[entry.speciesId] = entry;
         }
@@ -40,10 +41,8 @@ public class PlayerDataRuntime : MonoBehaviour {
         _areasDiscovered = new HashSet<string>(Data.areaIdsDiscovered ?? new List<string>());
 
         _challengeStatesByKey = new Dictionary<string, ChallengeSaveEntry>();
-        if (Data.challengeStates != null)
-        {
-            foreach (var entry in Data.challengeStates)
-            {
+        if (Data.challengeStates != null) {
+            foreach (var entry in Data.challengeStates) {
                 if (entry == null || string.IsNullOrEmpty(entry.waterBodyId) || string.IsNullOrEmpty(entry.challengeId))
                     continue;
 
@@ -280,51 +279,41 @@ public class PlayerDataRuntime : MonoBehaviour {
         return true;
     }
 
-    private string GetChallengeStateKey(string waterBodyId, string challengeId)
-    {
+    private string GetChallengeStateKey(string waterBodyId, string challengeId) {
         return waterBodyId + "::" + challengeId;
     }
 
-    public void SaveChallengeStates(RunState runState)
-    {
-        if (runState == null)
-        {
+    public void SaveChallengeStates(RunState runState) {
+        if (runState == null) {
             return;
         }
 
         Data.challengeStates.Clear();
 
         var waterBodies = runState.WaterBodies;
-        if (waterBodies == null)
-        {
+        if (waterBodies == null) {
             RebuildLookups();
             return;
         }
 
-        for (int i = 0; i < waterBodies.Count; i++)
-        {
+        for (int i = 0; i < waterBodies.Count; i++) {
             WaterBodyRuntimeState waterBody = waterBodies[i];
-            if (waterBody == null || waterBody.Definition == null || waterBody.ActiveChallenges == null)
-            {
+            if (waterBody == null || waterBody.Definition == null || waterBody.ActiveChallenges == null) {
                 continue;
             }
 
             string waterBodyId = waterBody.Definition.Id;
-            if (string.IsNullOrEmpty(waterBodyId))
-            {
+            if (string.IsNullOrEmpty(waterBodyId)) {
                 continue;
             }
 
-            for (int j = 0; j < waterBody.ActiveChallenges.Count; j++)
-            {
+            for (int j = 0; j < waterBody.ActiveChallenges.Count; j++) {
                 ChallengeInstance challenge = waterBody.ActiveChallenges[j];
-                if (challenge == null || challenge.Definition == null || string.IsNullOrEmpty(challenge.Definition.Id))
-                {
+                if (challenge == null || challenge.Definition == null || string.IsNullOrEmpty(challenge.Definition.Id)) {
                     continue;
                 }
 
-                Data.challengeStates.Add(new ChallengeSaveEntry
-                {
+                Data.challengeStates.Add(new ChallengeSaveEntry {
                     waterBodyId = waterBodyId,
                     challengeId = challenge.Definition.Id,
                     progress = challenge.CurrentProgressValue,
@@ -336,51 +325,41 @@ public class PlayerDataRuntime : MonoBehaviour {
         RebuildLookups();
     }
 
-    public void ApplyChallengeStates(RunState runState)
-    {
-        if (runState == null || _challengeStatesByKey == null)
-        {
+    public void ApplyChallengeStates(RunState runState) {
+        if (runState == null || _challengeStatesByKey == null) {
             return;
         }
 
         var waterBodies = runState.WaterBodies;
-        if (waterBodies == null)
-        {
+        if (waterBodies == null) {
             return;
         }
 
-        for (int i = 0; i < waterBodies.Count; i++)
-        {
+        for (int i = 0; i < waterBodies.Count; i++) {
             WaterBodyRuntimeState waterBody = waterBodies[i];
-            if (waterBody == null || waterBody.Definition == null || waterBody.ActiveChallenges == null)
-            {
+            if (waterBody == null || waterBody.Definition == null || waterBody.ActiveChallenges == null) {
                 continue;
             }
 
             string waterBodyId = waterBody.Definition.Id;
-            if (string.IsNullOrEmpty(waterBodyId))
-            {
+            if (string.IsNullOrEmpty(waterBodyId)) {
                 continue;
             }
 
-            for (int j = 0; j < waterBody.ActiveChallenges.Count; j++)
-            {
+            for (int j = 0; j < waterBody.ActiveChallenges.Count; j++) {
                 ChallengeInstance challenge = waterBody.ActiveChallenges[j];
-                if (challenge == null || challenge.Definition == null || string.IsNullOrEmpty(challenge.Definition.Id))
-                {
+                if (challenge == null || challenge.Definition == null || string.IsNullOrEmpty(challenge.Definition.Id)) {
                     continue;
                 }
 
                 string key = GetChallengeStateKey(waterBodyId, challenge.Definition.Id);
-                if (!_challengeStatesByKey.TryGetValue(key, out var savedEntry))
-                {
+                if (!_challengeStatesByKey.TryGetValue(key, out var savedEntry)) {
                     continue;
                 }
 
                 challenge.SetProgress(savedEntry.progress);
 
-                if (savedEntry.isClaimed && challenge.IsCompleted)
-                {
+                if (savedEntry.isClaimed && challenge.IsCompleted) {
                     challenge.MarkClaimed();
                 }
             }

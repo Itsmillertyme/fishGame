@@ -6056,9 +6056,10 @@ MonoBehaviour:
   difficulty: 1
   extendedFight: 0
   rodObject: {fileID: 490794436}
-  reelObject: {fileID: 760368385}
   canFish: 0
   currentHotspot: {fileID: 0}
+  adsManager: {fileID: 0}
+  castingSFX: {fileID: 0}
 --- !u!114 &893070946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8574,6 +8575,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDataRuntime
   cosmeticRegistry: {fileID: 11400000, guid: bbb6a15dfb787cc48b559670c9d32000, type: 2}
   cardRegistry: {fileID: 11400000, guid: 1d10019b240966b44b1b3efe54dac500, type: 2}
+  tier2Unlocked: 0
+  tier3Unlocked: 0
 --- !u!1 &1315871787
 GameObject:
   m_ObjectHideFlags: 0
@@ -8718,7 +8721,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1379914537}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 491b740a9f4255b4d8922d48b98793f6, type: 3}
   m_Name: 

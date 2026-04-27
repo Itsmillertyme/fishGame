@@ -1,8 +1,13 @@
+using System;
 using UnityEngine;
 
 public class ChallengeProgressProcessor {
-    #region Utility Methods
 
+    #region Variables
+    public static event Action<ProgressionTier> OnFirstChallengeCompletedForTier;
+    #endregion
+
+    #region Utility Methods
     public void ProcessFishCaught(CatchInfo catchInfo, RodItem rod, ReelItem reel, LureItem lure) {
         GameSessionController controller = GameSessionController.Instance;
 
@@ -31,15 +36,56 @@ public class ChallengeProgressProcessor {
                 continue;
             }
 
+            //if (DoesMatch(challenge.Definition, catchInfo, rod, reel, lure)) {
+            //    bool wasCompletedBeforeProgress = challenge.IsCompleted;
+            //    bool hadNoCompletedChallengesBeforeProgress = currentWaterBody.CompletedChallengeCount <= 0;
+
+            //    controller.AddProgressToChallenge(currentWaterBody.Definition.Id, challenge.Definition.Id, 1);
+
+            //    Debug.Log($"Challenge Progressed: {challenge.Definition.DisplayName} ({challenge.CurrentProgressValue}/{challenge.Definition.TargetCount})");
+
+            //    if (challenge.IsCompleted) {
+            //        Debug.Log($"Challenge Completed: {challenge.Definition.DisplayName}");
+
+            //        bool wasFirstCompletedChallenge = currentWaterBody.CompletedChallengeCount <= 0;
+
+            //        AwardMoney(controller, currentWaterBody);
+
+            //        if (wasFirstCompletedChallenge) {
+            //            var tier = currentWaterBody.Definition.ProgressionTier;
+
+            //            var player = GameObject.FindFirstObjectByType<PlayerDataRuntime>();
+
+            //            if (tier == ProgressionTier.Tier1) {
+            //                player.tier2Unlocked = true;
+            //            }
+
+            //            if (tier == ProgressionTier.Tier2) {
+            //                player.tier3Unlocked = true;
+            //            }
+
+            //            OnFirstChallengeCompletedForTier?.Invoke(tier);
+            //        }
+            //    }
+            //}
             if (DoesMatch(challenge.Definition, catchInfo, rod, reel, lure)) {
+                bool wasCompletedBeforeProgress = challenge.IsCompleted;
+                bool hadNoCompletedChallengesBeforeProgress = currentWaterBody.CompletedChallengeCount <= 0;
+
                 controller.AddProgressToChallenge(currentWaterBody.Definition.Id, challenge.Definition.Id, 1);
 
                 Debug.Log($"Challenge Progressed: {challenge.Definition.DisplayName} ({challenge.CurrentProgressValue}/{challenge.Definition.TargetCount})");
 
-                if (challenge.IsCompleted) {
+                bool becameCompletedThisProgress = !wasCompletedBeforeProgress && challenge.IsCompleted;
+
+                if (becameCompletedThisProgress) {
                     Debug.Log($"Challenge Completed: {challenge.Definition.DisplayName}");
 
                     AwardMoney(controller, currentWaterBody);
+
+                    if (hadNoCompletedChallengesBeforeProgress) {
+                        UnlockNextTierFromCompletedTier(currentWaterBody.Definition.ProgressionTier);
+                    }
                 }
             }
         }
@@ -167,11 +213,31 @@ public class ChallengeProgressProcessor {
 
     int GetRandomRewardForTier(ProgressionTier tier) {
         switch (tier) {
-            case ProgressionTier.Tier1: return Random.Range(25, 51);
-            case ProgressionTier.Tier2: return Random.Range(50, 101);
-            case ProgressionTier.Tier3: return Random.Range(100, 176);
+            case ProgressionTier.Tier1: return UnityEngine.Random.Range(25, 51);
+            case ProgressionTier.Tier2: return UnityEngine.Random.Range(50, 101);
+            case ProgressionTier.Tier3: return UnityEngine.Random.Range(100, 176);
             default: return 50;
         }
     }
+
+    void UnlockNextTierFromCompletedTier(ProgressionTier completedTier) {
+        PlayerDataRuntime player = GameObject.FindFirstObjectByType<PlayerDataRuntime>();
+
+        if (player == null) {
+            Debug.LogWarning("ChallengeProgressProcessor: No PlayerDataRuntime found for tier unlock.");
+            return;
+        }
+
+        if (completedTier == ProgressionTier.Tier1) {
+            player.tier2Unlocked = true;
+        }
+
+        if (completedTier == ProgressionTier.Tier2) {
+            player.tier3Unlocked = true;
+        }
+
+        OnFirstChallengeCompletedForTier?.Invoke(completedTier);
+    }
+
     #endregion
 }

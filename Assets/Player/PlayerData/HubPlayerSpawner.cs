@@ -8,6 +8,8 @@ public class HubPlayerSpawner : MonoBehaviour {
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private string defaultSpawnId = "Default";
     [SerializeField] private float yOffset = 0.1f;
+
+    [SerializeField] AudioClip portalSFX;
     #endregion
 
     #region Unity Methods
@@ -63,8 +65,18 @@ public class HubPlayerSpawner : MonoBehaviour {
 
         controller.transform.localPosition = new Vector3(0, controller.transform.localPosition.y, 0);
 
+
         player.transform.position = spawnPoint.position;
         player.transform.rotation = spawnPoint.rotation;
+
+        CameraController cameraController = controller.GetComponent<CameraController>();
+        cameraController.SnapBehindPlayer(controller.transform);
+
+        AudioSource.PlayClipAtPoint(
+                    portalSFX,
+                    transform.TransformPoint(controller.center),
+                    0.5f
+                );
 
         if (controller != null) {
             controller.enabled = true;

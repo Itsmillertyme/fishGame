@@ -27,6 +27,7 @@ public class GameSessionController : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
+
     #endregion
 
     #region Utility Methods
@@ -175,45 +176,6 @@ public class GameSessionController : MonoBehaviour {
         return sortedWaterBodies;
     }
 
-    // private List<ChallengeInstance> GenerateChallengesForWaterBody(WaterBodyDefinition waterBodyDefinition) {
-    //List<ChallengeInstance> generatedChallenges = new List<ChallengeInstance>();
-
-    //if (waterBodyDefinition == null || waterBodyDefinition.ChallengePool == null || waterBodyDefinition.ChallengePool.Count == 0) {
-    //    return generatedChallenges;
-    //}
-
-    //List<ChallengeDefinition> candidatePool = new List<ChallengeDefinition>();
-
-    //for (int i = 0; i < waterBodyDefinition.ChallengePool.Count; i++) {
-    //    ChallengeDefinition challengeDefinition = waterBodyDefinition.ChallengePool[i];
-
-    //    if (challengeDefinition != null) {
-    //        candidatePool.Add(challengeDefinition);
-    //    }
-    //}
-
-    //if (candidatePool.Count == 0) {
-    //    return generatedChallenges;
-    //}
-
-    //int challengeCount = waterBodyDefinition.GetRandomChallengeCount();
-    //challengeCount = Mathf.Clamp(challengeCount, 0, candidatePool.Count);
-
-    //for (int i = 0; i < challengeCount; i++) {
-    //    ChallengeDefinition selectedDefinition = GetWeightedRandomChallenge(candidatePool);
-
-    //    if (selectedDefinition == null) {
-    //        break;
-    //    }
-
-    //    generatedChallenges.Add(new ChallengeInstance(selectedDefinition));
-    //    candidatePool.Remove(selectedDefinition);
-    //}
-
-    //return generatedChallenges;
-
-
-    //}
     private List<ChallengeInstance> GenerateChallengesForWaterBody(WaterBodyDefinition waterBodyDefinition) {
         List<ChallengeInstance> generatedChallenges = new List<ChallengeInstance>();
 

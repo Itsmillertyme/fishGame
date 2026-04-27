@@ -345,6 +345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalScript
   portal: Pond
+  hubReturnSpawnId: 
 --- !u!1 &8347402820644565295
 GameObject:
   m_ObjectHideFlags: 0
