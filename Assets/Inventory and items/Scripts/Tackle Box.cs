@@ -66,19 +66,25 @@ public class TackleBox : MonoBehaviour {
 
     public void EquipCard(Card card)
     {
-        var item = gearMapper.GetItemForCard(card.id);
+        if (card == null) return;
+
+        var item = gearMapper.GetItemForCard<ScriptableObject>(card.id);
 
         switch (card.upgradeType)
         {
-            case UpgradeType.Rod:
-                EquipRod(item as RodItem);
-                break;
-            case UpgradeType.Reel:
-                EquipReel(item as ReelItem);
-                break;
-            case UpgradeType.Lure:
-                EquipLure(item as LureItem);
-                break;
+            case UpgradeType.Rod: EquipRod(item as RodItem); break;
+            case UpgradeType.Reel: EquipReel(item as ReelItem); break;
+            case UpgradeType.Lure: EquipLure(item as LureItem); break;
+        }
+    }
+
+    public void UnequipSlot(UpgradeType type)
+    {
+        switch (type)
+        {
+            case UpgradeType.Rod: equippedRod = defaultLoadout.startingRod; break;
+            case UpgradeType.Reel: equippedReel = defaultLoadout.startingReel; break;
+            case UpgradeType.Lure: equippedLure = defaultLoadout.startingLure; break;
         }
     }
 
