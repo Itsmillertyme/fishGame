@@ -1,11 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-public class CardShopUI : MonoBehaviour
-{
+public class CardShopUI : MonoBehaviour {
     [Header("Data")]
     [SerializeField] private CardRegistry cardRegistry;
     [SerializeField] private TackleBox tackleBox;
@@ -26,6 +25,11 @@ public class CardShopUI : MonoBehaviour
     [SerializeField] private Button purchaseButton;
     [SerializeField] private Button backButton;
 
+    [Header("SFX")]
+    [SerializeField] AudioClip purchaseSFX;
+    [SerializeField] AudioClip deniedSFX;
+    [SerializeField] AudioClip shuffleSFX;
+
     [Header("Save Data")]
     [SerializeField] private PlayerDataRuntime playerDataRuntime;
     [SerializeField] private int cardPrice = 100;
@@ -33,8 +37,10 @@ public class CardShopUI : MonoBehaviour
     private Card currentSelectedCard;
     private List<Card> currentShownCards = new List<Card>();
 
-    private void Awake()
-    {
+    public static event Action<int> OnShopEntered;
+    public static event Action<int> OnShopExited;
+
+    private void Awake() {
         closeButton.onClick.AddListener(CloseShop);
         shuffleButton.onClick.AddListener(ShuffleCards);
 
@@ -46,46 +52,61 @@ public class CardShopUI : MonoBehaviour
         slot3.onClicked = SelectCard;
     }
 
-    private void OnEnable()
-    {
-        OpenShop();
+    private void OnEnable() {
+        RefreshCards();
+        CloseShop();
     }
 
-    public void OpenShop()
-    {
+    public void OpenShop() {
+        playerDataRuntime.AddMoney(100);
+
+        OnShopEntered?.Invoke(55);
+
         shopPanel.SetActive(true);
         detailPanel.SetActive(false);
         RefreshCards();
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
-    public void CloseShop()
-    {
+    public void CloseShop() {
         detailPanel.SetActive(false);
         shopPanel.SetActive(false);
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        OnShopExited?.Invoke(55);
     }
 
-    public void ShuffleCards()
-    {
-        RefreshCards();
+    public void ShuffleCards() {
+        if (playerDataRuntime.GetMoney() >= 10) {
+            playerDataRuntime.AddMoney(-10);
+            RefreshCards();
+
+            AudioSource.PlayClipAtPoint(shuffleSFX, playerDataRuntime.transform.position);
+        }
+        else {
+            AudioSource.PlayClipAtPoint(deniedSFX, playerDataRuntime.transform.position);
+        }
+
     }
 
-    private void RefreshCards()
-    {
+    private void RefreshCards() {
         var allCards = GetAllValidCards();
-        currentShownCards = allCards.OrderBy(x => Random.value).Take(3).ToList();
+        currentShownCards = allCards.OrderBy(x => UnityEngine.Random.value).Take(3).ToList();
 
         slot1.SetCard(currentShownCards.Count > 0 ? currentShownCards[0] : null);
         slot2.SetCard(currentShownCards.Count > 1 ? currentShownCards[1] : null);
         slot3.SetCard(currentShownCards.Count > 2 ? currentShownCards[2] : null);
     }
 
-    private List<Card> GetAllValidCards()
-    {
+    private List<Card> GetAllValidCards() {
         return cardRegistry == null ? new List<Card>() : cardRegistry.GetAllCards();
     }
 
-    private void SelectCard(Card card)
-    {
+    private void SelectCard(Card card) {
         if (card == null) return;
 
         currentSelectedCard = card;
@@ -94,26 +115,31 @@ public class CardShopUI : MonoBehaviour
         detailCardImage.sprite = card.cardImage;
     }
 
-    private void CloseDetailPanel()
-    {
+    private void CloseDetailPanel() {
         currentSelectedCard = null;
         detailPanel.SetActive(false);
     }
 
-    private void PurchaseSelectedCard()
-    {
+    private void PurchaseSelectedCard() {
         if (currentSelectedCard == null) return;
 
-        ApplyCardToTackleBox(currentSelectedCard);
-        CloseShop();
+        if (playerDataRuntime.GetMoney() >= cardPrice) {
+            playerDataRuntime.AddMoney(-cardPrice);
+            AudioSource.PlayClipAtPoint(purchaseSFX, playerDataRuntime.transform.position);
+            ApplyCardToTackleBox(currentSelectedCard);
+            CloseShop();
+        }
+        else {
+            AudioSource.PlayClipAtPoint(deniedSFX, playerDataRuntime.transform.position);
+        }
     }
 
-    private void ApplyCardToTackleBox(Card card)
-    {
+    private void ApplyCardToTackleBox(Card card) {
         if (tackleBox == null || card == null) return;
 
         tackleBox.EquipCard(card);
 
+        playerDataRuntime.AddCard(card.id);
         playerDataRuntime.EquipCard(card.id);
     }
 }
