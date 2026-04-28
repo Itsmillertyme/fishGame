@@ -30503,6 +30503,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 1142057333}
   yOffset: 3
   portalSFX: {fileID: 8300000, guid: 6c2d2300f820e3c41b78f4dd4bafa6fb, type: 3}
+  waterBodyID: Poplar_Creek
 --- !u!4 &1664822843 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1830855614657411705, guid: a898c84a8f1adf1489b2b2a69c918f8a, type: 3}

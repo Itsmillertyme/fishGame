@@ -3550,6 +3550,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 1930686345}
   yOffset: 3
   portalSFX: {fileID: 8300000, guid: 6c2d2300f820e3c41b78f4dd4bafa6fb, type: 3}
+  waterBodyID: Brinefin_Ocean
 --- !u!43 &511620426
 Mesh:
   m_ObjectHideFlags: 0

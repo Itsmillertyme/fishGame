@@ -19302,6 +19302,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 1084385187}
   yOffset: 3
   portalSFX: {fileID: 8300000, guid: 6c2d2300f820e3c41b78f4dd4bafa6fb, type: 3}
+  waterBodyID: Peepaws_Pond
 --- !u!1 &2055288593
 GameObject:
   m_ObjectHideFlags: 0
