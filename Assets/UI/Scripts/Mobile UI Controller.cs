@@ -31,8 +31,8 @@ public class MobileUIController : MonoBehaviour {
         }
 
         if (enabled) {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = false;
         }
     }
 }

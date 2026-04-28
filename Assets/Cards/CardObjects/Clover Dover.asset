@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9038b7cbbb14c9240adb4ce6f5f14041, type: 3}
   m_Name: Clover Dover
   m_EditorClassIdentifier: Assembly-CSharp::Card
-  upgradeType: 0
+  upgradeType: 2
   id: 7
   cardName: Clover Dover
   passiveDescription: This lucky lure seems to snap up a rarer fish more often

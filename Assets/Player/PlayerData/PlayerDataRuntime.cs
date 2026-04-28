@@ -24,6 +24,7 @@ public class PlayerDataRuntime : MonoBehaviour {
     private void Awake() {
         Data ??= new PlayerData();
         RebuildLookups();
+
     }
 
     public void InitializeFromLoaded(PlayerData loaded) {

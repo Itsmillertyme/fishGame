@@ -7,6 +7,7 @@ public class PhoneMenuController : MonoBehaviour {
 
     public GameObject anglerpedia;
     public GameObject settingsMenu;
+    public GameObject tacklebox;
 
     private void Start() {
         phoneWidget.SetActive(true);
@@ -36,9 +37,15 @@ public class PhoneMenuController : MonoBehaviour {
         if (!phoneMenu.activeSelf) {
             phoneMenu.SetActive(true);
             phoneWidget.SetActive(false);
+
+            //Cursor.visible = true;
+            //Cursor.lockState = CursorLockMode.None;
         }
         else {
+            //Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
             ClosePhoneMenu();
+
         }
     }
 
@@ -64,5 +71,6 @@ public class PhoneMenuController : MonoBehaviour {
 
         anglerpedia.SetActive(false);
         settingsMenu.SetActive(false);
+        tacklebox.SetActive(false);
     }
 }

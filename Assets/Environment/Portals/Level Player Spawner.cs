@@ -5,6 +5,7 @@ public class LevelPlayerSpawner : MonoBehaviour {
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private float yOffset = 0.1f;
     [SerializeField] AudioClip portalSFX;
+    [SerializeField] string waterBodyID;
     #endregion
 
     #region Unity Methods
@@ -39,6 +40,8 @@ public class LevelPlayerSpawner : MonoBehaviour {
                     transform.TransformPoint(controller.center),
                     0.5f
                 );
+
+        GameSessionController.Instance.SetCurrentWaterBody(waterBodyID);
 
         if (controller != null) {
             controller.enabled = true;

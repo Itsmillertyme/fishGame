@@ -17,9 +17,34 @@ public class TackleBox : MonoBehaviour {
 
     #region Unity Methods
     void Awake() {
+
+
         if (equippedRod == null || equippedReel == null || equippedLure == null) {
             ResetToDefaults();
         }
+    }
+
+    private void Start() {
+        PlayerDataRuntime playerData = FindFirstObjectByType<PlayerDataRuntime>();
+
+
+        int defaultRodID = gearMapper.GetCardforItem(defaultLoadout.startingRod);
+        int defaultReelID = gearMapper.GetCardforItem(defaultLoadout.startingReel);
+        int defaultLureID = gearMapper.GetCardforItem(defaultLoadout.startingLure);
+
+
+        playerData.AddCard(defaultRodID);
+        playerData.AddCard(defaultReelID);
+        playerData.AddCard(defaultLureID);
+
+        playerData.EquipCard(defaultRodID);
+        playerData.EquipCard(defaultReelID);
+        playerData.EquipCard(defaultLureID);
+
+        EquipRod(defaultLoadout.startingRod);
+        EquipReel(defaultLoadout.startingReel);
+        EquipLure(defaultLoadout.startingLure);
+
     }
     #endregion
 
@@ -64,30 +89,25 @@ public class TackleBox : MonoBehaviour {
         return tackleMods;
     }
 
-    public void EquipCard(Card card)
-    {
+    public void EquipCard(Card card) {
         if (card == null) return;
 
-        if (gearMapper == null)
-        {
+        if (gearMapper == null) {
             Debug.LogError("TackleBox: GearMapper is not assigned! Please assign it in the Inspector.");
             return;
         }
 
         var item = gearMapper.GetItemForCard<ScriptableObject>(card.id);
 
-        switch (card.upgradeType)
-        {
+        switch (card.upgradeType) {
             case UpgradeType.Rod: EquipRod(item as RodItem); break;
             case UpgradeType.Reel: EquipReel(item as ReelItem); break;
             case UpgradeType.Lure: EquipLure(item as LureItem); break;
         }
     }
 
-    public void UnequipSlot(UpgradeType type)
-    {
-        switch (type)
-        {
+    public void UnequipSlot(UpgradeType type) {
+        switch (type) {
             case UpgradeType.Rod: equippedRod = defaultLoadout.startingRod; break;
             case UpgradeType.Reel: equippedReel = defaultLoadout.startingReel; break;
             case UpgradeType.Lure: equippedLure = defaultLoadout.startingLure; break;
