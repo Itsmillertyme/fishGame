@@ -58,24 +58,22 @@ public class CardShopUI : MonoBehaviour {
     }
 
     public void OpenShop() {
-        playerDataRuntime.AddMoney(100);
-
         OnShopEntered?.Invoke(55);
 
         shopPanel.SetActive(true);
         detailPanel.SetActive(false);
         RefreshCards();
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
     }
 
     public void CloseShop() {
         detailPanel.SetActive(false);
         shopPanel.SetActive(false);
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
 
         OnShopExited?.Invoke(55);
     }

@@ -134,7 +134,7 @@ public class ChallengeUIController : MonoBehaviour {
 
         TMP_Text newText = Instantiate(challengeTextPrefab, parentContainer);
         newText.transform.SetParent(parentContainer, false);
-        newText.text = "\t" + GetChallengeDisplayText(challengeInstance);
+        newText.text = GetChallengeDisplayText(challengeInstance);
         newText.fontSize = 14;
     }
 

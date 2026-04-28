@@ -12,4 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637f4fb3bfb05f94caa33b6f0b6304a2, type: 3}
   m_Name: Gear Mapper
   m_EditorClassIdentifier: Assembly-CSharp::GearMapper
-  mappings: []
+  mappings:
+  - cardId: 0
+    gearItem: {fileID: 11400000, guid: e3fd1636deb27fa41b2d6e0cb53029c6, type: 2}
+  - cardId: 1
+    gearItem: {fileID: 11400000, guid: 8a8f461bea5b30d4791945d2d0f19fd8, type: 2}
+  - cardId: 2
+    gearItem: {fileID: 11400000, guid: fdf43c2ae3d0dd8458c62200d117ba11, type: 2}
+  - cardId: 3
+    gearItem: {fileID: 11400000, guid: 2aab96caa4a3600478c72cbb5eaa76e9, type: 2}
+  - cardId: 4
+    gearItem: {fileID: 11400000, guid: 3305da5c3dd90944a95cd2f224212482, type: 2}
+  - cardId: 5
+    gearItem: {fileID: 11400000, guid: fd04b18e7046b7045b4b73ec38408700, type: 2}
+  - cardId: 6
+    gearItem: {fileID: 11400000, guid: 4ce538f6fe08a0347baf9dddb6ec7355, type: 2}
+  - cardId: 7
+    gearItem: {fileID: 11400000, guid: f42c228117ad62140aba0a909e89e4b8, type: 2}
+  - cardId: 8
+    gearItem: {fileID: 11400000, guid: 5926e011c54c1ae4299cb89c4fd926f7, type: 2}
+  - cardId: 9
+    gearItem: {fileID: 11400000, guid: 4c7f168604ceb104ca9b2827793faac3, type: 2}
+  - cardId: 10
+    gearItem: {fileID: 11400000, guid: 73ef5ff9a6955c14082a1a59b1405bf4, type: 2}
+  - cardId: 11
+    gearItem: {fileID: 11400000, guid: d13e5de7fad9ece4b824c696900ccfa1, type: 2}

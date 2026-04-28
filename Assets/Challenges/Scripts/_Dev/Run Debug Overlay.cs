@@ -69,8 +69,8 @@ public class RunDebugOverlay : MonoBehaviour {
             return;
         }
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
     }
 
     //private void LateUpdate() {
