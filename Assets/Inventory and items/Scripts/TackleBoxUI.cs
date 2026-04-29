@@ -18,7 +18,12 @@ public class TackleBoxUI : MonoBehaviour {
     [SerializeField] private Transform cardListContainer;
     [SerializeField] private GameObject cardSlotPrefab;
 
-    private void Awake() {
+    private void Start() {
+
+        foreach (int cardId in playerDataRuntime.Data.cardIdsOwned) {
+            EquipCard(cardRegistry.GetById(cardId));
+        }
+
         tackleBoxPanel.SetActive(false);
     }
 

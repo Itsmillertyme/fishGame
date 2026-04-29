@@ -16464,6 +16464,10 @@ PrefabInstance:
       propertyPath: m_PreserveAspect
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8506343329116698411, guid: 92b91e8347bc42e4aaf2cc79cd907c61, type: 3}
+      propertyPath: m_SortingOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8803051418425511275, guid: 92b91e8347bc42e4aaf2cc79cd907c61, type: 3}
       propertyPath: m_TargetGraphic
       value: 
@@ -17049,7 +17053,7 @@ MonoBehaviour:
   gameplayCam: {fileID: 9103048079195344049}
   cutsceneCam: {fileID: 7239690899626699401}
   topClamp: 65
-  bottomClamp: -45
+  bottomClamp: -5
   cameraAngleOverride: 0
   mouseLookSensitivity: 8
   gamepadLookSensitivity: 120

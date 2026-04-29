@@ -92,8 +92,11 @@ public class CardShopUI : MonoBehaviour {
     }
 
     private void RefreshCards() {
-        var allCards = GetAllValidCards();
-        currentShownCards = allCards.OrderBy(x => UnityEngine.Random.value).Take(3).ToList();
+        var defaultCardIds = GetDefaultCardIds();
+
+        var allCards = GetAllValidCards().Where(card => card != null && !defaultCardIds.Contains(card.id)).ToList();
+
+        currentShownCards = allCards.OrderBy(card => UnityEngine.Random.value).Take(3).ToList();
 
         slot1.SetCard(currentShownCards.Count > 0 ? currentShownCards[0] : null);
         slot2.SetCard(currentShownCards.Count > 1 ? currentShownCards[1] : null);
@@ -140,4 +143,33 @@ public class CardShopUI : MonoBehaviour {
         playerDataRuntime.AddCard(card.id);
         playerDataRuntime.EquipCard(card.id);
     }
+
+    private HashSet<int> GetDefaultCardIds() {
+        HashSet<int> defaultCardIds = new HashSet<int>();
+
+        TackleBox playerTackleBox = FindFirstObjectByType<TackleBox>();
+
+        if (playerTackleBox == null) {
+            return defaultCardIds;
+        }
+
+        AddDefaultCardId(defaultCardIds, playerTackleBox.GearMapper, playerTackleBox.DefaultLoadout.startingRod);
+        AddDefaultCardId(defaultCardIds, playerTackleBox.GearMapper, playerTackleBox.DefaultLoadout.startingReel);
+        AddDefaultCardId(defaultCardIds, playerTackleBox.GearMapper, playerTackleBox.DefaultLoadout.startingLure);
+
+        return defaultCardIds;
+    }
+
+    private void AddDefaultCardId(HashSet<int> defaultCardIds, GearMapper gearMapper, ScriptableObject item) {
+        if (item == null) {
+            return;
+        }
+
+        int cardId = cardRegistry.GetById(gearMapper.GetCardforItem(item)).id;
+
+        if (cardId >= 0) {
+            defaultCardIds.Add(cardId);
+        }
+    }
+
 }
