@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab80d80c0fcfa44db28e0ae5615411c, type: 3}
+  m_Name: Catch 3 on Default Lure
+  m_EditorClassIdentifier: Assembly-CSharp::ChallengeDefinition
+  id: pond_use_default_lure
+  displayName: Catch 3 Fish Using The Default Lure
+  description: Catch 3 fish in the pond using the default lure.
+  selectionWeight: 2
+  objectiveType: 4
+  targetCount: 3
+  requiredSpecies: []
+  requiredRods: []
+  requiredReels: []
+  requiredLures:
+  - {fileID: 11400000, guid: d13e5de7fad9ece4b824c696900ccfa1, type: 2}
+  requireTrophy: 0

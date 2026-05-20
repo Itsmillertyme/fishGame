@@ -3,11 +3,8 @@ using TMPro;
 using UnityEngine;
 
 public class ChallengeUIController : MonoBehaviour {
-    [System.Serializable]
-    public class TierContainerBinding {
-        public ProgressionTier tier;
-        public Transform container;
-    }
+
+    #region Variables
 
     [Header("References")]
     [SerializeField] private GameSessionController sessionController;
@@ -17,7 +14,9 @@ public class ChallengeUIController : MonoBehaviour {
     [SerializeField] private TMP_Text challengeTextPrefab;
 
     private Dictionary<ProgressionTier, Transform> tierContainerLookup = new Dictionary<ProgressionTier, Transform>();
+    #endregion
 
+    #region Unity Methods
     private void Awake() {
         if (sessionController == null) {
             sessionController = GameSessionController.Instance;
@@ -26,6 +25,27 @@ public class ChallengeUIController : MonoBehaviour {
         BuildTierContainerLookup();
     }
 
+
+    private void OnEnable() {
+        if (sessionController == null) {
+            sessionController = GameSessionController.Instance;
+        }
+
+        if (sessionController != null) {
+            sessionController.OnChallengeUpdated += HandleChallengeUpdated;
+        }
+
+        BuildChallengeUI();
+    }
+
+    private void OnDisable() {
+        if (sessionController != null) {
+            sessionController.OnChallengeUpdated -= HandleChallengeUpdated;
+        }
+    }
+    #endregion
+
+    #region Utility Methods
     public void BuildChallengeUI() {
         if (sessionController == null) {
             sessionController = GameSessionController.Instance;
@@ -73,7 +93,7 @@ public class ChallengeUIController : MonoBehaviour {
         BuildChallengeUI();
     }
 
-    private void BuildTierContainerLookup() {
+    void BuildTierContainerLookup() {
         tierContainerLookup.Clear();
 
         for (int i = 0; i < tierContainers.Count; i++) {
@@ -87,7 +107,7 @@ public class ChallengeUIController : MonoBehaviour {
         }
     }
 
-    private void CreateChallengeText(ChallengeInstance challengeInstance, Transform parentContainer) {
+    void CreateChallengeText(ChallengeInstance challengeInstance, Transform parentContainer) {
         if (challengeTextPrefab == null) {
             Debug.LogWarning("ChallengeUIController: No challengeTextPrefab assigned.");
             return;
@@ -95,10 +115,11 @@ public class ChallengeUIController : MonoBehaviour {
 
         TMP_Text newText = Instantiate(challengeTextPrefab, parentContainer);
         newText.transform.SetParent(parentContainer, false);
-        newText.text = GetChallengeDisplayText(challengeInstance);
+        newText.text = "\t" + GetChallengeDisplayText(challengeInstance);
+        newText.fontSize = 14;
     }
 
-    private string GetChallengeDisplayText(ChallengeInstance challengeInstance) {
+    string GetChallengeDisplayText(ChallengeInstance challengeInstance) {
         string status = "";
 
         if (challengeInstance.IsClaimed) {
@@ -130,4 +151,23 @@ public class ChallengeUIController : MonoBehaviour {
             }
         }
     }
+
+    void HandleChallengeUpdated(ChallengeInstance instance) {
+        RefreshAllChallengeUI();
+    }
+
+    #endregion
+
+    #region Subclass
+    [System.Serializable]
+    public class TierContainerBinding {
+        public ProgressionTier tier;
+        public Transform container;
+    }
+    #endregion
+
+
+
+
+
 }
