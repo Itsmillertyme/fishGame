@@ -13,6 +13,10 @@ public class TackleBox : MonoBehaviour {
 
     [Header("Gear Mapper")]
     [SerializeField] private GearMapper gearMapper;
+
+    public DefaultLoadout DefaultLoadout { get => defaultLoadout; }
+    public GearMapper GearMapper { get => gearMapper; }
+
     #endregion
 
     #region Unity Methods
@@ -22,6 +26,14 @@ public class TackleBox : MonoBehaviour {
         if (equippedRod == null || equippedReel == null || equippedLure == null) {
             ResetToDefaults();
         }
+
+        //register default items
+        PlayerDataRuntime playerData = FindFirstObjectByType<PlayerDataRuntime>();
+
+
+        playerData.EquipCard(gearMapper.GetCardforItem(defaultLoadout.startingRod));
+        playerData.EquipCard(gearMapper.GetCardforItem(defaultLoadout.startingReel));
+        playerData.EquipCard(gearMapper.GetCardforItem(defaultLoadout.startingLure));
     }
 
     private void Start() {

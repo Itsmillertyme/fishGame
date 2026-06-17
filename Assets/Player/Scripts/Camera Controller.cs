@@ -152,7 +152,7 @@ public class CameraController : MonoBehaviour {
             float deltaTimeMultiplier = usingMouse ? 1.0f : Time.deltaTime;
 
             cinemachineTargetYaw += inputs.look.x * sensitivity * deltaTimeMultiplier;
-            cinemachineTargetPitch += inputs.look.y * sensitivity * deltaTimeMultiplier;
+            cinemachineTargetPitch -= inputs.look.y * sensitivity * deltaTimeMultiplier;
         }
 
         cinemachineTargetYaw = ClampAngle(cinemachineTargetYaw, float.MinValue, float.MaxValue);
