@@ -6,6 +6,8 @@ public class FishingMinigameController : MonoBehaviour {
     [Header("References")]
     [SerializeField] MinigameInputRouter inputRouter;
     [SerializeField] MinigameUIView uiView;
+    [SerializeField] private MinigameInstructionPopup instructionPopup;
+    [SerializeField] private PlayerDataRuntime playerDataRuntime;
 
     [Header("Audio")]
     [SerializeField] AudioSource minigameAudioSource;
@@ -117,6 +119,8 @@ public class FishingMinigameController : MonoBehaviour {
         }
         else {
             activeMinigame = new CastingRodMinigame();
+            activeMinigame.Initialize(instructionPopup, playerDataRuntime);
+            activeMinigame.Begin(context);
             uiView.ShowSpinning(false);
             uiView.ShowCasting(true);
         }

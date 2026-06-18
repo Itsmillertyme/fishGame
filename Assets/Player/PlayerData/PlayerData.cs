@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class PlayerData {
     public string playerId;
 
+    public bool hasSeenCastingMinigameTutorial;
+
     public int money;
 
     public List<string> fishDiscoveredIds = new List<string>();

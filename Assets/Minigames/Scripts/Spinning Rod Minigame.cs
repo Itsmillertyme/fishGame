@@ -283,6 +283,11 @@ public class SpinningRodMinigame : IMinigame {
         if (deg < 0f) deg += 360f;
         return deg;
     }
+
+    public void Initialize(MinigameInstructionPopup popup, PlayerDataRuntime runtime)
+    {
+        throw new System.NotImplementedException();
+    }
     #endregion
 
     #region Structs

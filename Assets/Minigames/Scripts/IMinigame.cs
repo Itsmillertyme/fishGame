@@ -10,6 +10,7 @@ public interface IMinigame {
     void Begin(in MinigameContext context);
     void HandleInput(in MinigameInput input);
     void Tick(float deltaTime);
+    void Initialize(MinigameInstructionPopup popup, PlayerDataRuntime runtime);
     void End(MinigameEndReason reason);
     #endregion
 }
