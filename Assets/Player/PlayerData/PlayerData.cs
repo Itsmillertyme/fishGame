@@ -6,6 +6,7 @@ public class PlayerData {
     public string playerId;
 
     public bool hasSeenCastingMinigameTutorial;
+    public bool hasSeenSpinningMinigameTutorial;
 
     public int money;
 

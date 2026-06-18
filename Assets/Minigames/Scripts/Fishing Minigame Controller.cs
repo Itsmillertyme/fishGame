@@ -114,6 +114,8 @@ public class FishingMinigameController : MonoBehaviour {
 
         if (type == MinigameType.SpinningRod) {
             activeMinigame = new SpinningRodMinigame();
+            activeMinigame.Initialize(instructionPopup, playerDataRuntime);
+            activeMinigame.Begin(context);
             uiView.ShowSpinning(true);
             uiView.ShowCasting(false);
         }
