@@ -39,9 +39,6 @@ public class FishingInteractor : MonoBehaviour {
     [SerializeField] bool canFish;
     [SerializeField] FishingHotspot currentHotspot;
 
-    [Header("Ad Manager")]
-    [SerializeField] AdsManager adsManager;
-
     PlayerInput playerInput;
     CharacterControllerInputs inputs;
 
@@ -305,10 +302,6 @@ public class FishingInteractor : MonoBehaviour {
         SwitchToGameplayMap();
 
         Destroy(caughtFish);
-
-        if (adsManager != null)
-            adsManager.ShowInterstitial();
-
     }
 
 
@@ -374,8 +367,6 @@ public class FishingInteractor : MonoBehaviour {
             if (playerController != null) playerController.MovementLocked = false;
 
             SwitchToGameplayMap();
-            if (adsManager != null)
-                adsManager.ShowInterstitial();
         }
     }
 
